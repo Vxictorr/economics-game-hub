@@ -421,7 +421,7 @@
         .game-card:nth-child(9) { animation-delay: 0.8s; }
         .game-card:nth-child(10) { animation-delay: 0.9s; }
 
-        .creator-info {
+       .creator-info {
     position: fixed;
     bottom: 20px;
     right: 20px;
@@ -438,6 +438,8 @@
     z-index: 1000;
     transition: all 0.3s ease;
     opacity: 0.9;
+    /* Add this for the close button positioning */
+    position: relative;
 }
 
 .creator-info:hover {
@@ -446,11 +448,41 @@
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
 }
 
+/* ADD THESE NEW STYLES FOR THE CLOSE BUTTON */
+.close-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: none;
+    border: none;
+    font-size: 16px;
+    color: #999;
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+
+.close-btn:hover {
+    background: #f0f0f0;
+    color: #666;
+}
+
+.creator-info.hidden {
+    display: none;
+}
+
 .creator-info h4 {
     margin: 0 0 8px 0;
     font-size: 0.85rem;
     color: #1a1a1a;
     font-weight: 600;
+    /* Add padding to avoid overlap with close button */
+    padding-right: 20px;
 }
 
 .creator-info p {
@@ -1020,12 +1052,17 @@
         function generateQuizBank() {
             return '<html><body><h1>Economics Quiz Bank</h1><p>Coming soon...</p></body></html>';
         }
+        function closeCreatorInfo() {
+    document.getElementById('creatorInfo').classList.add('hidden');
+}
     </script>
-    <!-- Add this just before </body> -->
-<div class="creator-info">
+  
+<div class="creator-info" id="creatorInfo">
+    <button class="close-btn" onclick="closeCreatorInfo()">×</button>
     <h4>About This Project</h4>
-    <p>This interactive economics learning platform was created by Victor Turcu to make economic concepts accessible and fun.</p>
+    <p>This interactive economics learning platform was created by [Your Name] to make economic concepts accessible and fun.</p>
     <p>Built with: HTML, CSS, JavaScript, Chart.js, and Debugged by Claude.ai</p>
+</div>
 </div>
 </body>
 </html>
