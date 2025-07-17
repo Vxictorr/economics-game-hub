@@ -966,18 +966,84 @@
             }
         }
 
-        function downloadAllTheory() {
-            const allGuides = [
-                'supply-demand', 'elasticity', 'consumer-behavior', 'production-cost',
-                'perfect-competition', 'monopoly', 'game-theory', 'factor-markets',
-                'externalities', 'resource-allocation'
-            ];
-            
-            // In a real implementation, this would create a ZIP file
-            alert('Downloading complete theory library package...');
-            allGuides.forEach(guide => downloadTheory(guide));
-        }
+       function downloadAllTheory() {
+    try {
+        // Create a comprehensive package with all theory guides
+        const allGuides = {
+            'supply-demand': {
+                title: 'Supply and Demand Theory Guide',
+                content: generateSupplyDemandTheory(),
+                filename: 'supply_demand_theory.html'
+            },
+            'elasticity': {
+                title: 'Price Elasticity Theory Guide',
+                content: generateElasticityTheory(),
+                filename: 'elasticity_theory.html'
+            },
+            'consumer-behavior': {
+                title: 'Consumer Behavior Theory Guide',
+                content: generateConsumerBehaviorTheory(),
+                filename: 'consumer_behavior_theory.html'
+            },
+            'production-cost': {
+                title: 'Production and Cost Theory Guide',
+                content: generateProductionCostTheory(),
+                filename: 'production_cost_theory.html'
+            },
+            'perfect-competition': {
+                title: 'Perfect Competition Theory Guide',
+                content: generatePerfectCompetitionTheory(),
+                filename: 'perfect_competition_theory.html'
+            },
+            'monopoly': {
+                title: 'Monopoly Theory Guide',
+                content: generateMonopolyTheory(),
+                filename: 'monopoly_theory.html'
+            },
+            'game-theory': {
+                title: 'Game Theory and Strategic Interactions Guide',
+                content: generateGameTheoryGuide(),
+                filename: 'monopolistic_oligopoly_theory.html'
+            },
+            'factor-markets': {
+                title: 'Factor Markets Theory Guide',
+                content: generateFactorMarketsTheory(),
+                filename: 'factor_markets_theory.html'
+            },
+            'resource-allocation': {
+                title: 'Resource Allocation and Scarcity Guide',
+                content: generateResourceAllocationTheory(),
+                filename: 'resource_allocation_theory.html'
+            }
+        };
 
+        // Create comprehensive package
+        const packageContent = createTheoryPackage(allGuides);
+        
+        // Download the complete package
+        downloadFile(packageContent, 'Economics_Theory_Complete_Package.html');
+        
+        // Show success message
+        setTimeout(() => {
+            alert('✅ Complete Theory Library Package Downloaded!\n\nYour download includes:\n• All 10 theory guides\n• Interactive navigation\n• Complete economic concepts\n• Comprehensive examples and formulas');
+        }, 500);
+        
+    } catch (error) {
+        console.error('Error creating theory package:', error);
+        alert('Error creating package. Downloading individual guides instead...');
+        
+        // Fallback: download individual guides
+        const allGuides = [
+            'supply-demand', 'elasticity', 'consumer-behavior', 'production-cost',
+            'perfect-competition', 'monopoly', 'game-theory', 'factor-markets',
+            'externalities', 'resource-allocation'
+        ];
+        
+        allGuides.forEach((guide, index) => {
+            setTimeout(() => downloadTheory(guide), index * 1000);
+        });
+    }
+}
        function downloadQuizBank() {
     window.open('economics_quiz_bank.html', '_blank');
 }
@@ -1051,6 +1117,127 @@
         function closeCreatorInfo() {
     document.getElementById('creatorInfo').classList.add('hidden');
 }
+// Create a comprehensive theory package HTML file
+function createTheoryPackage(allGuides) {
+    return `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Economics Theory Library</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6; color: #333; background: #f8f9fa;
+        }
+        .header {
+            background: linear-gradient(135deg, #2e4bc6 0%, #1e3a8a 100%);
+            color: white; padding: 40px 20px; text-align: center;
+        }
+        .header h1 { font-size: 2.5rem; margin-bottom: 10px; font-weight: 300; }
+        .header p { font-size: 1.1rem; opacity: 0.9; }
+        .navigation {
+            background: white; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky; top: 0; z-index: 100;
+        }
+        .nav-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px; max-width: 1200px; margin: 0 auto;
+        }
+        .nav-item {
+            padding: 12px 16px; background: #f8f9fa; border: 1px solid #e5e5e5;
+            border-radius: 8px; text-decoration: none; color: #333;
+            transition: all 0.2s ease; text-align: center; font-weight: 500;
+        }
+        .nav-item:hover {
+            background: #2e4bc6; color: white; transform: translateY(-2px);
+        }
+        .container { max-width: 1000px; margin: 0 auto; padding: 40px 20px; }
+        .guide-section {
+            background: white; margin-bottom: 40px; border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1); overflow: hidden;
+        }
+        .guide-header {
+            background: linear-gradient(135deg, #2e4bc6 0%, #1e3a8a 100%);
+            color: white; padding: 30px; text-align: center;
+        }
+        .guide-header h2 { font-size: 2rem; margin-bottom: 10px; font-weight: 300; }
+        .guide-content { padding: 40px; }
+        .back-to-top {
+            position: fixed; bottom: 30px; right: 30px; background: #2e4bc6;
+            color: white; border: none; border-radius: 50%; width: 50px; height: 50px;
+            font-size: 20px; cursor: pointer; box-shadow: 0 4px 15px rgba(46, 75, 198, 0.3);
+            transition: all 0.3s ease;
+        }
+        .back-to-top:hover { background: #1e3a8a; transform: translateY(-2px); }
+        @media (max-width: 768px) {
+            .header h1 { font-size: 2rem; }
+            .nav-grid { grid-template-columns: 1fr; }
+            .container { padding: 20px 15px; }
+            .guide-content { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📚 Complete Economics Theory Library</h1>
+        <p>Comprehensive guides for all economic concepts and theories</p>
+    </div>
+    
+    <nav class="navigation">
+        <div class="nav-grid">
+            <a href="#supply-demand" class="nav-item">📈 Supply & Demand</a>
+            <a href="#elasticity" class="nav-item">📊 Price Elasticity</a>
+            <a href="#consumer-behavior" class="nav-item">🛒 Consumer Behavior</a>
+            <a href="#production-cost" class="nav-item">🏭 Production & Cost</a>
+            <a href="#perfect-competition" class="nav-item">⚖️ Perfect Competition</a>
+            <a href="#monopoly" class="nav-item">👑 Monopoly Theory</a>
+            <a href="#game-theory" class="nav-item">🎯 Game Theory</a>
+            <a href="#factor-markets" class="nav-item">💼 Factor Markets</a>
+            <a href="#externalities" class="nav-item">🌍 Externalities</a>
+            <a href="#resource-allocation" class="nav-item">⚡ Resource Allocation</a>
+        </div>
+    </nav>
+    
+    <div class="container">
+        ${Object.entries(allGuides).map(([key, guide]) => `
+            <section id="${key}" class="guide-section">
+                <div class="guide-header">
+                    <h2>${guide.title}</h2>
+                </div>
+                <div class="guide-content">
+                    ${guide.content.replace(/<html[^>]*>|<\/html>|<head[^>]*>.*?<\/head>|<body[^>]*>|<\/body>/gs, '').replace(/<title>.*?<\/title>/gs, '')}
+                </div>
+            </section>
+        `).join('')}
+    </div>
+    
+    <button class="back-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" title="Back to top">↑</button>
+    
+    <script>
+        document.querySelectorAll('.nav-item').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetElement = document.querySelector(this.getAttribute('href'));
+                if (targetElement) {
+                    targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+        
+        window.addEventListener('scroll', function() {
+            const backToTop = document.querySelector('.back-to-top');
+            backToTop.style.display = window.pageYOffset > 300 ? 'block' : 'none';
+        });
+        
+        document.querySelector('.back-to-top').style.display = 'none';
+    </script>
+</body>
+</html>`;
+}
+
+        
     </script>
   
 <div class="creator-info" id="creatorInfo">
