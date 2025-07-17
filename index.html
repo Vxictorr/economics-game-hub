@@ -905,25 +905,25 @@
 }
 
        function downloadSourceCode() {
-    // Your specific GitHub details
-    const githubUser = 'Vxictorr';
-    const repoName = 'economics-games-hub';
-    const zipFileName = 'Source_Code.zip';  // Note: added .zip extension
+    const downloadUrl = 'https://github.com/Vxictorr/economics-games-hub/raw/main/Source_Code.zip';
     
-    // Create the direct download URL
-    const zipUrl = `https://github.com/${githubUser}/${repoName}/raw/main/${zipFileName}`;
-    
-    // Create and trigger download
+    // Create invisible download link
     const link = document.createElement('a');
-    link.href = zipUrl;
+    link.href = downloadUrl;
     link.download = 'Economics-Games-Source-Code.zip';
     link.style.display = 'none';
     
+    // Prevent default navigation
+    link.addEventListener('click', function(e) {
+        e.preventDefault();
+    });
+    
+    // Add to DOM, click, remove
     document.body.appendChild(link);
     link.click();
-    document.body.removeChild(link);
-    
-    console.log('Downloading source code package...');
+    setTimeout(() => {
+        document.body.removeChild(link);
+    }, 100);
 }
 
         function downloadFile(content, filename) {
