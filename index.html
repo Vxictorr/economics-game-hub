@@ -904,14 +904,11 @@
     window.open('economics_quiz_bank.html', '_blank');
 }
 
-       function downloadSourceCode() {
-    // Direct approach - create a temporary anchor and click it
+      function downloadSourceCode() {
     const link = document.createElement('a');
-    link.href = 'https://github.com/Vxictorr/economics-games-hub/raw/main/Source_Code.zip';
-    link.setAttribute('download', 'Economics-Games-Source-Code.zip');
-    link.setAttribute('target', '_self');
+    link.href = './Source_Code.zip';  // Relative path
+    link.download = 'Economics-Games-Source-Code.zip';
     
-    // Trigger the download
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
