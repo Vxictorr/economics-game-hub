@@ -420,6 +420,56 @@
         .game-card:nth-child(8) { animation-delay: 0.7s; }
         .game-card:nth-child(9) { animation-delay: 0.8s; }
         .game-card:nth-child(10) { animation-delay: 0.9s; }
+
+        .creator-info {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid #e5e5e5;
+    border-radius: 12px;
+    padding: 16px;
+    max-width: 280px;
+    font-size: 0.8rem;
+    line-height: 1.4;
+    color: #666;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    z-index: 1000;
+    transition: all 0.3s ease;
+    opacity: 0.9;
+}
+
+.creator-info:hover {
+    opacity: 1;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+}
+
+.creator-info h4 {
+    margin: 0 0 8px 0;
+    font-size: 0.85rem;
+    color: #1a1a1a;
+    font-weight: 600;
+}
+
+.creator-info p {
+    margin: 0 0 8px 0;
+    font-size: 0.75rem;
+}
+
+.creator-info p:last-child {
+    margin-bottom: 0;
+}
+
+@media (max-width: 768px) {
+    .creator-info {
+        bottom: 10px;
+        right: 10px;
+        max-width: 220px;
+        padding: 12px;
+    }
+}
     </style>
 </head>
 <body>
@@ -971,5 +1021,11 @@
             return '<html><body><h1>Economics Quiz Bank</h1><p>Coming soon...</p></body></html>';
         }
     </script>
+    <!-- Add this just before </body> -->
+<div class="creator-info">
+    <h4>About This Project</h4>
+    <p>This interactive economics learning platform was created by Victor Turcu to make economic concepts accessible and fun.</p>
+    <p>Built with: HTML, CSS, JavaScript, Chart.js, and Debugged by Claude.ai</p>
+</div>
 </body>
 </html>
