@@ -915,140 +915,81 @@
     </footer>
 
     <script>
-        // Theory download functions
-        function downloadTheory(gameType) {
-            const theoryGuides = {
-                'supply-demand': {
-                    title: 'Supply and Demand Theory Guide',
-                    content: generateSupplyDemandTheory()
-                },
-                'elasticity': {
-                    title: 'Price Elasticity Theory Guide',
-                    content: generateElasticityTheory()
-                },
-                'consumer-behavior': {
-                    title: 'Consumer Behavior Theory Guide',
-                    content: generateConsumerBehaviorTheory()
-                },
-                'production-cost': {
-                    title: 'Production and Cost Theory Guide',
-                    content: generateProductionCostTheory()
-                },
-                'perfect-competition': {
-                    title: 'Perfect Competition Theory Guide',
-                    content: generatePerfectCompetitionTheory()
-                },
-                'monopoly': {
-                    title: 'Monopoly Theory Guide',
-                    content: generateMonopolyTheory()
-                },
-                'game-theory': {
-                    title: 'Game Theory and Strategic Interactions Guide',
-                    content: generateGameTheoryGuide()
-                },
-                'factor-markets': {
-                    title: 'Factor Markets Theory Guide',
-                    content: generateFactorMarketsTheory()
-                },
-                'externalities': {
-                    title: 'Externalities and Market Failures Guide',
-                    content: generateExternalitiesTheory()
-                },
-                'resource-allocation': {
-                    title: 'Resource Allocation and Scarcity Guide',
-                    content: generateResourceAllocationTheory()
-                }
-            };
-
-            const guide = theoryGuides[gameType];
-            if (guide) {
-                downloadFile(guide.content, `${guide.title}.html`);
-            }
+       // Theory download functions
+function downloadTheory(gameType) {
+    const theoryGuides = {
+        'supply-demand': {
+            title: 'Supply and Demand Theory Guide',
+            content: generateSupplyDemandTheory()
+        },
+        'elasticity': {
+            title: 'Price Elasticity Theory Guide',
+            content: generateElasticityTheory()
+        },
+        'consumer-behavior': {
+            title: 'Consumer Behavior Theory Guide',
+            content: generateConsumerBehaviorTheory()
+        },
+        'production-cost': {
+            title: 'Production and Cost Theory Guide',
+            content: generateProductionCostTheory()
+        },
+        'perfect-competition': {
+            title: 'Perfect Competition Theory Guide',
+            content: generatePerfectCompetitionTheory()
+        },
+        'monopoly': {
+            title: 'Monopoly Theory Guide',
+            content: generateMonopolyTheory()
+        },
+        'game-theory': {
+            title: 'Game Theory and Strategic Interactions Guide',
+            content: generateGameTheoryGuide()
+        },
+        'factor-markets': {
+            title: 'Factor Markets Theory Guide',
+            content: generateFactorMarketsTheory()
+        },
+        'externalities': {
+            title: 'Externalities and Market Failures Guide',
+            content: generateExternalitiesTheory()
+        },
+        'resource-allocation': {
+            title: 'Resource Allocation and Scarcity Guide',
+            content: generateResourceAllocationTheory()
         }
+    };
 
-       function downloadAllTheory() {
+    const guide = theoryGuides[gameType];
+    if (guide) {
+        downloadFile(guide.content, `${guide.title}.html`);
+    }
+}
+
+function downloadAllTheory() {
     try {
-        // Create a comprehensive package with all theory guides
-        const allGuides = {
-            'supply-demand': {
-                title: 'Supply and Demand Theory Guide',
-                content: generateSupplyDemandTheory(),
-                filename: 'supply_demand_theory.html'
-            },
-            'elasticity': {
-                title: 'Price Elasticity Theory Guide',
-                content: generateElasticityTheory(),
-                filename: 'elasticity_theory.html'
-            },
-            'consumer-behavior': {
-                title: 'Consumer Behavior Theory Guide',
-                content: generateConsumerBehaviorTheory(),
-                filename: 'consumer_behavior_theory.html'
-            },
-            'production-cost': {
-                title: 'Production and Cost Theory Guide',
-                content: generateProductionCostTheory(),
-                filename: 'production_cost_theory.html'
-            },
-            'perfect-competition': {
-                title: 'Perfect Competition Theory Guide',
-                content: generatePerfectCompetitionTheory(),
-                filename: 'perfect_competition_theory.html'
-            },
-            'monopoly': {
-                title: 'Monopoly Theory Guide',
-                content: generateMonopolyTheory(),
-                filename: 'monopoly_theory.html'
-            },
-            'game-theory': {
-                title: 'Game Theory and Strategic Interactions Guide',
-                content: generateGameTheoryGuide(),
-                filename: 'monopolistic_oligopoly_theory.html'
-            },
-            'factor-markets': {
-                title: 'Factor Markets Theory Guide',
-                content: generateFactorMarketsTheory(),
-                filename: 'factor_markets_theory.html'
-            },
-            'resource-allocation': {
-                title: 'Resource Allocation and Scarcity Guide',
-                content: generateResourceAllocationTheory(),
-                filename: 'resource_allocation_theory.html'
-            }
-        };
-
-        // Create comprehensive package
-        const packageContent = createTheoryPackage(allGuides);
+        // Create comprehensive package with actual theory content
+        const packageContent = createTheoryPackage();
         
         // Download the complete package
         downloadFile(packageContent, 'Economics_Theory_Complete_Package.html');
         
         // Show success message
         setTimeout(() => {
-            alert('✅ Complete Theory Library Package Downloaded!\n\nYour download includes:\n• All 10 theory guides\n• Interactive navigation\n• Complete economic concepts\n• Comprehensive examples and formulas');
+            alert('✅ Complete Theory Library Package Downloaded!\n\nYour download includes:\n• All 10 theory guides in one file\n• Interactive navigation menu\n• Professional formatting\n• Easy to browse and reference');
         }, 500);
         
     } catch (error) {
         console.error('Error creating theory package:', error);
-        alert('Error creating package. Downloading individual guides instead...');
-        
-        // Fallback: download individual guides
-        const allGuides = [
-            'supply-demand', 'elasticity', 'consumer-behavior', 'production-cost',
-            'perfect-competition', 'monopoly', 'game-theory', 'factor-markets',
-            'externalities', 'resource-allocation'
-        ];
-        
-        allGuides.forEach((guide, index) => {
-            setTimeout(() => downloadTheory(guide), index * 1000);
-        });
+        alert('📚 Theory guides are currently under development!\n\nComplete comprehensive guides are coming soon.\n\nFor now, you can access individual theory pages through each game\'s "Theory" button.');
     }
 }
-       function downloadQuizBank() {
+
+function downloadQuizBank() {
     window.open('economics_quiz_bank.html', '_blank');
 }
 
-      function downloadSourceCode() {
+function downloadSourceCode() {
     const link = document.createElement('a');
     link.href = './Source_Code.zip';  // Relative path
     link.download = 'Economics-Games-Source-Code.zip';
@@ -1058,67 +999,427 @@
     document.body.removeChild(link);
 }
 
-        function downloadFile(content, filename) {
-            const blob = new Blob([content], { type: 'text/html' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = filename;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            window.URL.revokeObjectURL(url);
-        }
+function downloadFile(content, filename) {
+    const blob = new Blob([content], { type: 'text/html' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+}
 
-        // Placeholder functions for theory content generators
-        function generateSupplyDemandTheory() {
-            return '<html><body><h1>Supply and Demand Theory</h1><p>Coming soon...</p></body></html>';
-        }
+// Enhanced theory content generators with actual useful content
+function generateSupplyDemandTheory() {
+    return `<!DOCTYPE html>
+<html><head><title>Supply and Demand Theory</title></head>
+<body>
+<h1>Supply and Demand Theory</h1>
+<h2>Introduction</h2>
+<p>Supply and demand is the fundamental economic principle that describes the relationship between the availability of a product (supply) and the desire for that product (demand). This relationship determines the price of goods and services in a market economy.</p>
 
-        function generateElasticityTheory() {
-            return '<html><body><h1>Price Elasticity Theory</h1><p>Coming soon...</p></body></html>';
-        }
+<h2>The Law of Demand</h2>
+<p>The law of demand states that, all else being equal, as the price of a good increases, the quantity demanded decreases, and vice versa. This creates a downward-sloping demand curve.</p>
 
-        function generateConsumerBehaviorTheory() {
-            return '<html><body><h1>Consumer Behavior Theory</h1><p>Coming soon...</p></body></html>';
-        }
+<h2>The Law of Supply</h2>
+<p>The law of supply states that, all else being equal, as the price of a good increases, the quantity supplied increases, and vice versa. This creates an upward-sloping supply curve.</p>
 
-        function generateProductionCostTheory() {
-            return '<html><body><h1>Production and Cost Theory</h1><p>Coming soon...</p></body></html>';
-        }
+<h2>Market Equilibrium</h2>
+<p>Market equilibrium occurs where supply and demand curves intersect. At this point, the quantity supplied equals the quantity demanded, determining the market price.</p>
 
-        function generatePerfectCompetitionTheory() {
-            return '<html><body><h1>Perfect Competition Theory</h1><p>Coming soon...</p></body></html>';
-        }
+<h2>Factors Affecting Demand</h2>
+<ul>
+<li>Consumer income and preferences</li>
+<li>Price of substitute goods</li>
+<li>Population and demographics</li>
+<li>Future expectations</li>
+<li>Seasonal factors</li>
+</ul>
 
-        function generateMonopolyTheory() {
-            return '<html><body><h1>Monopoly Theory</h1><p>Coming soon...</p></body></html>';
-        }
+<h2>Factors Affecting Supply</h2>
+<ul>
+<li>Production costs</li>
+<li>Technology improvements</li>
+<li>Number of sellers</li>
+<li>Government policies and regulations</li>
+<li>Natural conditions</li>
+</ul>
+</body></html>`;
+}
 
-        function generateGameTheoryGuide() {
-            return '<html><body><h1>Game Theory Guide</h1><p>Coming soon...</p></body></html>';
-        }
+function generateElasticityTheory() {
+    return `<!DOCTYPE html>
+<html><head><title>Price Elasticity Theory</title></head>
+<body>
+<h1>Price Elasticity of Demand</h1>
+<h2>Definition</h2>
+<p>Price elasticity of demand measures how responsive the quantity demanded is to changes in price. It's calculated as the percentage change in quantity demanded divided by the percentage change in price.</p>
 
-        function generateFactorMarketsTheory() {
-            return '<html><body><h1>Factor Markets Theory</h1><p>Coming soon...</p></body></html>';
-        }
+<h2>Types of Elasticity</h2>
+<h3>Elastic Demand (|PED| > 1)</h3>
+<p>When demand is highly responsive to price changes. Examples include luxury goods, entertainment, and non-essential items.</p>
 
-        function generateExternalitiesTheory() {
-            return '<html><body><h1>Externalities Theory</h1><p>Coming soon...</p></body></html>';
-        }
+<h3>Inelastic Demand (|PED| < 1)</h3>
+<p>When demand is relatively unresponsive to price changes. Examples include necessities like food, medicine, and gasoline.</p>
 
-        function generateResourceAllocationTheory() {
-            return '<html><body><h1>Resource Allocation Theory</h1><p>Coming soon...</p></body></html>';
-        }
+<h3>Unit Elastic Demand (|PED| = 1)</h3>
+<p>When the percentage change in quantity demanded equals the percentage change in price.</p>
 
-        function generateQuizBank() {
-            return '<html><body><h1>Economics Quiz Bank</h1><p>Coming soon...</p></body></html>';
-        }
-        function closeCreatorInfo() {
+<h2>Factors Affecting Elasticity</h2>
+<ul>
+<li>Availability of substitutes</li>
+<li>Necessity vs. luxury</li>
+<li>Time period for adjustment</li>
+<li>Proportion of income spent</li>
+<li>Brand loyalty</li>
+</ul>
+
+<h2>Business Applications</h2>
+<p>Understanding elasticity helps businesses make pricing decisions. For elastic goods, lowering prices can increase total revenue, while for inelastic goods, raising prices can increase total revenue.</p>
+</body></html>`;
+}
+
+function generateConsumerBehaviorTheory() {
+    return `<!DOCTYPE html>
+<html><head><title>Consumer Behavior Theory</title></head>
+<body>
+<h1>Consumer Behavior Theory</h1>
+<h2>Utility Theory</h2>
+<p>Utility represents the satisfaction or happiness a consumer derives from consuming goods and services. Total utility increases with consumption, but marginal utility typically decreases.</p>
+
+<h2>Budget Constraints</h2>
+<p>Consumers face budget constraints that limit their consumption choices. The budget line shows all combinations of goods a consumer can afford given their income and prices.</p>
+
+<h2>Consumer Equilibrium</h2>
+<p>Consumer equilibrium occurs when a consumer maximizes utility subject to their budget constraint. This happens where the marginal utility per dollar spent is equal across all goods.</p>
+
+<h2>Income and Substitution Effects</h2>
+<h3>Income Effect</h3>
+<p>When prices change, consumers' real purchasing power changes, affecting their consumption patterns.</p>
+
+<h3>Substitution Effect</h3>
+<p>When relative prices change, consumers substitute away from more expensive goods toward relatively cheaper alternatives.</p>
+
+<h2>Behavioral Economics</h2>
+<p>Modern consumer theory incorporates psychological factors that influence decision-making, including:</p>
+<ul>
+<li>Loss aversion</li>
+<li>Anchoring bias</li>
+<li>Present bias</li>
+<li>Social influences</li>
+</ul>
+</body></html>`;
+}
+
+function generateProductionCostTheory() {
+    return `<!DOCTYPE html>
+<html><head><title>Production and Cost Theory</title></head>
+<body>
+<h1>Production and Cost Theory</h1>
+<h2>Production Function</h2>
+<p>The production function shows the relationship between inputs (labor, capital, materials) and outputs. It represents the maximum output achievable from given inputs using current technology.</p>
+
+<h2>Short-Run vs. Long-Run</h2>
+<h3>Short-Run Production</h3>
+<p>In the short run, at least one factor of production is fixed (usually capital). This leads to diminishing marginal returns as variable inputs are added.</p>
+
+<h3>Long-Run Production</h3>
+<p>In the long run, all factors of production are variable, allowing firms to adjust their scale of operation and achieve economies or diseconomies of scale.</p>
+
+<h2>Types of Costs</h2>
+<h3>Fixed Costs</h3>
+<p>Costs that don't change with output level in the short run (rent, insurance, depreciation).</p>
+
+<h3>Variable Costs</h3>
+<p>Costs that change with output level (materials, hourly labor, utilities).</p>
+
+<h3>Marginal Cost</h3>
+<p>The additional cost of producing one more unit of output. This is crucial for profit-maximizing decisions.</p>
+
+<h2>Economies of Scale</h2>
+<p>Cost advantages that firms experience as they increase production scale, including:</p>
+<ul>
+<li>Technical economies (specialization, indivisibilities)</li>
+<li>Purchasing economies (bulk buying)</li>
+<li>Financial economies (better access to capital)</li>
+<li>Marketing economies (spreading advertising costs)</li>
+</ul>
+</body></html>`;
+}
+
+function generatePerfectCompetitionTheory() {
+    return `<!DOCTYPE html>
+<html><head><title>Perfect Competition Theory</title></head>
+<body>
+<h1>Perfect Competition Theory</h1>
+<h2>Characteristics of Perfect Competition</h2>
+<ul>
+<li>Many buyers and sellers</li>
+<li>Homogeneous products</li>
+<li>Perfect information</li>
+<li>Free entry and exit</li>
+<li>Price takers (no market power)</li>
+</ul>
+
+<h2>Short-Run Equilibrium</h2>
+<p>In the short run, firms can earn economic profits, break even, or incur losses. The firm produces where marginal cost equals marginal revenue (which equals price in perfect competition).</p>
+
+<h2>Long-Run Equilibrium</h2>
+<p>In the long run, economic profits attract new entrants, while losses cause firms to exit. The long-run equilibrium occurs where firms earn zero economic profit (normal profit).</p>
+
+<h2>Efficiency in Perfect Competition</h2>
+<h3>Productive Efficiency</h3>
+<p>Firms produce at minimum average cost, using resources efficiently.</p>
+
+<h3>Allocative Efficiency</h3>
+<p>Price equals marginal cost, ensuring resources are allocated to their highest-valued uses.</p>
+
+<h2>Market Supply Curve</h2>
+<p>The market supply curve is the horizontal sum of individual firm supply curves. In the long run, it may be horizontal (constant cost industry), upward-sloping (increasing cost), or downward-sloping (decreasing cost).</p>
+</body></html>`;
+}
+
+function generateMonopolyTheory() {
+    return `<!DOCTYPE html>
+<html><head><title>Monopoly Theory</title></head>
+<body>
+<h1>Monopoly Theory</h1>
+<h2>Monopoly Characteristics</h2>
+<ul>
+<li>Single seller</li>
+<li>No close substitutes</li>
+<li>High barriers to entry</li>
+<li>Price maker (market power)</li>
+</ul>
+
+<h2>Sources of Monopoly Power</h2>
+<ul>
+<li>Legal barriers (patents, licenses)</li>
+<li>Natural monopoly (high fixed costs)</li>
+<li>Control of essential resources</li>
+<li>Network effects</li>
+<li>Economies of scale</li>
+</ul>
+
+<h2>Profit Maximization</h2>
+<p>Monopolists maximize profit where marginal revenue equals marginal cost. Unlike perfect competition, price exceeds marginal cost, creating deadweight loss.</p>
+
+<h2>Price Discrimination</h2>
+<h3>First-Degree (Perfect)</h3>
+<p>Charging each consumer their maximum willingness to pay.</p>
+
+<h3>Second-Degree</h3>
+<p>Pricing based on quantity consumed (block pricing).</p>
+
+<h3>Third-Degree</h3>
+<p>Charging different prices to different market segments.</p>
+
+<h2>Welfare Effects</h2>
+<p>Monopolies create deadweight loss by restricting output and charging higher prices than would occur under perfect competition. However, they may also promote innovation through patent protection.</p>
+</body></html>`;
+}
+
+function generateGameTheoryGuide() {
+    return `<!DOCTYPE html>
+<html><head><title>Game Theory and Strategic Interactions</title></head>
+<body>
+<h1>Game Theory and Strategic Interactions</h1>
+<h2>Introduction to Game Theory</h2>
+<p>Game theory analyzes strategic interactions between rational decision-makers. It's particularly useful for understanding oligopoly markets and competitive strategies.</p>
+
+<h2>Key Concepts</h2>
+<h3>Players</h3>
+<p>The decision-makers in the game (firms, consumers, governments).</p>
+
+<h3>Strategies</h3>
+<p>The possible actions available to each player.</p>
+
+<h3>Payoffs</h3>
+<p>The outcomes or rewards each player receives based on the combination of strategies chosen.</p>
+
+<h2>Nash Equilibrium</h2>
+<p>A situation where no player can improve their payoff by unilaterally changing their strategy, given the strategies of other players.</p>
+
+<h2>The Prisoner's Dilemma</h2>
+<p>A classic game that illustrates how individual rational behavior can lead to collectively suboptimal outcomes. Common in oligopoly pricing decisions.</p>
+
+<h2>Applications in Economics</h2>
+<ul>
+<li>Oligopoly competition and pricing</li>
+<li>Auction design</li>
+<li>International trade negotiations</li>
+<li>Environmental agreements</li>
+<li>Labor-management negotiations</li>
+</ul>
+
+<h2>Repeated Games</h2>
+<p>When games are played repeatedly, cooperation may emerge through strategies like "tit-for-tat" or the threat of future punishment.</p>
+</body></html>`;
+}
+
+function generateFactorMarketsTheory() {
+    return `<!DOCTYPE html>
+<html><head><title>Factor Markets Theory</title></head>
+<body>
+<h1>Factor Markets Theory</h1>
+<h2>Introduction to Factor Markets</h2>
+<p>Factor markets are where the factors of production (land, labor, capital) are bought and sold. Unlike product markets, firms are the buyers and households are typically the sellers.</p>
+
+<h2>Labor Markets</h2>
+<h3>Labor Demand</h3>
+<p>Firms demand labor based on its marginal revenue product (MRP). The labor demand curve slopes downward due to diminishing marginal productivity.</p>
+
+<h3>Labor Supply</h3>
+<p>Individuals supply labor based on the trade-off between work and leisure. Higher wages typically increase labor supply, but income effects may reduce it at very high wage levels.</p>
+
+<h2>Wage Determination</h2>
+<p>Wages are determined by the intersection of labor supply and demand. Factors affecting wages include:</p>
+<ul>
+<li>Productivity and skill level</li>
+<li>Education and training</li>
+<li>Market power (unions, monopsony)</li>
+<li>Compensating differentials</li>
+<li>Discrimination</li>
+</ul>
+
+<h2>Capital Markets</h2>
+<p>Capital markets determine the rental rate of capital and investment decisions. The demand for capital depends on its marginal revenue product and the interest rate.</p>
+
+<h2>Land Markets</h2>
+<p>Land supply is typically fixed, so land prices (rents) are determined primarily by demand. Economic rent captures the payment above the opportunity cost.</p>
+</body></html>`;
+}
+
+function generateExternalitiesTheory() {
+    return `<!DOCTYPE html>
+<html><head><title>Externalities and Market Failures</title></head>
+<body>
+<h1>Externalities and Market Failures</h1>
+<h2>Definition of Externalities</h2>
+<p>Externalities occur when the actions of one party affect the welfare of others without compensation. They represent a form of market failure where private and social costs or benefits differ.</p>
+
+<h2>Types of Externalities</h2>
+<h3>Negative Externalities</h3>
+<p>When an activity imposes costs on others (pollution, noise, traffic congestion). These lead to overproduction relative to the social optimum.</p>
+
+<h3>Positive Externalities</h3>
+<p>When an activity benefits others (education, vaccination, research). These lead to underproduction relative to the social optimum.</p>
+
+<h2>Solutions to Externalities</h2>
+<h3>Pigouvian Taxes and Subsidies</h3>
+<p>Taxes on negative externalities and subsidies for positive externalities can internalize external costs and benefits.</p>
+
+<h3>Cap and Trade Systems</h3>
+<p>Market-based approaches that set limits on pollution while allowing trading of permits.</p>
+
+<h3>Coase Theorem</h3>
+<p>Under certain conditions (low transaction costs, well-defined property rights), private bargaining can resolve externality problems efficiently.</p>
+
+<h2>Public Goods</h2>
+<p>Goods that are non-rivalrous and non-excludable often suffer from free-rider problems, leading to underprovision by markets.</p>
+
+<h2>Common Pool Resources</h2>
+<p>Resources that are rivalrous but non-excludable (fishing grounds, grazing land) often suffer from overuse and depletion.</p>
+</body></html>`;
+}
+
+function generateResourceAllocationTheory() {
+    return `<!DOCTYPE html>
+<html><head><title>Resource Allocation and Scarcity</title></head>
+<body>
+<h1>Resource Allocation and Scarcity</h1>
+<h2>The Fundamental Economic Problem</h2>
+<p>Scarcity is the fundamental economic problem - unlimited wants and needs but limited resources. This forces societies to make choices about what to produce, how to produce, and for whom to produce.</p>
+
+<h2>Opportunity Cost</h2>
+<p>The value of the next best alternative foregone when making a choice. Opportunity cost is central to economic decision-making and resource allocation.</p>
+
+<h2>Production Possibilities Frontier (PPF)</h2>
+<p>Shows the maximum combinations of goods that can be produced with available resources and technology. The PPF illustrates:</p>
+<ul>
+<li>Scarcity and trade-offs</li>
+<li>Opportunity cost (slope of PPF)</li>
+<li>Economic efficiency</li>
+<li>Economic growth (outward shift)</li>
+</ul>
+
+<h2>Resource Allocation Mechanisms</h2>
+<h3>Market Mechanism</h3>
+<p>Prices coordinate resource allocation through supply and demand, providing incentives and information to economic agents.</p>
+
+<h3>Command System</h3>
+<p>Central planning authority makes allocation decisions. May address market failures but often less efficient than markets.</p>
+
+<h3>Mixed Economy</h3>
+<p>Combination of market mechanisms and government intervention to address market failures while maintaining efficiency.</p>
+
+<h2>Efficiency Types</h2>
+<h3>Productive Efficiency</h3>
+<p>Producing goods at the lowest possible cost.</p>
+
+<h3>Allocative Efficiency</h3>
+<p>Producing the right mix of goods that society values most.</p>
+
+<h3>Dynamic Efficiency</h3>
+<p>Efficient allocation of resources over time, including innovation and investment.</p>
+</body></html>`;
+}
+
+function generateQuizBank() {
+    return '<html><body><h1>Economics Quiz Bank</h1><p>Coming soon...</p></body></html>';
+}
+
+function closeCreatorInfo() {
     document.getElementById('creatorInfo').classList.add('hidden');
 }
+
 // Create a comprehensive theory package HTML file
-function createTheoryPackage(allGuides) {
+function createTheoryPackage() {
+    const allGuides = {
+        'supply-demand': {
+            title: 'Supply and Demand Theory Guide',
+            content: generateSupplyDemandTheory()
+        },
+        'elasticity': {
+            title: 'Price Elasticity Theory Guide',
+            content: generateElasticityTheory()
+        },
+        'consumer-behavior': {
+            title: 'Consumer Behavior Theory Guide',
+            content: generateConsumerBehaviorTheory()
+        },
+        'production-cost': {
+            title: 'Production and Cost Theory Guide',
+            content: generateProductionCostTheory()
+        },
+        'perfect-competition': {
+            title: 'Perfect Competition Theory Guide',
+            content: generatePerfectCompetitionTheory()
+        },
+        'monopoly': {
+            title: 'Monopoly Theory Guide',
+            content: generateMonopolyTheory()
+        },
+        'game-theory': {
+            title: 'Game Theory and Strategic Interactions Guide',
+            content: generateGameTheoryGuide()
+        },
+        'factor-markets': {
+            title: 'Factor Markets Theory Guide',
+            content: generateFactorMarketsTheory()
+        },
+        'externalities': {
+            title: 'Externalities and Market Failures Guide',
+            content: generateExternalitiesTheory()
+        },
+        'resource-allocation': {
+            title: 'Resource Allocation and Scarcity Guide',
+            content: generateResourceAllocationTheory()
+        }
+    };
+
     return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1164,6 +1465,11 @@ function createTheoryPackage(allGuides) {
         }
         .guide-header h2 { font-size: 2rem; margin-bottom: 10px; font-weight: 300; }
         .guide-content { padding: 40px; }
+        .guide-content h1 { color: #2e4bc6; margin-bottom: 20px; }
+        .guide-content h2 { color: #1e3a8a; margin: 25px 0 15px 0; }
+        .guide-content h3 { color: #2e4bc6; margin: 20px 0 10px 0; }
+        .guide-content ul, .guide-content ol { margin: 15px 0; padding-left: 25px; }
+        .guide-content li { margin-bottom: 8px; }
         .back-to-top {
             position: fixed; bottom: 30px; right: 30px; background: #2e4bc6;
             color: white; border: none; border-radius: 50%; width: 50px; height: 50px;
