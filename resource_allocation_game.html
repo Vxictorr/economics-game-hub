@@ -1,0 +1,1738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resource Allocation & Scarcity Challenge</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8f9fa;
+            color: #1a1a1a;
+            line-height: 1.4;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.2rem;
+            font-weight: 300;
+            margin-bottom: 8px;
+            color: #1a1a1a;
+        }
+
+        .header p {
+            font-size: 1rem;
+            color: #666;
+            font-weight: 300;
+        }
+
+        .game-area {
+            display: grid;
+            grid-template-columns: 300px 1fr 320px;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .panel {
+            background: #fff;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            padding: 24px;
+            height: fit-content;
+        }
+
+        .panel h3 {
+            font-size: 0.8rem;
+            color: #666;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 500;
+        }
+
+        .control-group {
+            margin-bottom: 24px;
+        }
+
+        .control-group label {
+            display: block;
+            font-size: 0.8rem;
+            color: #666;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .slider {
+            flex: 1;
+            height: 4px;
+            background: #e5e5e5;
+            border-radius: 2px;
+            outline: none;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #1a1a1a;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .slider::-webkit-slider-thumb:hover {
+            background: #333;
+            transform: scale(1.2);
+        }
+
+        .slider::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #1a1a1a;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s ease;
+        }
+
+        .slider-value {
+            font-size: 0.8rem;
+            color: #999;
+            min-width: 40px;
+            text-align: right;
+        }
+
+        .resource-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .resource-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 12px;
+            background: #f8f9fa;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+
+        .resource-name {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .resource-value {
+            font-weight: 500;
+            color: #1a1a1a;
+        }
+
+        .population-display {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 16px;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .population-number {
+            font-size: 1.8rem;
+            font-weight: 300;
+            margin-bottom: 4px;
+        }
+
+        .population-label {
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+
+        .crisis-selector {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .crisis-btn {
+            background: #f8f9fa;
+            border: 1px solid #e5e5e5;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+
+        .crisis-btn:hover {
+            background: #e9ecef;
+        }
+
+        .crisis-btn.active {
+            background: #dc3545;
+            color: white;
+            border-color: #dc3545;
+        }
+
+        .main-chart {
+            background: #fff;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            padding: 32px;
+            min-height: 600px;
+        }
+
+        .resource-web {
+            width: 100%;
+            height: 500px;
+            position: relative;
+            background: radial-gradient(circle at center, #f8f9fa 0%, #ffffff 100%);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .resource-node {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .resource-node:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+        .resource-node.energy { background: #ffc107; top: 50px; left: 150px; }
+        .resource-node.food { background: #28a745; top: 150px; left: 300px; }
+        .resource-node.water { background: #17a2b8; top: 300px; left: 250px; }
+        .resource-node.housing { background: #6f42c1; top: 350px; left: 100px; }
+        .resource-node.healthcare { background: #dc3545; top: 200px; left: 20px; }
+
+        .node-emoji {
+            font-size: 1.2rem;
+            margin-bottom: 2px;
+        }
+
+        .node-percentage {
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .connection-line {
+            position: absolute;
+            height: 2px;
+            background: rgba(26, 26, 26, 0.2);
+            transform-origin: left center;
+            pointer-events: none;
+        }
+
+        .info-card {
+            background: #fff;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .info-card h4 {
+            font-size: 0.8rem;
+            color: #666;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 500;
+        }
+
+        .metric-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .metric {
+            text-align: center;
+        }
+
+        .metric-label {
+            font-size: 0.75rem;
+            color: #999;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .metric-value {
+            font-size: 1.4rem;
+            font-weight: 300;
+            color: #1a1a1a;
+        }
+
+        .satisfaction-indicator {
+            text-align: center;
+            margin: 16px 0;
+            padding: 12px;
+            border-radius: 4px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: #fff;
+        }
+
+        .excellent { background: #28a745; }
+        .good { background: #ffc107; color: #1a1a1a; }
+        .poor { background: #fd7e14; }
+        .critical { background: #dc3545; }
+
+        .button {
+            background: #1a1a1a;
+            color: #fff;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 400;
+            transition: all 0.2s ease;
+            width: 100%;
+            margin-bottom: 8px;
+        }
+
+        .button:hover {
+            background: #333;
+        }
+
+        .button.active {
+            background: #0066cc;
+        }
+
+        .innovation-progress {
+            background: #e9ecef;
+            border-radius: 4px;
+            height: 6px;
+            margin: 8px 0;
+            overflow: hidden;
+        }
+
+        .innovation-bar {
+            background: #28a745;
+            height: 100%;
+            transition: width 0.3s ease;
+            border-radius: 4px;
+        }
+
+        .crisis-indicator {
+            text-align: center;
+            padding: 12px;
+            border-radius: 4px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            margin-bottom: 16px;
+            background: #28a745;
+            color: white;
+        }
+
+        .quiz-section {
+            background: #fff;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            padding: 24px;
+            margin-top: 40px;
+            display: none;
+        }
+
+        .quiz-progress {
+            background: #e9ecef;
+            border-radius: 10px;
+            height: 8px;
+            margin: 16px 0;
+            overflow: hidden;
+        }
+
+        .quiz-progress-bar {
+            background: #28a745;
+            height: 100%;
+            transition: width 0.3s ease;
+            border-radius: 10px;
+        }
+
+        .quiz-question {
+            font-size: 1rem;
+            margin-bottom: 16px;
+            color: #1a1a1a;
+            font-weight: 400;
+        }
+
+        .quiz-options {
+            display: grid;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .quiz-option {
+            background: #f8f9fa;
+            border: 1px solid #e5e5e5;
+            padding: 12px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+        }
+
+        .quiz-option:hover {
+            background: #e9ecef;
+            border-color: #adb5bd;
+        }
+
+        .quiz-option.correct {
+            background: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+
+        .quiz-option.incorrect {
+            background: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+
+        .quiz-feedback {
+            background: #f8f9fa;
+            border: 1px solid #e5e5e5;
+            border-radius: 4px;
+            padding: 12px;
+            margin-top: 12px;
+            font-size: 0.85rem;
+            color: #666;
+            display: none;
+        }
+
+        .sustainability-meter {
+            background: linear-gradient(90deg, #dc3545 0%, #ffc107 50%, #28a745 100%);
+            height: 8px;
+            border-radius: 4px;
+            margin: 8px 0;
+            position: relative;
+        }
+
+        .sustainability-indicator {
+            position: absolute;
+            top: -2px;
+            width: 4px;
+            height: 12px;
+            background: #1a1a1a;
+            border-radius: 2px;
+            transition: left 0.3s ease;
+        }
+
+        @media (max-width: 1200px) {
+            .game-area {
+                grid-template-columns: 280px 1fr 280px;
+                gap: 30px;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .game-area {
+                grid-template-columns: 1fr 1fr;
+                gap: 30px;
+            }
+            
+            .main-chart {
+                grid-column: 1 / -1;
+                order: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .game-area {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .crisis-selector {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Resource Crisis Management Simulator</h1>
+            <p>Strategic resource allocation under scarcity constraints</p>
+        </div>
+
+        <div class="game-area">
+            <!-- Left Panel: Controls -->
+            <div class="panel">
+                <h3>Resource Allocation</h3>
+                
+                <div class="population-display">
+                    <div class="population-number" id="populationCount">1,000,000</div>
+                    <div class="population-label">Citizens</div>
+                </div>
+
+                <div class="control-group">
+                    <label>Energy Allocation</label>
+                    <div class="slider-container">
+                        <input type="range" class="slider" id="energySlider" min="10" max="40" value="20" oninput="updateAllocation()">
+                        <span class="slider-value" id="energyValue">20%</span>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label>Food Production</label>
+                    <div class="slider-container">
+                        <input type="range" class="slider" id="foodSlider" min="15" max="35" value="25" oninput="updateAllocation()">
+                        <span class="slider-value" id="foodValue">25%</span>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label>Water Management</label>
+                    <div class="slider-container">
+                        <input type="range" class="slider" id="waterSlider" min="10" max="30" value="20" oninput="updateAllocation()">
+                        <span class="slider-value" id="waterValue">20%</span>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label>Housing Development</label>
+                    <div class="slider-container">
+                        <input type="range" class="slider" id="housingSlider" min="10" max="30" value="15" oninput="updateAllocation()">
+                        <span class="slider-value" id="housingValue">15%</span>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label>Healthcare Investment</label>
+                    <div class="slider-container">
+                        <input type="range" class="slider" id="healthcareSlider" min="10" max="30" value="20" oninput="updateAllocation()">
+                        <span class="slider-value" id="healthcareValue">20%</span>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label>Crisis Scenarios</label>
+                    <div class="crisis-selector">
+                        <div class="crisis-btn active" onclick="selectCrisis('normal', this)">🌱 Normal</div>
+                        <div class="crisis-btn" onclick="selectCrisis('pandemic', this)">🦠 Pandemic</div>
+                        <div class="crisis-btn" onclick="selectCrisis('drought', this)">☀️ Drought</div>
+                        <div class="crisis-btn" onclick="selectCrisis('recession', this)">📉 Recession</div>
+                    </div>
+                </div>
+
+                <button class="button" onclick="innovate()">Invest in Innovation</button>
+                <button class="button" onclick="resetAllocation()">Reset Allocation</button>
+                <button class="button" onclick="toggleQuiz()">Start Quiz</button>
+            </div>
+
+            <!-- Center Panel: Interactive Resource Web -->
+            <div class="main-chart">
+                <div class="resource-web" id="resourceWeb">
+                    <div class="resource-node energy" onclick="focusResource('energy')">
+                        <div class="node-emoji">⚡</div>
+                        <div class="node-percentage" id="energyNode">20%</div>
+                    </div>
+                    <div class="resource-node food" onclick="focusResource('food')">
+                        <div class="node-emoji">🌾</div>
+                        <div class="node-percentage" id="foodNode">25%</div>
+                    </div>
+                    <div class="resource-node water" onclick="focusResource('water')">
+                        <div class="node-emoji">💧</div>
+                        <div class="node-percentage" id="waterNode">20%</div>
+                    </div>
+                    <div class="resource-node housing" onclick="focusResource('housing')">
+                        <div class="node-emoji">🏠</div>
+                        <div class="node-percentage" id="housingNode">15%</div>
+                    </div>
+                    <div class="resource-node healthcare" onclick="focusResource('healthcare')">
+                        <div class="node-emoji">🏥</div>
+                        <div class="node-percentage" id="healthcareNode">20%</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel: Information -->
+            <div>
+                <!-- Crisis Status -->
+                <div class="info-card">
+                    <h4>Crisis Status</h4>
+                    <div class="crisis-indicator" id="crisisStatus">
+                        Normal Operations
+                    </div>
+                    <div style="font-size: 0.8rem; color: #666;" id="crisisDescription">
+                        All systems operating within normal parameters
+                    </div>
+                </div>
+
+                <!-- Population Satisfaction -->
+                <div class="info-card">
+                    <h4>Population Metrics</h4>
+                    
+                    <div class="satisfaction-indicator excellent" id="satisfactionLevel">
+                        Excellent Satisfaction
+                    </div>
+
+                    <div class="metric-grid">
+                        <div class="metric">
+                            <div class="metric-label">Happiness</div>
+                            <div class="metric-value" id="happinessScore">85%</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">Survival</div>
+                            <div class="metric-value" id="survivalRate">98%</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">Growth Rate</div>
+                            <div class="metric-value" id="growthRate">+2.1%</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">Efficiency</div>
+                            <div class="metric-value" id="efficiency">92%</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Innovation Progress -->
+                <div class="info-card">
+                    <h4>Innovation Level</h4>
+                    <div class="innovation-progress">
+                        <div class="innovation-bar" id="innovationBar" style="width: 45%"></div>
+                    </div>
+                    <div style="font-size: 0.8rem; color: #666; margin-top: 8px;" id="innovationText">
+                        Technology Level: 45% - Moderate Efficiency
+                    </div>
+                </div>
+
+                <!-- Sustainability -->
+                <div class="info-card">
+                    <h4>Sustainability</h4>
+                    <div class="sustainability-meter">
+                        <div class="sustainability-indicator" id="sustainabilityIndicator" style="left: 65%"></div>
+                    </div>
+                    <div style="font-size: 0.8rem; color: #666; margin-top: 8px;" id="sustainabilityText">
+                        Sustainable - Resources balanced for long-term
+                    </div>
+                </div>
+
+                <!-- Resource Details -->
+                <div class="info-card">
+                    <h4>Resource Details</h4>
+                    <div class="resource-grid">
+                        <div class="resource-item">
+                            <div class="resource-name">⚡ Energy</div>
+                            <div class="resource-value" id="energyDetail">Available</div>
+                        </div>
+                        <div class="resource-item">
+                            <div class="resource-name">🌾 Food</div>
+                            <div class="resource-value" id="foodDetail">Surplus</div>
+                        </div>
+                        <div class="resource-item">
+                            <div class="resource-name">💧 Water</div>
+                            <div class="resource-value" id="waterDetail">Adequate</div>
+                        </div>
+                        <div class="resource-item">
+                            <div class="resource-name">🏠 Housing</div>
+                            <div class="resource-value" id="housingDetail">Limited</div>
+                        </div>
+                        <div class="resource-item">
+                            <div class="resource-name">🏥 Healthcare</div>
+                            <div class="resource-value" id="healthcareDetail">Good</div>
+                        </div>
+                        <div class="resource-item">
+                            <div class="resource-name">🔬 Innovation</div>
+                            <div class="resource-value" id="innovationDetail">Moderate</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Download Button -->
+                <button class="button" onclick="downloadTheoryGuide()">Download Theory Guide</button>
+            </div>
+        </div>
+
+        <!-- Quiz Section -->
+        <div class="quiz-section" id="quizSection">
+            <h3>Resource Allocation & Scarcity Quiz</h3>
+            
+            <div class="quiz-progress">
+                <div class="quiz-progress-bar" id="progressBar" style="width: 5%"></div>
+            </div>
+            
+            <div class="quiz-question" id="quizQuestion">
+                Loading question...
+            </div>
+            
+            <div class="quiz-options" id="quizOptions">
+                <!-- Options will be dynamically generated -->
+            </div>
+            
+            <div class="quiz-feedback" id="quizFeedback">
+                <!-- Feedback will be shown here -->
+            </div>
+
+            <button class="button" onclick="nextQuestion()" style="margin-top: 16px; display: none;" id="nextBtn">Next Question</button>
+            <button class="button" onclick="toggleQuiz()" style="margin-top: 16px;">Close Quiz</button>
+        </div>
+    </div>
+
+    <script>
+        // Game state
+        let currentCrisis = 'normal';
+        let innovationLevel = 45;
+        let quizActive = false;
+        let currentQuestionIndex = 0;
+        let totalAllocation = 100;
+
+        // Crisis definitions
+        const crises = {
+            normal: {
+                name: 'Normal Operations',
+                description: 'All systems operating within normal parameters',
+                multipliers: { energy: 1.0, food: 1.0, water: 1.0, housing: 1.0, healthcare: 1.0 },
+                populationGrowth: 2.1,
+                color: '#28a745'
+            },
+            pandemic: {
+                name: 'Global Pandemic',
+                description: 'Healthcare demand increased, economic slowdown',
+                multipliers: { energy: 0.8, food: 0.9, water: 1.0, housing: 0.7, healthcare: 2.0 },
+                populationGrowth: -0.5,
+                color: '#dc3545'
+            },
+            drought: {
+                name: 'Severe Drought',
+                description: 'Water scarcity, food production challenges',
+                multipliers: { energy: 1.1, food: 0.6, water: 0.4, housing: 1.0, healthcare: 1.2 },
+                populationGrowth: -1.2,
+                color: '#fd7e14'
+            },
+            recession: {
+                name: 'Economic Recession',
+                description: 'Reduced resources, infrastructure challenges',
+                multipliers: { energy: 0.7, food: 0.8, water: 0.9, housing: 0.6, healthcare: 0.8 },
+                populationGrowth: -2.0,
+                color: '#6c757d'
+            }
+        };
+
+        // Quiz questions
+        const quizQuestions = [
+            {
+                question: "What is scarcity in economics?",
+                options: ["Having too many resources", "Limited resources relative to unlimited wants", "Equal distribution of wealth", "Government control of resources"],
+                correct: 1,
+                explanation: "Scarcity is the fundamental economic problem where resources are limited but human wants are unlimited, forcing societies to make choices."
+            },
+            {
+                question: "What is opportunity cost?",
+                options: ["The price paid for a good", "The value of the best alternative foregone", "The total cost of production", "The market price of resources"],
+                correct: 1,
+                explanation: "Opportunity cost is the value of the next best alternative that must be given up when making a choice with scarce resources."
+            },
+            {
+                question: "Which represents the most efficient resource allocation?",
+                options: ["Maximum production of one good", "Equal allocation to all sectors", "Allocation that maximizes overall welfare", "Minimum resource usage"],
+                correct: 2,
+                explanation: "Efficient allocation maximizes overall societal welfare by distributing resources where they provide the greatest benefit."
+            },
+            {
+                question: "What happens when population grows faster than resource production?",
+                options: ["Living standards improve", "Resource scarcity decreases", "Per capita resources decline", "Innovation automatically increases"],
+                correct: 2,
+                explanation: "When population growth outpaces resource production, the amount of resources per person decreases, potentially lowering living standards."
+            },
+            {
+                question: "In a drought crisis, which resource allocation strategy is most appropriate?",
+                options: ["Increase water allocation dramatically", "Maintain normal allocation", "Reduce water usage and increase food imports", "Focus only on healthcare"],
+                correct: 2,
+                explanation: "During drought, reducing water consumption and importing food can help manage the crisis while maintaining essential services."
+            },
+            {
+                question: "What is the Production Possibility Frontier (PPF)?",
+                options: ["Maximum profit curve", "Resource demand schedule", "Maximum output combinations possible", "Price determination model"],
+                correct: 2,
+                explanation: "The PPF shows the maximum combinations of goods/services an economy can produce with limited resources and technology."
+            },
+            {
+                question: "Which factor does NOT typically cause resource scarcity?",
+                options: ["Natural disasters", "Population growth", "Perfect information", "Limited natural resources"],
+                correct: 2,
+                explanation: "Perfect information actually helps reduce scarcity by improving resource allocation efficiency, while the others increase scarcity."
+            },
+            {
+                question: "What is the tragedy of the commons?",
+                options: ["Government resource control", "Individual rational behavior leading to collective irrationality", "Equal resource distribution", "Market failure in pricing"],
+                correct: 1,
+                explanation: "The tragedy of the commons occurs when individuals acting rationally in their self-interest deplete shared resources."
+            },
+            {
+                question: "How does technological innovation affect resource scarcity?",
+                options: ["Always increases scarcity", "Has no effect on scarcity", "Can reduce scarcity by improving efficiency", "Only affects renewable resources"],
+                correct: 2,
+                explanation: "Innovation can reduce effective scarcity by making resource use more efficient or finding substitutes for scarce resources."
+            },
+            {
+                question: "In resource allocation, what does 'sustainability' mean?",
+                options: ["Using all resources immediately", "Meeting present needs without compromising future generations", "Maximizing short-term profits", "Equal distribution regardless of need"],
+                correct: 1,
+                explanation: "Sustainability means using resources to meet current needs while preserving the ability of future generations to meet their needs."
+            },
+            {
+                question: "What is marginal analysis in resource allocation?",
+                options: ["Total resource calculation", "Comparing additional benefits to additional costs", "Average resource usage", "Historical resource trends"],
+                correct: 1,
+                explanation: "Marginal analysis compares the additional benefits of using one more unit of a resource to its additional cost."
+            },
+            {
+                question: "Which crisis would most likely require increased healthcare allocation?",
+                options: ["Economic recession", "Drought", "Pandemic", "Natural resource depletion"],
+                correct: 2,
+                explanation: "A pandemic significantly increases healthcare demand, requiring reallocation of resources to medical services and infrastructure."
+            },
+            {
+                question: "What is allocative efficiency?",
+                options: ["Minimum resource waste", "Resources allocated to highest valued uses", "Equal resource distribution", "Maximum resource extraction"],
+                correct: 1,
+                explanation: "Allocative efficiency occurs when resources are distributed to their highest valued uses, maximizing societal benefit."
+            },
+            {
+                question: "How do price signals help with resource allocation?",
+                options: ["They eliminate scarcity", "They provide information about relative scarcity", "They guarantee equal distribution", "They prevent market failures"],
+                correct: 1,
+                explanation: "Price signals indicate relative scarcity - higher prices suggest greater scarcity, guiding efficient resource allocation."
+            },
+            {
+                question: "What is the difference between renewable and non-renewable resources?",
+                options: ["Cost difference only", "Renewable can be replenished naturally, non-renewable cannot", "Government classification", "Market availability"],
+                correct: 1,
+                explanation: "Renewable resources can be naturally replenished over time (like forests), while non-renewable resources are finite (like oil)."
+            },
+            {
+                question: "In a recession, which allocation strategy is typically most effective?",
+                options: ["Increase all spending equally", "Focus on essential services and stimulus", "Reduce all allocations proportionally", "Ignore economic conditions"],
+                correct: 1,
+                explanation: "During recession, focusing on essential services while providing economic stimulus helps maintain stability and recovery."
+            },
+            {
+                question: "What role does government play in resource allocation?",
+                options: ["Only controls private resources", "Corrects market failures and provides public goods", "Eliminates all scarcity", "Sets all prices"],
+                correct: 1,
+                explanation: "Government addresses market failures, provides public goods, and helps ensure efficient allocation where markets alone might fail."
+            },
+            {
+                question: "How does international trade affect resource scarcity?",
+                options: ["Always increases scarcity", "Can reduce effective scarcity through specialization", "Has no impact", "Only affects rich countries"],
+                correct: 1,
+                explanation: "Trade allows countries to specialize and exchange, reducing effective scarcity by accessing resources they cannot produce efficiently."
+            },
+            {
+                question: "What is the role of innovation in addressing scarcity?",
+                options: ["Creates more scarcity", "Only helps wealthy nations", "Can create substitutes and improve efficiency", "Has no economic impact"],
+                correct: 2,
+                explanation: "Innovation helps address scarcity by creating substitutes for scarce resources and improving production efficiency."
+            },
+            {
+                question: "How should resources be allocated during a natural disaster?",
+                options: ["Maintain normal allocation", "Prioritize immediate survival needs", "Focus only on economic recovery", "Distribute equally regardless of need"],
+                correct: 1,
+                explanation: "During disasters, immediate survival needs (water, food, shelter, medical care) should take priority in resource allocation."
+            }
+        ];
+
+        // Initialize game
+        function initGame() {
+            updateAllocation();
+            drawConnections();
+            updateQuizProgress();
+        }
+
+        // Update resource allocation
+        function updateAllocation() {
+            const energy = parseInt(document.getElementById('energySlider').value);
+            const food = parseInt(document.getElementById('foodSlider').value);
+            const water = parseInt(document.getElementById('waterSlider').value);
+            const housing = parseInt(document.getElementById('housingSlider').value);
+            const healthcare = parseInt(document.getElementById('healthcareSlider').value);
+
+            const total = energy + food + water + housing + healthcare;
+            
+            // Enforce 100% constraint - if total exceeds 100%, proportionally reduce all
+            let adjustedEnergy = energy;
+            let adjustedFood = food;
+            let adjustedWater = water;
+            let adjustedHousing = housing;
+            let adjustedHealthcare = healthcare;
+            
+            if (total > 100) {
+                const scaleFactor = 100 / total;
+                adjustedEnergy = Math.round(energy * scaleFactor);
+                adjustedFood = Math.round(food * scaleFactor);
+                adjustedWater = Math.round(water * scaleFactor);
+                adjustedHousing = Math.round(housing * scaleFactor);
+                adjustedHealthcare = Math.round(healthcare * scaleFactor);
+                
+                // Update sliders to reflect adjusted values
+                document.getElementById('energySlider').value = adjustedEnergy;
+                document.getElementById('foodSlider').value = adjustedFood;
+                document.getElementById('waterSlider').value = adjustedWater;
+                document.getElementById('housingSlider').value = adjustedHousing;
+                document.getElementById('healthcareSlider').value = adjustedHealthcare;
+            }
+
+            // Update display values
+            document.getElementById('energyValue').textContent = adjustedEnergy + '%';
+            document.getElementById('foodValue').textContent = adjustedFood + '%';
+            document.getElementById('waterValue').textContent = adjustedWater + '%';
+            document.getElementById('housingValue').textContent = adjustedHousing + '%';
+            document.getElementById('healthcareValue').textContent = adjustedHealthcare + '%';
+
+            // Update nodes
+            document.getElementById('energyNode').textContent = adjustedEnergy + '%';
+            document.getElementById('foodNode').textContent = adjustedFood + '%';
+            document.getElementById('waterNode').textContent = adjustedWater + '%';
+            document.getElementById('housingNode').textContent = adjustedHousing + '%';
+            document.getElementById('healthcareNode').textContent = adjustedHealthcare + '%';
+
+            // Calculate metrics
+            calculateMetrics(adjustedEnergy, adjustedFood, adjustedWater, adjustedHousing, adjustedHealthcare);
+        }
+
+        // Calculate population metrics
+        function calculateMetrics(energy, food, water, housing, healthcare) {
+            const crisis = crises[currentCrisis];
+            const total = energy + food + water + housing + healthcare;
+            
+            // Apply crisis multipliers to effective allocation
+            const effectiveEnergy = energy * crisis.multipliers.energy;
+            const effectiveFood = food * crisis.multipliers.food;
+            const effectiveWater = water * crisis.multipliers.water;
+            const effectiveHousing = housing * crisis.multipliers.housing;
+            const effectiveHealthcare = healthcare * crisis.multipliers.healthcare;
+
+            // Calculate base satisfaction based on meeting minimum needs with harsh penalties for deficits
+            let satisfaction = 0;
+            
+            // Energy requirement: 18% minimum
+            const energyNeed = 18;
+            if (effectiveEnergy >= energyNeed) {
+                satisfaction += 20;
+            } else {
+                satisfaction += 20 * (effectiveEnergy / energyNeed);
+            }
+            
+            // Food requirement: 22% minimum  
+            const foodNeed = 22;
+            if (effectiveFood >= foodNeed) {
+                satisfaction += 25;
+            } else {
+                satisfaction += 25 * (effectiveFood / foodNeed) - (foodNeed - effectiveFood) * 2; // Harsh penalty for food shortage
+            }
+            
+            // Water requirement: 15% minimum
+            const waterNeed = 15;
+            if (effectiveWater >= waterNeed) {
+                satisfaction += 20;
+            } else {
+                satisfaction += 20 * (effectiveWater / waterNeed) - (waterNeed - effectiveWater) * 3; // Very harsh penalty for water shortage
+            }
+            
+            // Housing requirement: 12% minimum
+            const housingNeed = 12;
+            if (effectiveHousing >= housingNeed) {
+                satisfaction += 15;
+            } else {
+                satisfaction += 15 * (effectiveHousing / housingNeed);
+            }
+            
+            // Healthcare requirement: 15% minimum (more critical during crisis)
+            const healthcareNeed = currentCrisis === 'pandemic' ? 25 : 15;
+            if (effectiveHealthcare >= healthcareNeed) {
+                satisfaction += 20;
+            } else {
+                satisfaction += 20 * (effectiveHealthcare / healthcareNeed) - (healthcareNeed - effectiveHealthcare) * 1.5;
+            }
+
+            // Innovation bonus (smaller impact)
+            satisfaction += (innovationLevel / 100) * 5;
+            
+            // Crisis-specific penalties
+            if (currentCrisis === 'recession') {
+                satisfaction -= 15; // Base penalty for economic hardship
+            } else if (currentCrisis === 'pandemic') {
+                satisfaction -= 10; // Base penalty for health crisis
+            } else if (currentCrisis === 'drought') {
+                satisfaction -= 12; // Base penalty for environmental crisis
+            }
+            
+            // Over-allocation penalty (wasted resources)
+            if (total > 100) {
+                satisfaction -= (total - 100) * 2;
+            }
+            
+            // Under-allocation penalty (unused resources)
+            if (total < 95) {
+                satisfaction -= (95 - total) * 1;
+            }
+
+            // Clamp satisfaction between 0 and 100
+            satisfaction = Math.max(0, Math.min(100, satisfaction));
+
+            // Calculate other metrics based on more realistic satisfaction
+            const happiness = Math.round(satisfaction);
+            
+            // Survival rate based on critical needs (food, water, healthcare)
+            const criticalNeeds = (effectiveFood >= 15 ? 1 : effectiveFood/15) * 
+                                 (effectiveWater >= 10 ? 1 : effectiveWater/10) * 
+                                 (effectiveHealthcare >= 10 ? 1 : effectiveHealthcare/10);
+            const survival = Math.round(Math.max(75, 85 + criticalNeeds * 15));
+            
+            // Growth rate affected by satisfaction and crisis
+            let growthRate = crisis.populationGrowth;
+            if (satisfaction > 75) {
+                growthRate += (satisfaction - 75) / 25; // Bonus for high satisfaction
+            } else if (satisfaction < 50) {
+                growthRate -= (50 - satisfaction) / 10; // Penalty for low satisfaction
+            }
+            
+            // Efficiency based on optimal allocation (penalize over/under allocation)
+            const efficiency = Math.round(Math.max(20, 100 - Math.abs(total - 100) * 2 - (satisfaction < 50 ? (50 - satisfaction) : 0)));
+
+            // Update displays
+            document.getElementById('happinessScore').textContent = happiness + '%';
+            document.getElementById('survivalRate').textContent = survival + '%';
+            document.getElementById('growthRate').textContent = (growthRate >= 0 ? '+' : '') + growthRate.toFixed(1) + '%';
+            document.getElementById('efficiency').textContent = efficiency + '%';
+
+            // Update satisfaction level
+            updateSatisfactionLevel(happiness);
+            
+            // Update resource details
+            updateResourceDetails(effectiveEnergy, effectiveFood, effectiveWater, effectiveHousing, effectiveHealthcare);
+            
+            // Update sustainability
+            updateSustainability(total, growthRate, satisfaction);
+        }
+
+        // Update satisfaction level indicator
+        function updateSatisfactionLevel(happiness) {
+            const indicator = document.getElementById('satisfactionLevel');
+            
+            if (happiness >= 85) {
+                indicator.className = 'satisfaction-indicator excellent';
+                indicator.textContent = 'Excellent Satisfaction';
+            } else if (happiness >= 70) {
+                indicator.className = 'satisfaction-indicator good';
+                indicator.textContent = 'Good Satisfaction';
+            } else if (happiness >= 50) {
+                indicator.className = 'satisfaction-indicator poor';
+                indicator.textContent = 'Poor Satisfaction';
+            } else {
+                indicator.className = 'satisfaction-indicator critical';
+                indicator.textContent = 'Critical Situation';
+            }
+        }
+
+        // Update resource details
+        function updateResourceDetails(energy, food, water, housing, healthcare) {
+            const details = {
+                energy: energy >= 20 ? 'Available' : energy >= 15 ? 'Limited' : 'Critical',
+                food: food >= 25 ? 'Surplus' : food >= 20 ? 'Adequate' : food >= 15 ? 'Limited' : 'Critical',
+                water: water >= 20 ? 'Abundant' : water >= 15 ? 'Adequate' : water >= 10 ? 'Limited' : 'Critical',
+                housing: housing >= 15 ? 'Available' : housing >= 12 ? 'Limited' : housing >= 8 ? 'Shortage' : 'Crisis',
+                healthcare: healthcare >= 20 ? 'Excellent' : healthcare >= 15 ? 'Good' : healthcare >= 10 ? 'Basic' : 'Inadequate'
+            };
+
+            document.getElementById('energyDetail').textContent = details.energy;
+            document.getElementById('foodDetail').textContent = details.food;
+            document.getElementById('waterDetail').textContent = details.water;
+            document.getElementById('housingDetail').textContent = details.housing;
+            document.getElementById('healthcareDetail').textContent = details.healthcare;
+            
+            // Update innovation detail
+            const innovationText = innovationLevel >= 75 ? 'Advanced' : innovationLevel >= 50 ? 'Moderate' : innovationLevel >= 25 ? 'Basic' : 'Limited';
+            document.getElementById('innovationDetail').textContent = innovationText;
+        }
+
+        // Update sustainability meter
+        function updateSustainability(total, growthRate, satisfaction) {
+            let sustainabilityScore = 50; // Base score
+            
+            // Penalty for over-allocation (resource waste)
+            if (total > 100) {
+                sustainabilityScore -= (total - 100) * 3;
+            }
+            
+            // Penalty for under-allocation (unused potential)
+            if (total < 95) {
+                sustainabilityScore -= (95 - total) * 1.5;
+            }
+            
+            // Adjust for growth rate (negative growth is unsustainable)
+            sustainabilityScore += growthRate * 8;
+            
+            // Satisfaction impact on sustainability
+            sustainabilityScore += (satisfaction - 50) / 2;
+            
+            // Innovation bonus
+            sustainabilityScore += innovationLevel / 4;
+            
+            // Crisis-specific sustainability challenges
+            if (currentCrisis === 'drought') {
+                sustainabilityScore -= 15; // Environmental crises hurt sustainability
+            } else if (currentCrisis === 'recession') {
+                sustainabilityScore -= 10; // Economic crises reduce long-term planning
+            }
+            
+            // Clamp between 0 and 100
+            sustainabilityScore = Math.max(0, Math.min(100, sustainabilityScore));
+            
+            document.getElementById('sustainabilityIndicator').style.left = sustainabilityScore + '%';
+            
+            let sustainabilityText;
+            if (sustainabilityScore >= 70) {
+                sustainabilityText = 'Sustainable - Resources balanced for long-term';
+            } else if (sustainabilityScore >= 50) {
+                sustainabilityText = 'Moderate - Some sustainability concerns';
+            } else if (sustainabilityScore >= 30) {
+                sustainabilityText = 'Unsustainable - Resource depletion risk';
+            } else {
+                sustainabilityText = 'Critical - Immediate sustainability crisis';
+            }
+            
+            document.getElementById('sustainabilityText').textContent = sustainabilityText;
+        }
+
+        // Select crisis scenario
+        function selectCrisis(crisis, element) {
+            currentCrisis = crisis;
+            
+            // Update button states
+            document.querySelectorAll('.crisis-btn').forEach(btn => btn.classList.remove('active'));
+            element.classList.add('active');
+            
+            // Update crisis display
+            const crisisData = crises[crisis];
+            const statusElement = document.getElementById('crisisStatus');
+            statusElement.textContent = crisisData.name;
+            statusElement.style.background = crisisData.color;
+            
+            document.getElementById('crisisDescription').textContent = crisisData.description;
+            
+            // Update population growth effect
+            const population = 1000000;
+            const newPopulation = Math.round(population * (1 + crisisData.populationGrowth / 100));
+            document.getElementById('populationCount').textContent = newPopulation.toLocaleString();
+            
+            // Recalculate metrics
+            updateAllocation();
+        }
+
+        // Focus on specific resource
+        function focusResource(resource) {
+            // Add visual feedback
+            document.querySelectorAll('.resource-node').forEach(node => {
+                node.style.transform = 'scale(1)';
+                node.style.zIndex = '1';
+            });
+            
+            const focusedNode = document.querySelector(`.resource-node.${resource}`);
+            focusedNode.style.transform = 'scale(1.2)';
+            focusedNode.style.zIndex = '10';
+            
+            // Auto-adjust slider to optimal value for current crisis
+            const crisis = crises[currentCrisis];
+            let optimalValue;
+            
+            switch(resource) {
+                case 'energy':
+                    optimalValue = Math.round(20 / crisis.multipliers.energy);
+                    document.getElementById('energySlider').value = optimalValue;
+                    break;
+                case 'food':
+                    optimalValue = Math.round(25 / crisis.multipliers.food);
+                    document.getElementById('foodSlider').value = optimalValue;
+                    break;
+                case 'water':
+                    optimalValue = Math.round(20 / crisis.multipliers.water);
+                    document.getElementById('waterSlider').value = optimalValue;
+                    break;
+                case 'housing':
+                    optimalValue = Math.round(15 / crisis.multipliers.housing);
+                    document.getElementById('housingSlider').value = optimalValue;
+                    break;
+                case 'healthcare':
+                    optimalValue = Math.round(20 / crisis.multipliers.healthcare);
+                    document.getElementById('healthcareSlider').value = optimalValue;
+                    break;
+            }
+            
+            updateAllocation();
+        }
+
+        // Innovation investment
+        function innovate() {
+            if (innovationLevel < 95) {
+                innovationLevel += 5;
+                document.getElementById('innovationBar').style.width = innovationLevel + '%';
+                
+                let levelText;
+                if (innovationLevel >= 75) {
+                    levelText = 'Advanced Technology - High Efficiency';
+                } else if (innovationLevel >= 50) {
+                    levelText = 'Moderate Technology - Good Efficiency';
+                } else {
+                    levelText = 'Basic Technology - Limited Efficiency';
+                }
+                
+                document.getElementById('innovationText').textContent = `Technology Level: ${innovationLevel}% - ${levelText}`;
+                
+                updateAllocation();
+            }
+        }
+
+        // Reset allocation
+        function resetAllocation() {
+            document.getElementById('energySlider').value = 20;
+            document.getElementById('foodSlider').value = 25;
+            document.getElementById('waterSlider').value = 20;
+            document.getElementById('housingSlider').value = 15;
+            document.getElementById('healthcareSlider').value = 20;
+            
+            updateAllocation();
+        }
+
+        // Draw connections between resource nodes
+        function drawConnections() {
+            // This would create visual connections in a more advanced implementation
+            // For now, we'll rely on the visual layout
+        }
+
+        // Quiz functionality
+        function toggleQuiz() {
+            const quizSection = document.getElementById('quizSection');
+            quizActive = !quizActive;
+            
+            if (quizActive) {
+                quizSection.style.display = 'block';
+                currentQuestionIndex = 0;
+                showQuestion();
+            } else {
+                quizSection.style.display = 'none';
+            }
+        }
+
+        // Show current question
+        function showQuestion() {
+            if (currentQuestionIndex >= quizQuestions.length) {
+                // Quiz completed
+                document.getElementById('quizQuestion').textContent = 'Quiz completed! You have mastered resource allocation principles.';
+                document.getElementById('quizOptions').innerHTML = '';
+                document.getElementById('quizFeedback').style.display = 'none';
+                document.getElementById('nextBtn').style.display = 'none';
+                return;
+            }
+
+            const question = quizQuestions[currentQuestionIndex];
+            document.getElementById('quizQuestion').textContent = question.question;
+            
+            const optionsContainer = document.getElementById('quizOptions');
+            optionsContainer.innerHTML = '';
+            
+            question.options.forEach((option, index) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'quiz-option';
+                optionDiv.textContent = option;
+                optionDiv.onclick = () => selectQuizOption(optionDiv, index === question.correct);
+                optionsContainer.appendChild(optionDiv);
+            });
+            
+            // Reset feedback and next button
+            document.getElementById('quizFeedback').style.display = 'none';
+            document.getElementById('nextBtn').style.display = 'none';
+            
+            updateQuizProgress();
+        }
+
+        // Select quiz option
+        function selectQuizOption(element, isCorrect) {
+            const question = quizQuestions[currentQuestionIndex];
+            const options = document.querySelectorAll('.quiz-option');
+            
+            // Disable all options
+            options.forEach((option, index) => {
+                option.onclick = null;
+                if (index === question.correct) {
+                    option.classList.add('correct');
+                } else if (option === element && !isCorrect) {
+                    option.classList.add('incorrect');
+                }
+            });
+            
+            // Show feedback
+            const feedback = document.getElementById('quizFeedback');
+            feedback.textContent = question.explanation;
+            feedback.style.display = 'block';
+            
+            // Show next button if not last question
+            if (currentQuestionIndex < quizQuestions.length - 1) {
+                document.getElementById('nextBtn').style.display = 'block';
+            }
+        }
+
+        // Next question
+        function nextQuestion() {
+            currentQuestionIndex++;
+            showQuestion();
+        }
+
+        // Update quiz progress
+        function updateQuizProgress() {
+            const progress = ((currentQuestionIndex + 1) / quizQuestions.length) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+
+        // Download theory guide
+        function downloadTheoryGuide() {
+            const theoryContent = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resource Allocation & Scarcity - Theory Guide</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background: #f8f9fa;
+            color: #1a1a1a;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #1a1a1a;
+            border-bottom: 3px solid #1a4fa0;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+        h2 {
+            color: #495057;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        h3 {
+            color: #6c757d;
+            margin-top: 25px;
+            margin-bottom: 12px;
+        }
+        .concept-box {
+            background: #e3f2fd;
+            border-left: 4px solid #1a4fa0;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 4px 4px 0;
+        }
+        .formula-box {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+            font-family: monospace;
+            text-align: center;
+        }
+        .example-box {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+        ul, ol {
+            margin-left: 20px;
+        }
+        li {
+            margin-bottom: 5px;
+        }
+        .highlight {
+            background: #fff3cd;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Resource Allocation & Scarcity Challenge</h1>
+        <p><em>Comprehensive Theory Guide</em></p>
+
+        <h2>1. Understanding Economic Scarcity</h2>
+
+        <h3>Definition of Scarcity</h3>
+        <div class="concept-box">
+            <strong>Scarcity</strong> is the fundamental economic problem where human wants and needs are unlimited, but the resources available to satisfy them are limited. This forces individuals, businesses, and societies to make choices about how to allocate resources.
+        </div>
+
+        <p>Scarcity exists because:</p>
+        <ul>
+            <li><strong>Limited Resources:</strong> Natural resources, labor, capital, and time are finite</li>
+            <li><strong>Unlimited Wants:</strong> Human desires for goods and services are essentially infinite</li>
+            <li><strong>Alternative Uses:</strong> Most resources can be used for multiple purposes</li>
+            <li><strong>Opportunity Cost:</strong> Using resources for one purpose means giving up other alternatives</li>
+        </ul>
+
+        <h3>Types of Resources</h3>
+        <ul>
+            <li><strong>Natural Resources:</strong> Land, water, minerals, forests, energy sources</li>
+            <li><strong>Human Resources:</strong> Labor, skills, knowledge, entrepreneurship</li>
+            <li><strong>Capital Resources:</strong> Machinery, buildings, infrastructure, technology</li>
+            <li><strong>Financial Resources:</strong> Money, credit, investment capital</li>
+        </ul>
+
+        <h2>2. Opportunity Cost and Trade-offs</h2>
+
+        <h3>Opportunity Cost</h3>
+        <div class="concept-box">
+            <strong>Opportunity Cost</strong> is the value of the next best alternative that must be given up when making a choice. It represents the true cost of any decision in a world of scarcity.
+        </div>
+
+        <div class="formula-box">
+            Opportunity Cost = Value of Next Best Alternative Foregone
+        </div>
+
+        <div class="example-box">
+            <strong>Example:</strong> If a government allocates 25% of its budget to healthcare instead of education, the opportunity cost is the value of educational improvements that could have been achieved with those resources.
+        </div>
+
+        <h3>Production Possibility Frontier (PPF)</h3>
+        <p>The PPF illustrates the maximum combinations of goods or services that can be produced with available resources and technology. It demonstrates:</p>
+        <ul>
+            <li><strong>Scarcity:</strong> Points outside the curve are unattainable</li>
+            <li><strong>Efficiency:</strong> Points on the curve represent efficient resource use</li>
+            <li><strong>Opportunity Cost:</strong> Movement along the curve shows trade-offs</li>
+            <li><strong>Economic Growth:</strong> Shifts outward represent increased productive capacity</li>
+        </ul>
+
+        <h2>3. Resource Allocation Mechanisms</h2>
+
+        <h3>Market System</h3>
+        <p>In market economies, resources are allocated through:</p>
+        <ul>
+            <li><strong>Price Signals:</strong> Prices indicate relative scarcity and guide allocation</li>
+            <li><strong>Supply and Demand:</strong> Market forces determine resource distribution</li>
+            <li><strong>Profit Motive:</strong> Businesses allocate resources to maximize returns</li>
+            <li><strong>Consumer Choice:</strong> Individual preferences influence resource allocation</li>
+        </ul>
+
+        <h3>Government Allocation</h3>
+        <p>Governments allocate resources through:</p>
+        <ul>
+            <li><strong>Public Goods:</strong> Providing goods that markets under-supply</li>
+            <li><strong>Regulation:</strong> Correcting market failures and externalities</li>
+            <li><strong>Redistribution:</strong> Addressing inequality through taxation and transfers</li>
+            <li><strong>Strategic Planning:</strong> Long-term resource allocation for national priorities</li>
+        </ul>
+
+        <h2>4. Efficiency in Resource Allocation</h2>
+
+        <h3>Types of Efficiency</h3>
+
+        <h4>Allocative Efficiency</h4>
+        <div class="concept-box">
+            Resources are allocated to their highest valued uses, where marginal benefit equals marginal cost for each use.
+        </div>
+
+        <h4>Productive Efficiency</h4>
+        <div class="concept-box">
+            Resources are used in the least costly way to produce goods and services, minimizing waste and maximizing output per input.
+        </div>
+
+        <h4>Dynamic Efficiency</h4>
+        <div class="concept-box">
+            Resources are allocated in ways that promote innovation, technological progress, and long-term economic growth.
+        </div>
+
+        <h3>Marginal Analysis</h3>
+        <p>Optimal resource allocation occurs where:</p>
+        <div class="formula-box">
+            Marginal Benefit = Marginal Cost
+        </div>
+
+        <p>This principle guides decisions about:</p>
+        <ul>
+            <li>How much to produce of each good</li>
+            <li>Which production methods to use</li>
+            <li>How to distribute resources among different uses</li>
+            <li>When to invest in new technologies or infrastructure</li>
+        </ul>
+
+        <h2>5. Crisis Management and Resource Allocation</h2>
+
+        <h3>Crisis Types and Resource Impacts</h3>
+
+        <h4>Natural Disasters</h4>
+        <ul>
+            <li><strong>Immediate Impact:</strong> Destruction of physical resources and infrastructure</li>
+            <li><strong>Allocation Priority:</strong> Emergency response, rescue operations, basic needs</li>
+            <li><strong>Recovery Phase:</strong> Rebuilding infrastructure, restoring production capacity</li>
+        </ul>
+
+        <h4>Economic Recessions</h4>
+        <ul>
+            <li><strong>Resource Underutilization:</strong> Unemployment, idle capacity</li>
+            <li><strong>Allocation Strategy:</strong> Stimulus spending, social safety nets</li>
+            <li><strong>Long-term Focus:</strong> Structural reforms, productivity improvements</li>
+        </ul>
+
+        <h4>Pandemics</h4>
+        <ul>
+            <li><strong>Health Priority:</strong> Massive reallocation to healthcare systems</li>
+            <li><strong>Economic Support:</strong> Business assistance, unemployment benefits</li>
+            <li><strong>Supply Chain Issues:</strong> Alternative sourcing, strategic reserves</li>
+        </ul>
+
+        <h3>Crisis Allocation Principles</h3>
+        <ol>
+            <li><strong>Prioritize Essential Needs:</strong> Food, water, shelter, healthcare</li>
+            <li><strong>Maintain Critical Infrastructure:</strong> Energy, communications, transportation</li>
+            <li><strong>Ensure Social Stability:</strong> Law enforcement, social services</li>
+            <li><strong>Plan for Recovery:</strong> Economic stimulus, rebuilding capacity</li>
+            <li><strong>Build Resilience:</strong> Prepare for future crises</li>
+        </ol>
+
+        <h2>6. Sustainability and Long-term Allocation</h2>
+
+        <h3>Sustainable Development</h3>
+        <div class="concept-box">
+            <strong>Sustainable Resource Allocation</strong> meets present needs without compromising the ability of future generations to meet their own needs.
+        </div>
+
+        <h3>Key Sustainability Principles</h3>
+        <ul>
+            <li><strong>Renewable Resource Management:</strong> Harvest rates ≤ regeneration rates</li>
+            <li><strong>Non-renewable Resource Conservation:</strong> Efficient use, recycling, substitution</li>
+            <li><strong>Environmental Protection:</strong> Pollution control, ecosystem preservation</li>
+            <li><strong>Intergenerational Equity:</strong> Fair distribution across time periods</li>
+        </ul>
+
+        <h3>Tragedy of the Commons</h3>
+        <p>When individuals acting rationally in their self-interest collectively deplete shared resources. Solutions include:</p>
+        <ul>
+            <li><strong>Property Rights:</strong> Clear ownership and responsibility</li>
+            <li><strong>Government Regulation:</strong> Rules and enforcement mechanisms</li>
+            <li><strong>Community Management:</strong> Collective action and social norms</li>
+            <li><strong>Market Solutions:</strong> Cap-and-trade systems, Pigouvian taxes</li>
+        </ul>
+
+        <h2>7. Technology and Innovation in Resource Allocation</h2>
+
+        <h3>Role of Technology</h3>
+        <p>Technology affects resource allocation by:</p>
+        <ul>
+            <li><strong>Increasing Productivity:</strong> More output from same inputs</li>
+            <li><strong>Creating Substitutes:</strong> Alternative materials and processes</li>
+            <li><strong>Improving Efficiency:</strong> Reducing waste and resource requirements</li>
+            <li><strong>Enabling New Possibilities:</strong> Previously impossible combinations</li>
+        </ul>
+
+        <h3>Innovation Investment</h3>
+        <p>Investing in research and development:</p>
+        <ul>
+            <li>Requires current resource sacrifice</li>
+            <li>Promises future productivity gains</li>
+            <li>Involves uncertainty and risk</li>
+            <li>Creates positive spillover effects</li>
+        </ul>
+
+        <h2>8. Global Resource Allocation</h2>
+
+        <h3>International Trade</h3>
+        <p>Trade allows countries to:</p>
+        <ul>
+            <li><strong>Specialize:</strong> Focus on comparative advantages</li>
+            <li><strong>Access Resources:</strong> Obtain scarce domestic resources</li>
+            <li><strong>Achieve Efficiency:</strong> Global optimization of resource use</li>
+            <li><strong>Share Risks:</strong> Diversify resource dependencies</li>
+        </ul>
+
+        <h3>Global Challenges</h3>
+        <ul>
+            <li><strong>Climate Change:</strong> Requires coordinated resource reallocation</li>
+            <li><strong>Inequality:</strong> Uneven global resource distribution</li>
+            <li><strong>Population Growth:</strong> Increasing pressure on finite resources</li>
+            <li><strong>Technological Gaps:</strong> Unequal access to efficiency improvements</li>
+        </ul>
+
+        <h2>9. Simulation Learning Objectives</h2>
+
+        <h3>Understanding Relationships</h3>
+        <p>The simulation demonstrates how:</p>
+        <ul>
+            <li>Resource allocation affects population welfare</li>
+            <li>Crises change optimal allocation patterns</li>
+            <li>Innovation improves resource efficiency</li>
+            <li>Trade-offs are inherent in all decisions</li>
+        </ul>
+
+        <h3>Strategic Thinking</h3>
+        <p>Players learn to:</p>
+        <ul>
+            <li>Analyze complex resource interdependencies</li>
+            <li>Adapt allocation strategies to changing conditions</li>
+            <li>Balance short-term needs with long-term sustainability</li>
+            <li>Consider multiple stakeholder perspectives</li>
+        </ul>
+
+        <h2>10. Real-World Applications</h2>
+
+        <h3>Business Applications</h3>
+        <ul>
+            <li><strong>Budget Allocation:</strong> Distributing limited funds across departments</li>
+            <li><strong>Supply Chain Management:</strong> Optimizing resource flows</li>
+            <li><strong>Human Resources:</strong> Allocating talent to projects</li>
+            <li><strong>Capital Investment:</strong> Choosing among competing projects</li>
+        </ul>
+
+        <h3>Policy Applications</h3>
+        <ul>
+            <li><strong>Government Budgeting:</strong> Allocating taxpayer resources</li>
+            <li><strong>Healthcare Systems:</strong> Distributing medical resources</li>
+            <li><strong>Education Policy:</strong> Funding schools and programs</li>
+            <li><strong>Environmental Policy:</strong> Managing natural resources</li>
+            <li><strong>Emergency Management:</strong> Crisis response coordination</li>
+        </ul>
+
+        <h3>Personal Applications</h3>
+        <ul>
+            <li><strong>Time Management:</strong> Allocating limited time among activities</li>
+            <li><strong>Financial Planning:</strong> Budgeting income across needs and wants</li>
+            <li><strong>Career Decisions:</strong> Investing in education and skills</li>
+            <li><strong>Lifestyle Choices:</strong> Balancing work, family, and leisure</li>
+        </ul>
+
+        <hr>
+
+        <h2>Key Takeaways</h2>
+
+        <h3>For Students</h3>
+        <ol>
+            <li><strong>Scarcity is Universal:</strong> All societies face resource limitations</li>
+            <li><strong>Choices Have Costs:</strong> Every decision involves opportunity costs</li>
+            <li><strong>Efficiency Matters:</strong> Optimal allocation maximizes social welfare</li>
+            <li><strong>Context Shapes Strategy:</strong> Crisis conditions require different approaches</li>
+            <li><strong>Innovation Helps:</strong> Technology can reduce effective scarcity</li>
+            <li><strong>Sustainability is Critical:</strong> Short-term gains shouldn't compromise future</li>
+        </ol>
+
+        <h3>For Policymakers</h3>
+        <ol>
+            <li><strong>Understand Trade-offs:</strong> Every policy choice has opportunity costs</li>
+            <li><strong>Use Data and Analysis:</strong> Evidence-based allocation decisions</li>
+            <li><strong>Consider Multiple Stakeholders:</strong> Different groups have different needs</li>
+            <li><strong>Plan for Uncertainty:</strong> Build flexibility into allocation systems</li>
+            <li><strong>Invest in the Future:</strong> Balance current needs with long-term growth</li>
+        </ol>
+
+        <h3>For Business Leaders</h3>
+        <ol>
+            <li><strong>Strategic Resource Planning:</strong> Align allocation with business objectives</li>
+            <li><strong>Continuous Optimization:</strong> Regularly review and adjust allocation</li>
+            <li><strong>Risk Management:</strong> Prepare for resource constraints and crises</li>
+            <li><strong>Innovation Investment:</strong> Allocate resources to R&D and improvement</li>
+            <li><strong>Stakeholder Value:</strong> Consider all stakeholders in allocation decisions</li>
+        </ol>
+
+        <hr>
+
+        <h2>Conclusion</h2>
+
+        <p>Resource allocation under scarcity is one of the most fundamental challenges in economics and human society. The principles learned through this simulation apply across all levels of decision-making, from personal choices to global policy.</p>
+
+        <p>Understanding scarcity, opportunity cost, and efficient allocation helps us make better decisions in our personal lives, organizations, and society. As we face global challenges like climate change, population growth, and technological disruption, these concepts become even more critical for creating a sustainable and prosperous future.</p>
+
+        <p>The interactive simulation provides hands-on experience with these concepts, allowing you to experiment with different allocation strategies and see their immediate impacts on population welfare, resource efficiency, and long-term sustainability.</p>
+
+        <div class="concept-box">
+            <strong>Remember:</strong> In a world of scarcity, the goal is not to eliminate all wants, but to make the best possible choices given our constraints. Good resource allocation decisions consider both immediate needs and long-term consequences, balancing efficiency with equity and sustainability.
+        </div>
+
+    </div>
+</body>
+</html>
+            `;
+
+            const blob = new Blob([theoryContent], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'resource_allocation_scarcity_theory_guide.html';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Initialize the game when page loads
+        window.addEventListener('load', initGame);
+    </script>
+</body>
+</html>

@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfect Competition Theory Guide</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            color: #333;
+            background: white;
+        }
+        
+        h1 {
+            color: #1a1a1a;
+            border-bottom: 3px solid #1a4fa0;
+            padding-bottom: 10px;
+            font-size: 2.2em;
+            margin-bottom: 30px;
+        }
+        
+        h2 {
+            color: #1a4fa0;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            border-left: 4px solid #1a4fa0;
+            padding-left: 15px;
+        }
+        
+        h3 {
+            color: #333;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+        
+        h4 {
+            color: #666;
+            margin-top: 25px;
+            margin-bottom: 10px;
+            font-size: 1em;
+            font-weight: 600;
+        }
+        
+        p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+        
+        ul, ol {
+            margin-bottom: 15px;
+            padding-left: 25px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        code {
+            background: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        
+        .toc {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+            margin: 30px 0;
+        }
+        
+        .toc h3 {
+            margin-top: 0;
+            color: #1a4fa0;
+        }
+        
+        .toc ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        
+        .toc a {
+            color: #1a4fa0;
+            text-decoration: none;
+        }
+        
+        .toc a:hover {
+            text-decoration: underline;
+        }
+        
+        .highlight-box {
+            background: #e7f3ff;
+            border-left: 4px solid #1a4fa0;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        
+        .formula-box {
+            background: #f0f8f0;
+            border: 1px solid #90c695;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .example-box {
+            background: #fff7e6;
+            border: 1px solid #ffb366;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.9em;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        th {
+            background: #f5f5f5;
+            font-weight: 600;
+        }
+        
+        hr {
+            border: none;
+            height: 2px;
+            background: #e0e0e0;
+            margin: 40px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Perfect Competition Theory Guide</h1>
+    <p><em>Understanding Perfect Competition Market Structure and Firm Behavior</em></p>
+    
+    <div class="toc">
+        <h3>Table of Contents</h3>
+        <ul>
+            <li><a href="#introduction">1. Introduction to Perfect Competition</a></li>
+            <li><a href="#characteristics">2. Characteristics of Perfect Competition</a></li>
+            <li><a href="#firm-behavior">3. Firm Behavior in Perfect Competition</a></li>
+            <li><a href="#short-run">4. Short-Run Equilibrium</a></li>
+            <li><a href="#long-run">5. Long-Run Equilibrium</a></li>
+            <li><a href="#efficiency">6. Efficiency in Perfect Competition</a></li>
+            <li><a href="#welfare">7. Consumer and Producer Welfare</a></li>
+            <li><a href="#applications">8. Real-World Applications</a></li>
+            <li><a href="#simulator">9. How the Simulator Works</a></li>
+        </ul>
+    </div>
+
+    <h2 id="introduction">1. Introduction to Perfect Competition</h2>
+
+    <h3>What is Perfect Competition?</h3>
+    <p><strong>Perfect competition</strong> is a theoretical market structure that serves as a benchmark for analyzing other market types. It represents an idealized market where competition is at its maximum intensity and economic efficiency is achieved.</p>
+
+    <div class="highlight-box">
+        <p><strong>Key Insight:</strong> Perfect competition provides the foundation for understanding how markets work in their most efficient form. While rarely found in pure form in reality, it serves as an important theoretical baseline for economic analysis.</p>
+    </div>
+
+    <h3>Why Study Perfect Competition?</h3>
+    <ul>
+        <li><strong>Theoretical benchmark:</strong> Standard for comparing other market structures</li>
+        <li><strong>Efficiency analysis:</strong> Shows optimal resource allocation</li>
+        <li><strong>Policy evaluation:</strong> Guides antitrust and regulation policies</li>
+        <li><strong>Business strategy:</strong> Helps understand competitive dynamics</li>
+    </ul>
+
+    <h2 id="characteristics">2. Characteristics of Perfect Competition</h2>
+
+    <h3>The Four Key Assumptions</h3>
+
+    <h4>1. Many Buyers and Sellers</h4>
+    <ul>
+        <li>Large number of participants on both sides of the market</li>
+        <li>No single buyer or seller can influence market price</li>
+        <li>Each firm is a "price taker"</li>
+        <li>Market share of individual firms is negligible</li>
+    </ul>
+
+    <h4>2. Homogeneous Products</h4>
+    <ul>
+        <li>Products are identical across all firms</li>
+        <li>Perfect substitutes from consumer perspective</li>
+        <li>No brand differentiation or unique features</li>
+        <li>Competition is purely on price</li>
+    </ul>
+
+    <h4>3. Free Entry and Exit</h4>
+    <ul>
+        <li>No barriers to entering or leaving the market</li>
+        <li>No startup costs, licenses, or regulatory hurdles</li>
+        <li>Firms can respond quickly to profit opportunities</li>
+        <li>Resources are mobile between industries</li>
+    </ul>
+
+    <h4>4. Perfect Information</h4>
+    <ul>
+        <li>All participants have complete knowledge of prices</li>
+        <li>No search costs or information asymmetries</li>
+        <li>Instantaneous price discovery</li>
+        <li>Full awareness of profit opportunities</li>
+    </ul>
+
+    <h3>Implications of These Assumptions</h3>
+    <ul>
+        <li><strong>Price taking behavior:</strong> Firms accept market price as given</li>
+        <li><strong>Horizontal demand curve:</strong> Perfectly elastic demand for individual firms</li>
+        <li><strong>Zero economic profits:</strong> In long-run equilibrium</li>
+        <li><strong>Allocative efficiency:</strong> P = MC at equilibrium</li>
+        <li><strong>Productive efficiency:</strong> Production at minimum average cost</li>
+    </ul>
+
+    <h2 id="firm-behavior">3. Firm Behavior in Perfect Competition</h2>
+
+    <h3>Revenue Concepts</h3>
+
+    <h4>Total Revenue (TR)</h4>
+    <div class="formula-box">
+        TR = P × Q<br><br>
+        Where P = market price, Q = quantity sold
+    </div>
+
+    <h4>Average Revenue (AR)</h4>
+    <div class="formula-box">
+        AR = TR / Q = P<br><br>
+        Average revenue equals price in perfect competition
+    </div>
+
+    <h4>Marginal Revenue (MR)</h4>
+    <div class="formula-box">
+        MR = ΔTR / ΔQ = P<br><br>
+        Marginal revenue equals price (constant)
+    </div>
+
+    <h3>The Firm's Demand Curve</h3>
+    <p>In perfect competition, the individual firm faces a perfectly horizontal (elastic) demand curve at the market price.</p>
+
+    <ul>
+        <li><strong>Shape:</strong> Perfectly horizontal line</li>
+        <li><strong>Elasticity:</strong> Infinitely elastic</li>
+        <li><strong>Interpretation:</strong> Firm can sell any quantity at market price</li>
+        <li><strong>Price taking:</strong> Cannot influence price through quantity decisions</li>
+    </ul>
+
+    <h3>Profit Maximization</h3>
+    <p>Firms maximize profit where marginal revenue equals marginal cost:</p>
+
+    <div class="formula-box">
+        <strong>Profit Maximization Rule:</strong> MR = MC<br><br>
+        Since MR = P in perfect competition:<br>
+        <strong>P = MC</strong>
+    </div>
+
+    <h4>Short-Run Decision Making</h4>
+    <ol>
+        <li><strong>If P > ATC:</strong> Firm makes economic profit</li>
+        <li><strong>If P = ATC:</strong> Firm breaks even (normal profit)</li>
+        <li><strong>If AVC < P < ATC:</strong> Firm operates at a loss but continues</li>
+        <li><strong>If P < AVC:</strong> Firm shuts down</li>
+    </ol>
+
+    <h3>The Supply Curve</h3>
+    <p>The firm's supply curve is its marginal cost curve above the average variable cost curve.</p>
+
+    <div class="example-box">
+        <h4>Example: Wheat Farmer</h4>
+        <p>Consider a wheat farmer in a perfectly competitive market:</p>
+        <ul>
+            <li><strong>Market price:</strong> $5 per bushel (determined by market)</li>
+            <li><strong>Farmer's decision:</strong> How many bushels to produce</li>
+            <li><strong>Rule:</strong> Produce where MC = $5</li>
+            <li><strong>If MC < $5:</strong> Increase production</li>
+            <li><strong>If MC > $5:</strong> Decrease production</li>
+        </ul>
+    </div>
+
+    <h2 id="short-run">4. Short-Run Equilibrium</h2>
+
+    <h3>Market Equilibrium</h3>
+    <p>Short-run market equilibrium occurs where market supply equals market demand:</p>
+
+    <div class="formula-box">
+        Market Supply = Σ Individual Firm Supplies<br>
+        Equilibrium: Q_s = Q_d
+    </div>
+
+    <h3>Possible Short-Run Outcomes</h3>
+
+    <h4>Economic Profits (P > ATC)</h4>
+    <ul>
+        <li>Firms earn above-normal returns</li>
+        <li>Price exceeds average total cost</li>
+        <li>Attracts new firms to enter market</li>
+        <li>Temporary situation in perfect competition</li>
+    </ul>
+
+    <h4>Normal Profits (P = ATC)</h4>
+    <ul>
+        <li>Firms earn exactly normal return</li>
+        <li>No incentive for entry or exit</li>
+        <li>Long-run equilibrium condition</li>
+        <li>Economically efficient outcome</li>
+    </ul>
+
+    <h4>Economic Losses (P < ATC)</h4>
+    <ul>
+        <li>Firms earn below-normal returns</li>
+        <li>Some firms will exit market</li>
+        <li>Continue operating if P > AVC</li>
+        <li>Shut down if P < AVC</li>
+    </ul>
+
+    <h3>Shutdown Decision</h3>
+    <p>The shutdown point occurs where price equals average variable cost:</p>
+
+    <div class="formula-box">
+        <strong>Shutdown Rule:</strong><br>
+        • Continue operating if P ≥ AVC<br>
+        • Shut down if P < AVC<br><br>
+        At shutdown point: P = AVC
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Price Condition</th>
+                <th>Firm Decision</th>
+                <th>Economic Outcome</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>P > ATC</td>
+                <td>Produce at P = MC</td>
+                <td>Economic profit</td>
+            </tr>
+            <tr>
+                <td>AVC < P < ATC</td>
+                <td>Produce at P = MC</td>
+                <td>Economic loss, continue operating</td>
+            </tr>
+            <tr>
+                <td>P = AVC</td>
+                <td>Indifferent</td>
+                <td>Shutdown point</td>
+            </tr>
+            <tr>
+                <td>P < AVC</td>
+                <td>Shut down</td>
+                <td>Loss equals fixed costs</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2 id="long-run">5. Long-Run Equilibrium</h2>
+
+    <h3>Entry and Exit Dynamics</h3>
+
+    <h4>When Economic Profits Exist</h4>
+    <ol>
+        <li><strong>New firms enter:</strong> Attracted by profits</li>
+        <li><strong>Market supply increases:</strong> Supply curve shifts right</li>
+        <li><strong>Price falls:</strong> Increased competition</li>
+        <li><strong>Profits decrease:</strong> Until they reach zero</li>
+    </ol>
+
+    <h4>When Economic Losses Occur</h4>
+    <ol>
+        <li><strong>Firms exit:</strong> Cannot cover costs</li>
+        <li><strong>Market supply decreases:</strong> Supply curve shifts left</li>
+        <li><strong>Price rises:</strong> Reduced competition</li>
+        <li><strong>Losses decrease:</strong> Until they reach zero</li>
+    </ol>
+
+    <h3>Long-Run Equilibrium Conditions</h3>
+    <p>In long-run equilibrium, three conditions must be satisfied simultaneously:</p>
+
+    <div class="formula-box">
+        <strong>Long-Run Equilibrium:</strong><br>
+        1. P = MC (profit maximization)<br>
+        2. P = ATC (zero economic profit)<br>
+        3. P = minimum ATC (productive efficiency)<br><br>
+        Therefore: <strong>P = MC = ATC = minimum ATC</strong>
+    </div>
+
+    <h4>Characteristics of Long-Run Equilibrium</h4>
+    <ul>
+        <li><strong>Zero economic profits:</strong> Firms earn normal returns</li>
+        <li><strong>No entry or exit:</strong> Market is stable</li>
+        <li><strong>Allocative efficiency:</strong> P = MC</li>
+        <li><strong>Productive efficiency:</strong> Production at minimum ATC</li>
+        <li><strong>Maximum social welfare:</strong> Consumer + producer surplus maximized</li>
+    </ul>
+
+    <h3>The Long-Run Supply Curve</h3>
+
+    <h4>Constant Cost Industry</h4>
+    <ul>
+        <li>Input prices remain constant as industry expands</li>
+        <li>Long-run supply curve is horizontal</li>
+        <li>Price returns to original level after demand changes</li>
+    </ul>
+
+    <h4>Increasing Cost Industry</h4>
+    <ul>
+        <li>Input prices rise as industry expands</li>
+        <li>Long-run supply curve slopes upward</li>
+        <li>Higher long-run equilibrium prices</li>
+    </ul>
+
+    <h4>Decreasing Cost Industry</h4>
+    <ul>
+        <li>Input prices fall as industry expands</li>
+        <li>Long-run supply curve slopes downward</li>
+        <li>Lower long-run equilibrium prices</li>
+    </ul>
+
+    <h2 id="efficiency">6. Efficiency in Perfect Competition</h2>
+
+    <h3>Types of Economic Efficiency</h3>
+
+    <h4>Allocative Efficiency</h4>
+    <p>Resources are allocated to their most valued uses.</p>
+    <div class="formula-box">
+        <strong>Condition:</strong> P = MC<br><br>
+        Marginal benefit to consumers equals marginal cost of production
+    </div>
+
+    <ul>
+        <li><strong>Meaning:</strong> Society values the last unit produced exactly what it costs to produce</li>
+        <li><strong>Result:</strong> No deadweight loss</li>
+        <li><strong>Implication:</strong> Impossible to reallocate resources to make someone better off without making someone worse off</li>
+    </ul>
+
+    <h4>Productive Efficiency</h4>
+    <p>Goods are produced at the lowest possible cost.</p>
+    <div class="formula-box">
+        <strong>Condition:</strong> P = minimum ATC<br><br>
+        Production occurs at the lowest point on the average cost curve
+    </div>
+
+    <ul>
+        <li><strong>Meaning:</strong> No waste in production process</li>
+        <li><strong>Result:</strong> Maximum output from given inputs</li>
+        <li><strong>Implication:</strong> Society gets the most goods possible from its resources</li>
+    </ul>
+
+    <h4>Dynamic Efficiency</h4>
+    <ul>
+        <li><strong>Innovation incentives:</strong> Competition drives technological progress</li>
+        <li><strong>Adaptation:</strong> Quick response to changing conditions</li>
+        <li><strong>Resource mobility:</strong> Efficient reallocation over time</li>
+    </ul>
+
+    <h3>Pareto Efficiency</h3>
+    <p>Perfect competition achieves Pareto efficiency - a state where it's impossible to make one person better off without making another person worse off.</p>
+
+    <div class="example-box">
+        <h4>Example: Agricultural Markets</h4>
+        <p>Consider the market for corn:</p>
+        <ul>
+            <li><strong>Many farmers:</strong> No single farmer affects price</li>
+            <li><strong>Homogeneous product:</strong> Corn is corn</li>
+            <li><strong>Low barriers:</strong> Easy to start farming</li>
+            <li><strong>Price information:</strong> Commodity exchanges provide transparency</li>
+            <li><strong>Result:</strong> Efficient allocation of farmland to corn production</li>
+        </ul>
+    </div>
+
+    <h2 id="welfare">7. Consumer and Producer Welfare</h2>
+
+    <h3>Consumer Surplus</h3>
+    <p>The difference between what consumers are willing to pay and what they actually pay.</p>
+
+    <div class="formula-box">
+        Consumer Surplus = Area under demand curve above price
+    </div>
+
+    <h4>Maximization in Perfect Competition</h4>
+    <ul>
+        <li><strong>Low prices:</strong> Competition drives prices to minimum cost</li>
+        <li><strong>High quantities:</strong> Efficient production levels</li>
+        <li><strong>Product variety:</strong> Within constraints of homogeneity</li>
+    </ul>
+
+    <h3>Producer Surplus</h3>
+    <p>The difference between what producers receive and their minimum acceptable price.</p>
+
+    <div class="formula-box">
+        Producer Surplus = Area above supply curve below price
+    </div>
+
+    <h4>In Long-Run Equilibrium</h4>
+    <ul>
+        <li><strong>Zero economic profits:</strong> Producer surplus equals normal returns</li>
+        <li><strong>Efficient production:</strong> Maximum surplus given cost structure</li>
+        <li><strong>No deadweight loss:</strong> All potential gains from trade realized</li>
+    </ul>
+
+    <h3>Total Social Welfare</h3>
+    <div class="formula-box">
+        Total Welfare = Consumer Surplus + Producer Surplus
+    </div>
+
+    <p>Perfect competition maximizes total social welfare by:</p>
+    <ul>
+        <li>Eliminating deadweight losses</li>
+        <li>Ensuring efficient resource allocation</li>
+        <li>Providing optimal prices and quantities</li>
+        <li>Promoting innovation and efficiency</li>
+    </ul>
+
+    <h2 id="applications">8. Real-World Applications</h2>
+
+    <h3>Markets Approaching Perfect Competition</h3>
+
+    <h4>Agricultural Commodities</h4>
+    <ul>
+        <li><strong>Examples:</strong> Wheat, corn, soybeans</li>
+        <li><strong>Characteristics:</strong> Many producers, standardized products</li>
+        <li><strong>Information:</strong> Commodity exchanges provide price transparency</li>
+        <li><strong>Entry:</strong> Relatively easy to start farming</li>
+    </ul>
+
+    <h4>Financial Markets</h4>
+    <ul>
+        <li><strong>Examples:</strong> Foreign exchange, stock markets</li>
+        <li><strong>Characteristics:</strong> Many traders, standardized securities</li>
+        <li><strong>Information:</strong> Real-time price data</li>
+        <li><strong>Entry:</strong> Low barriers for market participants</li>
+    </ul>
+
+    <h4>Online Marketplaces</h4>
+    <ul>
+        <li><strong>Examples:</strong> Amazon marketplace, eBay</li>
+        <li><strong>Characteristics:</strong> Many sellers, comparable products</li>
+        <li><strong>Information:</strong> Easy price comparison</li>
+        <li><strong>Entry:</strong> Low startup costs</li>
+    </ul>
+
+    <h3>Deviations from Perfect Competition</h3>
+
+    <h4>Why Perfect Competition is Rare</h4>
+    <ul>
+        <li><strong>Product differentiation:</strong> Firms create unique features</li>
+        <li><strong>Economies of scale:</strong> Large firms have cost advantages</li>
+        <li><strong>Barriers to entry:</strong> Capital requirements, regulations</li>
+        <li><strong>Information asymmetries:</strong> Unequal knowledge</li>
+        <li><strong>Transaction costs:</strong> Costs of market participation</li>
+    </ul>
+
+    <h4>Market Power</h4>
+    <ul>
+        <li><strong>Brand loyalty:</strong> Reduces price sensitivity</li>
+        <li><strong>Network effects:</strong> Value increases with users</li>
+        <li><strong>Switching costs:</strong> Difficulty changing suppliers</li>
+        <li><strong>Geographic advantages:</strong> Location-based monopolies</li>
+    </ul>
+
+    <h3>Policy Implications</h3>
+
+    <h4>Antitrust Policy</h4>
+    <ul>
+        <li><strong>Goal:</strong> Maintain competitive markets</li>
+        <li><strong>Tools:</strong> Merger review, monopoly prosecution</li>
+        <li><strong>Standard:</strong> Perfect competition as benchmark</li>
+    </ul>
+
+    <h4>Deregulation</h4>
+    <ul>
+        <li><strong>Objective:</strong> Increase competition</li>
+        <li><strong>Examples:</strong> Airlines, telecommunications</li>
+        <li><strong>Results:</strong> Lower prices, innovation</li>
+    </ul>
+
+    <h4>Trade Policy</h4>
+    <ul>
+        <li><strong>Free trade:</strong> Increases competition</li>
+        <li><strong>Import competition:</strong> Disciplines domestic firms</li>
+        <li><strong>Export opportunities:</strong> Expands markets</li>
+    </ul>
+
+    <h2 id="simulator">9. How the Simulator Works</h2>
+
+    <h3>Model Structure</h3>
+
+    <h4>Cost Function</h4>
+    <p>The simulator uses a quadratic cost function:</p>
+    <div class="formula-box">
+        Total Cost = Fixed Cost + (Variable Cost × Q) + (0.15 × Q²)<br><br>
+        This creates realistic U-shaped average cost curves
+    </div>
+
+    <h4>Marginal Cost</h4>
+    <div class="formula-box">
+        MC = Variable Cost + (0.3 × Q)<br><br>
+        Increasing marginal cost reflects diminishing returns
+    </div>
+
+    <h4>Average Costs</h4>
+    <div class="formula-box">
+        ATC = Total Cost / Q<br>
+        AVC = Variable Cost / Q + (0.15 × Q)
+    </div>
+
+    <h3>Profit Maximization</h3>
+    <p>The simulator finds the quantity where MC = P (market price):</p>
+    <ul>
+        <li>Calculates costs for different output levels</li>
+        <li>Finds point where marginal cost equals market price</li>
+        <li>Determines optimal quantity and resulting profit</li>
+    </ul>
+
+    <h3>Interactive Controls</h3>
+
+    <h4>Market Conditions</h4>
+    <ul>
+        <li><strong>Market Price:</strong> Set by market forces ($5-$25)</li>
+        <li><strong>Market Demand:</strong> Overall market strength (50-200%)</li>
+        <li><strong>Number of Firms:</strong> Determines market structure (5-50)</li>
+    </ul>
+
+    <h4>Firm Costs</h4>
+    <ul>
+        <li><strong>Fixed Cost:</strong> Unavoidable costs ($20-$100)</li>
+        <li><strong>Variable Cost:</strong> Per-unit production cost ($2-$15)</li>
+    </ul>
+
+    <h3>Scenario Analysis</h3>
+
+    <h4>Demand Changes</h4>
+    <ul>
+        <li><strong>Increase:</strong> Raises price and profits</li>
+        <li><strong>Decrease:</strong> Lowers price, may cause losses</li>
+    </ul>
+
+    <h4>Entry and Exit</h4>
+    <ul>
+        <li><strong>Entry:</strong> Increases supply, reduces price</li>
+        <li><strong>Exit:</strong> Decreases supply, increases price</li>
+    </ul>
+
+    <h4>Cost Changes</h4>
+    <ul>
+        <li><strong>Cost increase:</strong> Reduces profitability</li>
+        <li><strong>Technology improvement:</strong> Reduces costs</li>
+    </ul>
+
+    <h3>Visual Features</h3>
+
+    <h4>Cost Curves</h4>
+    <ul>
+        <li><strong>MC curve:</strong> Shows marginal cost at each quantity</li>
+        <li><strong>ATC curve:</strong> Average total cost curve</li>
+        <li><strong>AVC curve:</strong> Average variable cost curve</li>
+        <li><strong>Price line:</strong> Horizontal demand curve for firm</li>
+    </ul>
+
+    <h4>Profit Visualization</h4>
+    <ul>
+        <li><strong>Profit area:</strong> Shaded region between price and ATC</li>
+        <li><strong>Break-even point:</strong> Where price equals ATC</li>
+        <li><strong>Shutdown point:</strong> Where price equals AVC</li>
+    </ul>
+
+    <h3>Market Structure Analysis</h3>
+
+    <h4>Firm Grid</h4>
+    <ul>
+        <li>Visual representation of all firms in market</li>
+        <li>Color coding shows profitability status</li>
+        <li>Demonstrates market competition intensity</li>
+    </ul>
+
+    <h4>Market Metrics</h4>
+    <ul>
+        <li><strong>Market share:</strong> 100% / number of firms</li>
+        <li><strong>HHI index:</strong> Herfindahl-Hirschman concentration measure</li>
+        <li><strong>Profitable firms:</strong> Count of firms making profits</li>
+    </ul>
+
+    <h3>Learning Objectives</h3>
+    <ol>
+        <li><strong>Understand price-taking behavior:</strong> How firms respond to market price</li>
+        <li><strong>Analyze profit maximization:</strong> Where P = MC condition</li>
+        <li><strong>Explore entry/exit dynamics:</strong> How profits attract/repel firms</li>
+        <li><strong>Examine efficiency:</strong> Allocative and productive efficiency</li>
+        <li><strong>Compare market structures:</strong> Benchmark for other market types</li>
+    </ol>
+
+    <hr>
+
+    <h2>Key Takeaways</h2>
+
+    <h3>For Students</h3>
+    <ol>
+        <li><strong>Master the fundamentals:</strong> Price-taking, profit maximization, efficiency</li>
+        <li><strong>Understand dynamics:</strong> Short-run vs. long-run adjustments</li>
+        <li><strong>Recognize efficiency:</strong> Both allocative and productive efficiency</li>
+        <li><strong>Apply to reality:</strong> Identify markets that approach perfect competition</li>
+    </ol>
+
+    <h3>For Business Applications</h3>
+    <ol>
+        <li><strong>Competitive benchmarking:</strong> Understand perfectly competitive outcomes</li>
+        <li><strong>Entry decisions:</strong> Analyze profit potential and competition</li>
+        <li><strong>Cost management:</strong> Importance of efficiency in competitive markets</li>
+        <li><strong>Strategic planning:</strong> How to compete when you can't control price</li>
+    </ol>
+
+    <h3>For Policy Analysis</h3>
+    <ol>
+        <li><strong>Market regulation:</strong> When and why to intervene</li>
+        <li><strong>Antitrust policy:</strong> Promoting competitive outcomes</li>
+        <li><strong>Trade policy:</strong> Benefits of competitive markets</li>
+        <li><strong>Welfare analysis:</strong> Measuring economic efficiency</li>
+    </ol>
+
+    <h3>Advanced Concepts to Explore</h3>
+    <ul>
+        <li><strong>Game theory:</strong> Strategic interactions between firms</li>
+        <li><strong>Information economics:</strong> Role of perfect information</li>
+        <li><strong>Dynamic competition:</strong> Innovation and technological change</li>
+        <li><strong>Network effects:</strong> When competition may not be optimal</li>
+    </ul>
+
+    <div class="highlight-box">
+        <p><em>Perfect competition represents the theoretical ideal of market efficiency. While rarely found in pure form, it provides crucial insights into how competitive forces work and serves as a benchmark for evaluating real-world markets. Understanding perfect competition is essential for analyzing all other market structures and for developing effective economic policies.</em></p>
+    </div>
+
+</body>
+</html>

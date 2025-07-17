@@ -1,0 +1,1511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Price Elasticity Simulator</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #fafafa;
+            color: #1a1a1a;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .header h1 {
+            font-size: 2.2rem;
+            font-weight: 300;
+            color: #1a1a1a;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .header p {
+            font-size: 1rem;
+            color: #666;
+            font-weight: 400;
+        }
+
+        .game-area {
+            display: grid;
+            grid-template-columns: 280px 1fr 280px;
+            gap: 40px;
+            align-items: start;
+        }
+
+        .panel {
+            background: #fff;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            padding: 24px;
+        }
+
+        .panel h3 {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #1a1a1a;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .control-group {
+            margin-bottom: 24px;
+        }
+
+        .control-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .control-group label {
+            display: block;
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 8px;
+            font-weight: 400;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .product-btn {
+            background: #f8f9fa;
+            border: 1px solid #e5e5e5;
+            padding: 12px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s ease;
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .product-btn:hover {
+            border-color: #1a1a1a;
+            background: #f0f0f0;
+        }
+
+        .product-btn.active {
+            background: #1a1a1a;
+            color: #fff;
+            border-color: #1a1a1a;
+        }
+
+        .product-emoji {
+            font-size: 1.2rem;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .price-input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #e5e5e5;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            text-align: center;
+            color: #1a1a1a;
+        }
+
+        .price-input:focus {
+            outline: none;
+            border-color: #1a1a1a;
+        }
+
+        .chart-container {
+            background: #fff;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            padding: 32px;
+            min-height: 500px;
+        }
+
+        .info-card {
+            background: #fff;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .info-card h4 {
+            font-size: 0.8rem;
+            color: #666;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 500;
+        }
+
+        .metric-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .metric {
+            text-align: center;
+        }
+
+        .metric-label {
+            font-size: 0.75rem;
+            color: #999;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .metric-value {
+            font-size: 1.4rem;
+            font-weight: 300;
+            color: #1a1a1a;
+        }
+
+        .elasticity-indicator {
+            text-align: center;
+            margin: 16px 0;
+            padding: 12px;
+            border-radius: 4px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: #fff;
+        }
+
+        .elastic {
+            background: #28a745;
+        }
+
+        .inelastic {
+            background: #dc3545;
+        }
+
+        .unitary {
+            background: #ffc107;
+            color: #1a1a1a;
+        }
+
+        .perfectly-elastic {
+            background: #17a2b8;
+        }
+
+        .perfectly-inelastic {
+            background: #6f42c1;
+        }
+
+        .button {
+            background: #1a1a1a;
+            color: #fff;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 400;
+            transition: all 0.2s ease;
+            width: 100%;
+            margin-bottom: 8px;
+        }
+
+        .button:hover {
+            background: #333;
+        }
+
+        .button-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .button-small {
+            padding: 6px 12px;
+            font-size: 0.8rem;
+        }
+
+        .section-divider {
+            height: 1px;
+            background: #e5e5e5;
+            margin: 24px 0;
+        }
+
+        .description {
+            font-size: 0.8rem;
+            color: #999;
+            margin-top: 8px;
+            font-style: italic;
+        }
+
+        .quiz-section {
+            background: #fff;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            padding: 24px;
+            margin-top: 40px;
+            display: none;
+        }
+
+        .quiz-question {
+            font-size: 1rem;
+            margin-bottom: 16px;
+            color: #1a1a1a;
+            font-weight: 400;
+        }
+
+        .quiz-options {
+            display: grid;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .quiz-option {
+            background: #f8f9fa;
+            border: 1px solid #e5e5e5;
+            padding: 12px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+        }
+
+        .quiz-option:hover {
+            background: #e9ecef;
+            border-color: #adb5bd;
+        }
+
+        .quiz-option.correct {
+            background: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+
+        .quiz-option.incorrect {
+            background: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+
+        .quiz-feedback {
+            background: #f8f9fa;
+            border: 1px solid #e5e5e5;
+            border-radius: 4px;
+            padding: 12px;
+            margin-top: 12px;
+            font-size: 0.85rem;
+            color: #666;
+            display: none;
+        }
+
+        .quiz-progress {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .game-area {
+                grid-template-columns: 260px 1fr 260px;
+                gap: 30px;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .game-area {
+                grid-template-columns: 1fr 1fr;
+                gap: 30px;
+            }
+            
+            .chart-container {
+                grid-column: 1 / -1;
+                order: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .game-area {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Price Elasticity Simulator</h1>
+            <p>Interactive price elasticity analysis and learning tool</p>
+        </div>
+
+        <div class="game-area">
+            <!-- Left Panel: Controls -->
+            <div class="panel">
+                <h3>Product Selection</h3>
+                
+                <div class="control-group">
+                    <label>Choose a Product</label>
+                    <div class="product-grid">
+                        <div class="product-btn active" onclick="selectProduct('luxury-car', this)">
+                            <span class="product-emoji">🚗</span>
+                            Luxury Car
+                        </div>
+                        <div class="product-btn" onclick="selectProduct('gasoline', this)">
+                            <span class="product-emoji">⛽</span>
+                            Gasoline
+                        </div>
+                        <div class="product-btn" onclick="selectProduct('medicine', this)">
+                            <span class="product-emoji">💊</span>
+                            Medicine
+                        </div>
+                        <div class="product-btn" onclick="selectProduct('coffee', this)">
+                            <span class="product-emoji">☕</span>
+                            Coffee
+                        </div>
+                        <div class="product-btn" onclick="selectProduct('bread', this)">
+                            <span class="product-emoji">🍞</span>
+                            Bread
+                        </div>
+                        <div class="product-btn" onclick="selectProduct('streaming', this)">
+                            <span class="product-emoji">📺</span>
+                            Streaming
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-divider"></div>
+
+                <div class="control-group">
+                    <label for="currentPrice">Current Price ($)</label>
+                    <input type="number" id="currentPrice" class="price-input" value="50000" min="1" step="1">
+                </div>
+
+                <div class="control-group">
+                    <label for="newPrice">New Price ($)</label>
+                    <input type="number" id="newPrice" class="price-input" value="60000" min="1" step="1">
+                </div>
+
+                <div class="section-divider"></div>
+
+                <h3>Market Scenarios</h3>
+                <div class="button-group">
+                    <button class="button button-small" onclick="runScenario('recession')">Recession</button>
+                    <button class="button button-small" onclick="runScenario('substitute')">New Substitute</button>
+                </div>
+                <div class="button-group">
+                    <button class="button button-small" onclick="runScenario('income-boost')">Income Rise</button>
+                    <button class="button button-small" onclick="runScenario('emergency')">Emergency</button>
+                </div>
+
+                <button class="button" onclick="resetCalculations()">Reset Analysis</button>
+                <button class="button" onclick="toggleQuiz()">Start Quiz</button>
+            </div>
+
+            <!-- Center Panel: Chart -->
+            <div class="chart-container">
+                <canvas id="elasticityChart"></canvas>
+            </div>
+
+            <!-- Right Panel: Information -->
+            <div>
+                <!-- Elasticity Analysis -->
+                <div class="info-card">
+                    <h4>Elasticity Analysis</h4>
+                    
+                    <div class="elasticity-indicator elastic" id="elasticityType">
+                        Elastic Demand
+                    </div>
+
+                    <div class="metric-grid">
+                        <div class="metric">
+                            <div class="metric-label">Coefficient</div>
+                            <div class="metric-value" id="elasticityCoeff">-2.50</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">Price Change</div>
+                            <div class="metric-value" id="priceChange">+20%</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">Quantity Change</div>
+                            <div class="metric-value" id="quantityChange">-50%</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">Revenue Impact</div>
+                            <div class="metric-value" id="revenueImpact">-40%</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Information -->
+                <div class="info-card">
+                    <h4>Product Details</h4>
+                    <div class="metric">
+                        <div class="metric-label">Current Product</div>
+                        <div class="metric-value" id="currentProductName">Luxury Car</div>
+                    </div>
+                    <div class="description" id="productDescription">
+                        High elasticity - luxury goods are very price sensitive
+                    </div>
+                </div>
+
+                <!-- Revenue Analysis -->
+                <div class="info-card">
+                    <h4>Revenue Analysis</h4>
+                    <div class="metric-grid">
+                        <div class="metric">
+                            <div class="metric-label">Initial Revenue</div>
+                            <div class="metric-value" id="initialRevenue">$5,000,000</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">New Revenue</div>
+                            <div class="metric-value" id="newRevenue">$3,000,000</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Elasticity Guide -->
+                <div class="info-card">
+                    <h4>Elasticity Guide</h4>
+                    <div style="font-size: 0.8rem; color: #666; line-height: 1.4;">
+                        <strong>Elastic (|E| > 1):</strong> Quantity very responsive to price<br>
+                        <strong>Inelastic (|E| < 1):</strong> Quantity not responsive to price<br>
+                        <strong>Unitary (|E| = 1):</strong> Proportional response
+                    </div>
+                </div>
+
+                <!-- Download Button -->
+                <button class="button" onclick="downloadTheoryGuide()">Download Theory Guide</button>
+            </div>
+        </div>
+
+        <!-- Quiz Section -->
+        <div class="quiz-section" id="quizSection">
+            <h3>Elasticity Quiz</h3>
+            
+            <div class="quiz-progress" id="quizProgress">
+                Question 1 of 15
+            </div>
+            
+            <div class="quiz-question" id="quizQuestion">
+                Loading question...
+            </div>
+            
+            <div class="quiz-options" id="quizOptions">
+                <!-- Options will be dynamically generated -->
+            </div>
+            
+            <div class="quiz-feedback" id="quizFeedback">
+                <!-- Feedback will be shown here -->
+            </div>
+
+            <button class="button" onclick="nextQuestion()" style="margin-top: 16px; display: none;" id="nextBtn">Next Question</button>
+            <button class="button" onclick="toggleQuiz()" style="margin-top: 16px;">Close Quiz</button>
+        </div>
+    </div>
+
+    <script>
+        // Game state
+        let currentProduct = 'luxury-car';
+        let chart;
+        let quizActive = false;
+        let currentQuestionIndex = 0;
+        let shuffledQuestions = [];
+
+        // Product definitions with realistic elasticity values and REAL prices
+        const products = {
+            'luxury-car': {
+                name: 'Luxury Car',
+                emoji: '🚗',
+                baseElasticity: -2.5,
+                description: 'High elasticity - luxury goods are very price sensitive',
+                basePrice: 50000,
+                baseQuantity: 100
+            },
+            'gasoline': {
+                name: 'Gasoline',
+                emoji: '⛽',
+                baseElasticity: -0.3,
+                description: 'Low elasticity - essential good with few substitutes',
+                basePrice: 3.50,
+                baseQuantity: 1000
+            },
+            'medicine': {
+                name: 'Medicine',
+                emoji: '💊',
+                baseElasticity: -0.1,
+                description: 'Very low elasticity - necessity regardless of price',
+                basePrice: 25,
+                baseQuantity: 200
+            },
+            'coffee': {
+                name: 'Coffee',
+                emoji: '☕',
+                baseElasticity: -1.2,
+                description: 'Moderate elasticity - has substitutes but is habit-forming',
+                basePrice: 4.50,
+                baseQuantity: 500
+            },
+            'bread': {
+                name: 'Bread',
+                emoji: '🍞',
+                baseElasticity: -0.4,
+                description: 'Low elasticity - basic necessity for most people',
+                basePrice: 2.75,
+                baseQuantity: 800
+            },
+            'streaming': {
+                name: 'Streaming Service',
+                emoji: '📺',
+                baseElasticity: -1.8,
+                description: 'High elasticity - entertainment luxury with many alternatives',
+                basePrice: 15.99,
+                baseQuantity: 300
+            }
+        };
+
+        // Expanded quiz questions with randomized correct answers
+        const quizQuestions = [
+            {
+                question: "If the price of luxury watches increases by 20% and quantity demanded decreases by 50%, what is the price elasticity of demand?",
+                options: ["-2.5 (Elastic)", "-0.4 (Inelastic)", "-1.0 (Unitary)", "-4.0 (Perfectly Elastic)"],
+                correct: 0,
+                explanation: "Correct! The elasticity is -2.5, calculated as (-50% ÷ 20% = -2.5). This indicates elastic demand."
+            },
+            {
+                question: "Which product would likely have the most inelastic demand?",
+                options: ["Designer handbags", "Insulin for diabetics", "Movie tickets", "Restaurant meals"],
+                correct: 1,
+                explanation: "Correct! Insulin is a life-saving necessity with no substitutes, making demand very inelastic."
+            },
+            {
+                question: "If demand is elastic and price decreases, what happens to total revenue?",
+                options: ["Revenue decreases", "Revenue increases", "Revenue stays the same", "Cannot be determined"],
+                correct: 1,
+                explanation: "Correct! With elastic demand, quantity increases proportionally more than price decreases, so revenue rises."
+            },
+            {
+                question: "What elasticity coefficient indicates unitary elastic demand?",
+                options: ["Less than -1", "Exactly -1", "Greater than -1", "Exactly 0"],
+                correct: 1,
+                explanation: "Correct! Unitary elastic demand has an elasticity coefficient of exactly -1."
+            },
+            {
+                question: "Which factor would make demand MORE elastic?",
+                options: ["Fewer substitutes available", "Product is a necessity", "More time to adjust", "Lower income levels"],
+                correct: 2,
+                explanation: "Correct! More time allows consumers to find alternatives and adjust their behavior, making demand more elastic."
+            },
+            {
+                question: "If a 10% price increase leads to a 5% decrease in quantity demanded, demand is:",
+                options: ["Elastic", "Inelastic", "Unitary elastic", "Perfectly inelastic"],
+                correct: 1,
+                explanation: "Correct! The elasticity is -0.5 (5%/10%), which is less than 1 in absolute value, indicating inelastic demand."
+            },
+            {
+                question: "Gasoline typically has inelastic demand because:",
+                options: ["It has many close substitutes", "It's a luxury good", "It's essential for transportation", "It's very expensive"],
+                correct: 2,
+                explanation: "Correct! Gasoline is essential for transportation with few immediate substitutes, making demand inelastic."
+            },
+            {
+                question: "If price elasticity of demand is -3, a 20% price increase will cause quantity demanded to:",
+                options: ["Increase by 60%", "Decrease by 60%", "Decrease by 20%", "Increase by 20%"],
+                correct: 1,
+                explanation: "Correct! With elasticity of -3, a 20% price increase causes a 60% decrease in quantity demanded (-3 × 20% = -60%)."
+            },
+            {
+                question: "Which of these goods would likely be MOST elastic?",
+                options: ["Salt", "Luxury jewelry", "Electricity", "Prescription medicine"],
+                correct: 1,
+                explanation: "Correct! Luxury jewelry is a non-essential good with many substitutes, making it highly elastic."
+            },
+            {
+                question: "If a company wants to increase revenue and demand for their product is inelastic, they should:",
+                options: ["Decrease price", "Increase price", "Keep price the same", "Cannot determine"],
+                correct: 1,
+                explanation: "Correct! With inelastic demand, increasing price will increase total revenue because quantity decreases proportionally less."
+            },
+            {
+                question: "The concept of elasticity measures:",
+                options: ["Absolute changes in quantity", "Responsiveness of one variable to changes in another", "Total revenue changes", "Market equilibrium"],
+                correct: 1,
+                explanation: "Correct! Elasticity measures how responsive one variable (like quantity demanded) is to changes in another (like price)."
+            },
+            {
+                question: "Cross-price elasticity of demand measures:",
+                options: ["Response of quantity to income changes", "Response of quantity to own price changes", "Response of quantity to other product price changes", "Response of price to quantity changes"],
+                correct: 2,
+                explanation: "Correct! Cross-price elasticity measures how quantity demanded of one good responds to price changes of another good."
+            },
+            {
+                question: "If two goods are complements, their cross-price elasticity is:",
+                options: ["Positive", "Negative", "Zero", "Infinite"],
+                correct: 1,
+                explanation: "Correct! Complements have negative cross-price elasticity because when one price rises, demand for both goods falls."
+            },
+            {
+                question: "The price elasticity of demand is usually negative because:",
+                options: ["Income effect", "Substitution effect", "Law of demand", "Law of supply"],
+                correct: 2,
+                explanation: "Correct! The law of demand states that price and quantity demanded move in opposite directions, making elasticity negative."
+            },
+            {
+                question: "In the long run, demand tends to be _____ elastic than in the short run.",
+                options: ["More", "Less", "Equally", "Sometimes more, sometimes less"],
+                correct: 0,
+                explanation: "Correct! Long-run demand is typically more elastic because consumers have more time to find substitutes and adjust behavior."
+            },
+            {
+                question: "If income elasticity of demand is greater than 1, the good is:",
+                options: ["An inferior good", "A normal good", "A luxury good", "A necessity"],
+                correct: 2,
+                explanation: "Correct! Income elasticity greater than 1 indicates a luxury good - demand increases more than proportionally with income."
+            },
+            {
+                question: "Perfectly inelastic demand means:",
+                options: ["Elasticity = -1", "Elasticity = 0", "Elasticity = -∞", "Elasticity > -1"],
+                correct: 1,
+                explanation: "Correct! Perfectly inelastic demand has elasticity of 0, meaning quantity doesn't respond to price changes."
+            },
+            {
+                question: "Which statement about elastic demand is TRUE?",
+                options: ["Price increases always increase revenue", "Consumers are very responsive to price changes", "There are few substitutes available", "The good is typically a necessity"],
+                correct: 1,
+                explanation: "Correct! Elastic demand means consumers are very responsive to price changes, often due to available substitutes."
+            },
+            {
+                question: "If a 15% price decrease causes a 45% increase in quantity demanded, the price elasticity is:",
+                options: ["-0.33", "-3.0", "-1.0", "-15.0"],
+                correct: 1,
+                explanation: "Correct! Elasticity = 45% ÷ (-15%) = -3.0, indicating very elastic demand."
+            },
+            {
+                question: "Brand loyalty tends to make demand:",
+                options: ["More elastic", "Less elastic", "Unitary elastic", "Perfectly elastic"],
+                correct: 1,
+                explanation: "Correct! Brand loyalty reduces consumers' willingness to switch products, making demand less elastic (more inelastic)."
+            }
+        ];
+
+        // Initialize the chart
+        function initChart() {
+            const ctx = document.getElementById('elasticityChart').getContext('2d');
+            
+            Chart.defaults.font.family = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+            Chart.defaults.color = '#666';
+            
+            chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    datasets: [
+                        {
+                            label: 'Demand Curve',
+                            data: [],
+                            borderColor: '#dc3545',
+                            backgroundColor: 'rgba(220, 53, 69, 0.05)',
+                            borderWidth: 2,
+                            fill: false,
+                            tension: 0.1,
+                            pointRadius: 0,
+                            pointHoverRadius: 4
+                        },
+                        {
+                            label: 'Initial Point',
+                            data: [],
+                            borderColor: '#28a745',
+                            backgroundColor: '#28a745',
+                            borderWidth: 0,
+                            pointRadius: 6,
+                            pointHoverRadius: 8,
+                            showLine: false
+                        },
+                        {
+                            label: 'New Point',
+                            data: [],
+                            borderColor: '#ffc107',
+                            backgroundColor: '#ffc107',
+                            borderWidth: 0,
+                            pointRadius: 6,
+                            pointHoverRadius: 8,
+                            showLine: false
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                font: { size: 12, weight: '400' },
+                                usePointStyle: true,
+                                boxWidth: 12,
+                                padding: 20
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: '#1a1a1a',
+                            titleColor: '#fff',
+                            bodyColor: '#fff',
+                            borderColor: '#333',
+                            borderWidth: 1,
+                            cornerRadius: 4,
+                            displayColors: false
+                        }
+                    },
+                    scales: {
+                        x: {
+                            type: 'linear',
+                            position: 'bottom',
+                            title: {
+                                display: true,
+                                text: 'Quantity Demanded',
+                                font: { size: 12, weight: '400' },
+                                color: '#666'
+                            },
+                            min: 0,
+                            grid: { 
+                                color: '#f0f0f0',
+                                lineWidth: 1
+                            },
+                            ticks: {
+                                color: '#999',
+                                font: { size: 11 }
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Price ($)',
+                                font: { size: 12, weight: '400' },
+                                color: '#666'
+                            },
+                            min: 0,
+                            grid: { 
+                                color: '#f0f0f0',
+                                lineWidth: 1
+                            },
+                            ticks: {
+                                color: '#999',
+                                font: { size: 11 }
+                            }
+                        }
+                    },
+                    interaction: {
+                        intersect: false,
+                        mode: 'point'
+                    }
+                }
+            });
+
+            updateChart();
+        }
+
+        // Select product
+        function selectProduct(productKey, element) {
+            // Update active button
+            document.querySelectorAll('.product-btn').forEach(btn => btn.classList.remove('active'));
+            element.classList.add('active');
+            
+            currentProduct = productKey;
+            const product = products[productKey];
+            
+            // Update price inputs based on product with REAL prices
+            document.getElementById('currentPrice').value = product.basePrice;
+            document.getElementById('newPrice').value = Math.round(product.basePrice * 1.2);
+            
+            updateDisplay();
+        }
+
+        // Update the chart and display
+        function updateChart() {
+            const product = products[currentProduct];
+            const currentPrice = parseFloat(document.getElementById('currentPrice').value) || product.basePrice;
+            const newPrice = parseFloat(document.getElementById('newPrice').value) || currentPrice * 1.2;
+            
+            // Calculate quantities using elasticity
+            const priceChangePercent = ((newPrice - currentPrice) / currentPrice) * 100;
+            const quantityChangePercent = product.baseElasticity * priceChangePercent;
+            
+            const currentQuantity = product.baseQuantity;
+            const newQuantity = currentQuantity * (1 + quantityChangePercent / 100);
+            
+            // Generate demand curve points
+            const demandData = [];
+            const maxPrice = Math.max(currentPrice, newPrice) * 2;
+            const maxQuantity = Math.max(currentQuantity, newQuantity) * 1.5;
+            
+            for (let i = 0; i <= 50; i++) {
+                const p = (maxPrice / 50) * i;
+                const q = currentQuantity * Math.pow(currentPrice / Math.max(p, 0.1), 1 / product.baseElasticity);
+                if (q >= 0 && q <= maxQuantity) {
+                    demandData.push({ x: q, y: p });
+                }
+            }
+            
+            // Update chart data
+            chart.data.datasets[0].data = demandData;
+            chart.data.datasets[1].data = [{ x: currentQuantity, y: currentPrice }];
+            chart.data.datasets[2].data = [{ x: newQuantity, y: newPrice }];
+            
+            // Update chart scales
+            chart.options.scales.x.max = maxQuantity;
+            chart.options.scales.y.max = maxPrice;
+            
+            chart.update('none');
+            
+            // Update metrics
+            updateMetrics(priceChangePercent, quantityChangePercent, currentPrice, newPrice, currentQuantity, newQuantity);
+        }
+
+        // Update the metrics display
+        function updateMetrics(priceChangePercent, quantityChangePercent, currentPrice, newPrice, currentQuantity, newQuantity) {
+            const elasticity = quantityChangePercent / priceChangePercent;
+            
+            // Update elasticity coefficient
+            document.getElementById('elasticityCoeff').textContent = elasticity.toFixed(2);
+            
+            // Update percentage changes
+            document.getElementById('priceChange').textContent = `${priceChangePercent >= 0 ? '+' : ''}${priceChangePercent.toFixed(1)}%`;
+            document.getElementById('quantityChange').textContent = `${quantityChangePercent >= 0 ? '+' : ''}${quantityChangePercent.toFixed(1)}%`;
+            
+            // Calculate revenue impact
+            const initialRevenue = currentPrice * currentQuantity;
+            const newRevenue = newPrice * newQuantity;
+            const revenueChangePercent = ((newRevenue - initialRevenue) / initialRevenue) * 100;
+            
+            document.getElementById('revenueImpact').textContent = `${revenueChangePercent >= 0 ? '+' : ''}${revenueChangePercent.toFixed(1)}%`;
+            
+            // Format revenue with proper commas and decimals
+            document.getElementById('initialRevenue').textContent = formatCurrency(initialRevenue);
+            document.getElementById('newRevenue').textContent = formatCurrency(newRevenue);
+            
+            // Update elasticity classification
+            updateElasticityIndicator(Math.abs(elasticity));
+        }
+
+        // Format currency properly
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 2
+            }).format(amount);
+        }
+
+        // Update elasticity indicator
+        function updateElasticityIndicator(absElasticity) {
+            const indicator = document.getElementById('elasticityType');
+            
+            if (absElasticity > 10) {
+                indicator.className = 'elasticity-indicator perfectly-elastic';
+                indicator.textContent = 'Perfectly Elastic';
+            } else if (absElasticity > 1) {
+                indicator.className = 'elasticity-indicator elastic';
+                indicator.textContent = 'Elastic Demand';
+            } else if (absElasticity === 1) {
+                indicator.className = 'elasticity-indicator unitary';
+                indicator.textContent = 'Unitary Elastic';
+            } else if (absElasticity > 0.1) {
+                indicator.className = 'elasticity-indicator inelastic';
+                indicator.textContent = 'Inelastic Demand';
+            } else {
+                indicator.className = 'elasticity-indicator perfectly-inelastic';
+                indicator.textContent = 'Perfectly Inelastic';
+            }
+        }
+
+        // Update display
+        function updateDisplay() {
+            const product = products[currentProduct];
+            document.getElementById('currentProductName').textContent = product.name;
+            document.getElementById('productDescription').textContent = product.description;
+            updateChart();
+        }
+
+        // Run scenario
+        function runScenario(scenarioType) {
+            const product = products[currentProduct];
+            
+            switch (scenarioType) {
+                case 'recession':
+                    document.getElementById('currentPrice').value = product.basePrice;
+                    document.getElementById('newPrice').value = Math.round(product.basePrice * 0.8);
+                    break;
+                case 'substitute':
+                    document.getElementById('currentPrice').value = product.basePrice;
+                    document.getElementById('newPrice').value = Math.round(product.basePrice * 1.3);
+                    break;
+                case 'income-boost':
+                    document.getElementById('currentPrice').value = product.basePrice;
+                    document.getElementById('newPrice').value = Math.round(product.basePrice * 1.15);
+                    break;
+                case 'emergency':
+                    document.getElementById('currentPrice').value = product.basePrice;
+                    document.getElementById('newPrice').value = Math.round(product.basePrice * 2);
+                    break;
+            }
+            updateChart();
+        }
+
+        // Reset calculations
+        function resetCalculations() {
+            const product = products[currentProduct];
+            document.getElementById('currentPrice').value = product.basePrice;
+            document.getElementById('newPrice').value = Math.round(product.basePrice * 1.2);
+            updateChart();
+        }
+
+        // Shuffle array function
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        // Toggle quiz
+        function toggleQuiz() {
+            const quizSection = document.getElementById('quizSection');
+            quizActive = !quizActive;
+            
+            if (quizActive) {
+                quizSection.style.display = 'block';
+                // Shuffle questions and take 15 random ones
+                shuffledQuestions = shuffleArray(quizQuestions).slice(0, 15);
+                currentQuestionIndex = 0;
+                showQuestion();
+            } else {
+                quizSection.style.display = 'none';
+            }
+        }
+
+        // Show current question
+        function showQuestion() {
+            if (currentQuestionIndex >= shuffledQuestions.length) {
+                // Quiz completed
+                document.getElementById('quizQuestion').textContent = 'Quiz completed! You have mastered the basics of price elasticity.';
+                document.getElementById('quizOptions').innerHTML = '';
+                document.getElementById('quizFeedback').style.display = 'none';
+                document.getElementById('nextBtn').style.display = 'none';
+                document.getElementById('quizProgress').textContent = 'Quiz Complete!';
+                return;
+            }
+
+            const question = shuffledQuestions[currentQuestionIndex];
+            
+            // Update progress
+            document.getElementById('quizProgress').textContent = `Question ${currentQuestionIndex + 1} of ${shuffledQuestions.length}`;
+            
+            // Show question
+            document.getElementById('quizQuestion').textContent = question.question;
+            
+            // Shuffle options for this question
+            const shuffledOptions = shuffleArray(question.options.map((option, index) => ({
+                text: option,
+                isCorrect: index === question.correct
+            })));
+            
+            const optionsContainer = document.getElementById('quizOptions');
+            optionsContainer.innerHTML = '';
+            
+            shuffledOptions.forEach((option, index) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'quiz-option';
+                optionDiv.textContent = option.text;
+                optionDiv.onclick = () => selectQuizOption(optionDiv, option.isCorrect, question.explanation);
+                optionsContainer.appendChild(optionDiv);
+            });
+            
+            document.getElementById('quizFeedback').style.display = 'none';
+            document.getElementById('nextBtn').style.display = 'none';
+        }
+
+        // Select quiz option
+        function selectQuizOption(element, isCorrect, explanation) {
+            const options = document.querySelectorAll('.quiz-option');
+            
+            // Disable all options and mark correct/incorrect
+            options.forEach(option => {
+                option.onclick = null;
+                const optionText = option.textContent;
+                
+                // Find the correct answer among all options
+                const shuffledQuestion = shuffledQuestions[currentQuestionIndex];
+                const correctAnswerText = shuffledQuestion.options[shuffledQuestion.correct];
+                
+                if (optionText === correctAnswerText) {
+                    option.classList.add('correct');
+                } else if (option === element && !isCorrect) {
+                    option.classList.add('incorrect');
+                }
+            });
+            
+            // Show feedback
+            const feedback = document.getElementById('quizFeedback');
+            feedback.textContent = explanation;
+            feedback.style.display = 'block';
+            
+            // Show next button if not last question
+            if (currentQuestionIndex < shuffledQuestions.length - 1) {
+                document.getElementById('nextBtn').style.display = 'block';
+            }
+        }
+
+        // Next question
+        function nextQuestion() {
+            currentQuestionIndex++;
+            showQuestion();
+        }
+
+        // Download theory guide
+        function downloadTheoryGuide() {
+            // Create the theory guide content
+            const guideContent = createElasticityTheoryGuide();
+            
+            // Create and download the file
+            const blob = new Blob([guideContent], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'elasticity_theory_guide.html';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Create theory guide content
+        function createElasticityTheoryGuide() {
+            return `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Price Elasticity Theory Guide</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            color: #333;
+            background: white;
+        }
+        
+        h1 {
+            color: #1a1a1a;
+            border-bottom: 3px solid #1a4fa0;
+            padding-bottom: 10px;
+            font-size: 2.2em;
+            margin-bottom: 30px;
+        }
+        
+        h2 {
+            color: #1a4fa0;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            border-left: 4px solid #1a4fa0;
+            padding-left: 15px;
+        }
+        
+        h3 {
+            color: #333;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+        
+        h4 {
+            color: #666;
+            margin-top: 25px;
+            margin-bottom: 10px;
+            font-size: 1em;
+            font-weight: 600;
+        }
+        
+        p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+        
+        ul, ol {
+            margin-bottom: 15px;
+            padding-left: 25px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        code {
+            background: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        
+        .toc {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+            margin: 30px 0;
+        }
+        
+        .toc h3 {
+            margin-top: 0;
+            color: #1a4fa0;
+        }
+        
+        .toc ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        
+        .toc a {
+            color: #1a4fa0;
+            text-decoration: none;
+        }
+        
+        .toc a:hover {
+            text-decoration: underline;
+        }
+        
+        .highlight-box {
+            background: #e7f3ff;
+            border-left: 4px solid #1a4fa0;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        
+        .formula-box {
+            background: #f0f8f0;
+            border: 1px solid #90c695;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .example-box {
+            background: #fff7e6;
+            border: 1px solid #ffb366;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.9em;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        th {
+            background: #f5f5f5;
+            font-weight: 600;
+        }
+        
+        hr {
+            border: none;
+            height: 2px;
+            background: #e0e0e0;
+            margin: 40px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Price Elasticity of Demand Theory Guide</h1>
+    <p><em>Understanding Responsiveness in Markets</em></p>
+    
+    <div class="toc">
+        <h3>Table of Contents</h3>
+        <ul>
+            <li><a href="#definition">1. Definition and Basic Concepts</a></li>
+            <li><a href="#calculation">2. Calculating Price Elasticity</a></li>
+            <li><a href="#types">3. Types of Price Elasticity</a></li>
+            <li><a href="#factors">4. Factors Affecting Elasticity</a></li>
+            <li><a href="#revenue">5. Elasticity and Total Revenue</a></li>
+            <li><a href="#applications">6. Real-World Applications</a></li>
+            <li><a href="#simulator">7. How the Simulator Works</a></li>
+        </ul>
+    </div>
+
+    <h2 id="definition">1. Definition and Basic Concepts</h2>
+
+    <h3>What is Price Elasticity of Demand?</h3>
+    <p><strong>Price elasticity of demand</strong> measures how responsive the quantity demanded of a good is to changes in its price. It tells us by what percentage quantity demanded will change when price changes by 1%.</p>
+
+    <div class="highlight-box">
+        <p><strong>Key Insight:</strong> Price elasticity helps businesses and policymakers understand how consumers will react to price changes, making it crucial for pricing strategies and market analysis.</p>
+    </div>
+
+    <h3>Why is Elasticity Important?</h3>
+    <ul>
+        <li><strong>Business Strategy:</strong> Helps companies set optimal prices</li>
+        <li><strong>Revenue Prediction:</strong> Determines whether price increases will boost or reduce revenue</li>
+        <li><strong>Market Understanding:</strong> Reveals consumer behavior patterns</li>
+        <li><strong>Policy Making:</strong> Guides taxation and regulation decisions</li>
+    </ul>
+
+    <h2 id="calculation">2. Calculating Price Elasticity</h2>
+
+    <h3>Basic Formula</h3>
+    <div class="formula-box">
+        <strong>Price Elasticity of Demand (PED) = % Change in Quantity Demanded / % Change in Price</strong><br><br>
+        Or more precisely:<br>
+        <strong>PED = (ΔQ/Q) / (ΔP/P)</strong><br><br>
+        Where:<br>
+        • ΔQ = Change in quantity demanded<br>
+        • Q = Original quantity<br>
+        • ΔP = Change in price<br>
+        • P = Original price
+    </div>
+
+    <h3>Step-by-Step Calculation</h3>
+    <div class="example-box">
+        <h4>Example: Coffee Shop Price Increase</h4>
+        <p><strong>Scenario:</strong> A coffee shop increases price from $4.50 to $5.50, and daily sales drop from 100 to 80 cups.</p>
+        
+        <p><strong>Step 1:</strong> Calculate percentage change in price<br>
+        % Change in Price = (($5.50 - $4.50) / $4.50) × 100 = 22.2%</p>
+        
+        <p><strong>Step 2:</strong> Calculate percentage change in quantity<br>
+        % Change in Quantity = ((80 - 100) / 100) × 100 = -20%</p>
+        
+        <p><strong>Step 3:</strong> Calculate elasticity<br>
+        PED = -20% / 22.2% = -0.9</p>
+        
+        <p><strong>Interpretation:</strong> Demand is inelastic (|PED| < 1)</p>
+    </div>
+
+    <h2 id="types">3. Types of Price Elasticity</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Type</th>
+                <th>Coefficient Range</th>
+                <th>Description</th>
+                <th>Examples</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Perfectly Inelastic</strong></td>
+                <td>|PED| = 0</td>
+                <td>Quantity doesn't change with price</td>
+                <td>Life-saving medicine</td>
+            </tr>
+            <tr>
+                <td><strong>Inelastic</strong></td>
+                <td>0 < |PED| < 1</td>
+                <td>Quantity changes less than price</td>
+                <td>Gasoline, bread, utilities</td>
+            </tr>
+            <tr>
+                <td><strong>Unitary Elastic</strong></td>
+                <td>|PED| = 1</td>
+                <td>Quantity changes proportionally to price</td>
+                <td>Some clothing items</td>
+            </tr>
+            <tr>
+                <td><strong>Elastic</strong></td>
+                <td>|PED| > 1</td>
+                <td>Quantity changes more than price</td>
+                <td>Luxury cars, restaurant meals</td>
+            </tr>
+            <tr>
+                <td><strong>Perfectly Elastic</strong></td>
+                <td>|PED| = ∞</td>
+                <td>Infinite response to price change</td>
+                <td>Perfect substitutes</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2 id="factors">4. Factors Affecting Elasticity</h2>
+
+    <h3>1. Availability of Substitutes</h3>
+    <ul>
+        <li><strong>Many substitutes:</strong> More elastic (easy to switch)</li>
+        <li><strong>Few substitutes:</strong> Less elastic (harder to switch)</li>
+    </ul>
+
+    <h3>2. Necessity vs. Luxury</h3>
+    <ul>
+        <li><strong>Necessities:</strong> Inelastic (must buy regardless of price)</li>
+        <li><strong>Luxuries:</strong> Elastic (can postpone or avoid purchase)</li>
+    </ul>
+
+    <h3>3. Time Period</h3>
+    <ul>
+        <li><strong>Short-run:</strong> More inelastic (less time to adjust)</li>
+        <li><strong>Long-run:</strong> More elastic (more time to find alternatives)</li>
+    </ul>
+
+    <h2 id="revenue">5. Elasticity and Total Revenue</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Demand Type</th>
+                <th>Price Increase</th>
+                <th>Price Decrease</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Elastic</strong></td>
+                <td>Revenue decreases</td>
+                <td>Revenue increases</td>
+            </tr>
+            <tr>
+                <td><strong>Unitary Elastic</strong></td>
+                <td>Revenue unchanged</td>
+                <td>Revenue unchanged</td>
+            </tr>
+            <tr>
+                <td><strong>Inelastic</strong></td>
+                <td>Revenue increases</td>
+                <td>Revenue decreases</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2 id="applications">6. Real-World Applications</h2>
+
+    <h3>Business Pricing Strategies</h3>
+    <ul>
+        <li><strong>Luxury brands:</strong> Can charge premium prices due to brand loyalty</li>
+        <li><strong>Essential services:</strong> Utilities can increase prices with less customer loss</li>
+        <li><strong>Entertainment:</strong> Must be careful with pricing due to elastic demand</li>
+    </ul>
+
+    <h3>Government Policy</h3>
+    <ul>
+        <li><strong>Sin taxes:</strong> Effective on inelastic goods like cigarettes</li>
+        <li><strong>Fuel taxes:</strong> Generate revenue due to inelastic demand</li>
+        <li><strong>Price controls:</strong> More effective on inelastic goods</li>
+    </ul>
+
+    <h2 id="simulator">7. How the Simulator Works</h2>
+
+    <h3>Product Elasticity Values</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Elasticity</th>
+                <th>Real Price</th>
+                <th>Classification</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>🚗 Luxury Car</td>
+                <td>-2.5</td>
+                <td>$50,000</td>
+                <td>Elastic</td>
+            </tr>
+            <tr>
+                <td>📺 Streaming Service</td>
+                <td>-1.8</td>
+                <td>$15.99</td>
+                <td>Elastic</td>
+            </tr>
+            <tr>
+                <td>☕ Coffee</td>
+                <td>-1.2</td>
+                <td>$4.50</td>
+                <td>Elastic</td>
+            </tr>
+            <tr>
+                <td>🍞 Bread</td>
+                <td>-0.4</td>
+                <td>$2.75</td>
+                <td>Inelastic</td>
+            </tr>
+            <tr>
+                <td>⛽ Gasoline</td>
+                <td>-0.3</td>
+                <td>$3.50</td>
+                <td>Inelastic</td>
+            </tr>
+            <tr>
+                <td>💊 Medicine</td>
+                <td>-0.1</td>
+                <td>$25.00</td>
+                <td>Very Inelastic</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="highlight-box">
+        <p><em>This simulator uses realistic pricing and elasticity values to provide hands-on experience with economic concepts. Practice with different products to understand how elasticity affects business decisions and consumer behavior.</em></p>
+    </div>
+
+</body>
+</html>`;
+        }
+
+        // Event listeners for price inputs
+        function setupEventListeners() {
+            document.getElementById('currentPrice').addEventListener('input', updateChart);
+            document.getElementById('newPrice').addEventListener('input', updateChart);
+        }
+
+        // Initialize the game
+        document.addEventListener('DOMContentLoaded', () => {
+            initChart();
+            setupEventListeners();
+            updateDisplay();
+        });
+    </script>
+</body>
+</html>
+        

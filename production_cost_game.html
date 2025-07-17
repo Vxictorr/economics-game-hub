@@ -1,0 +1,1944 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Production & Cost Simulator</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #fafafa;
+            color: #1a1a1a;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .header h1 {
+            font-size: 2.2rem;
+            font-weight: 300;
+            color: #1a1a1a;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .header p {
+            font-size: 1rem;
+            color: #666;
+            font-weight: 400;
+        }
+
+        .game-area {
+            display: grid;
+            grid-template-columns: 280px 1fr 280px;
+            gap: 40px;
+            align-items: start;
+        }
+
+        .panel {
+            background: #fff;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            padding: 24px;
+        }
+
+        .panel h3 {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #1a1a1a;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .control-group {
+            margin-bottom: 24px;
+        }
+
+        .control-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .control-group label {
+            display: block;
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 8px;
+            font-weight: 400;
+        }
+
+        .slider-container {
+            position: relative;
+            margin-bottom: 8px;
+        }
+
+        .slider {
+            width: 100%;
+            height: 2px;
+            border-radius: 1px;
+            background: #e5e5e5;
+            outline: none;
+            -webkit-appearance: none;
+            cursor: pointer;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #1a1a1a;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .slider::-webkit-slider-thumb:hover {
+            background: #333;
+            transform: scale(1.2);
+        }
+
+        .slider::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #1a1a1a;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s ease;
+        }
+
+        .slider-value {
+            font-size: 0.8rem;
+            color: #999;
+            text-align: right;
+        }
+
+        .chart-container {
+            background: #fff;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            padding: 32px;
+            min-height: 500px;
+        }
+
+        .info-card {
+            background: #fff;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .info-card h4 {
+            font-size: 0.8rem;
+            color: #666;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 500;
+        }
+
+        .metric-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .metric {
+            text-align: center;
+        }
+
+        .metric-label {
+            font-size: 0.75rem;
+            color: #999;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .metric-value {
+            font-size: 1.4rem;
+            font-weight: 300;
+            color: #1a1a1a;
+        }
+
+        .button {
+            background: #1a1a1a;
+            color: #fff;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 400;
+            transition: all 0.2s ease;
+            width: 100%;
+            margin-bottom: 8px;
+        }
+
+        .button:hover {
+            background: #333;
+        }
+
+        .button.active {
+            background: #0066cc;
+        }
+
+        .button.active:hover {
+            background: #0052a3;
+        }
+
+        .button-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .button-small {
+            padding: 6px 12px;
+            font-size: 0.8rem;
+        }
+
+        .section-divider {
+            height: 1px;
+            background: #e5e5e5;
+            margin: 24px 0;
+        }
+
+        .production-indicator {
+            text-align: center;
+            margin: 16px 0;
+            padding: 12px;
+            border-radius: 4px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: #fff;
+            background: #28a745;
+        }
+
+        .increasing { background: #28a745; }
+        .decreasing { background: #dc3545; }
+        .constant { background: #ffc107; color: #1a1a1a; }
+
+        .description {
+            font-size: 0.8rem;
+            color: #999;
+            margin-top: 8px;
+            font-style: italic;
+        }
+
+        .quiz-section {
+            background: #fff;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            padding: 24px;
+            margin-top: 40px;
+            display: none;
+        }
+
+        .quiz-question {
+            font-size: 1rem;
+            margin-bottom: 16px;
+            color: #1a1a1a;
+            font-weight: 400;
+        }
+
+        .quiz-options {
+            display: grid;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .quiz-option {
+            background: #f8f9fa;
+            border: 1px solid #e5e5e5;
+            padding: 12px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+        }
+
+        .quiz-option:hover {
+            background: #e9ecef;
+            border-color: #adb5bd;
+        }
+
+        .quiz-option.correct {
+            background: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+
+        .quiz-option.incorrect {
+            background: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+
+        .quiz-feedback {
+            background: #f8f9fa;
+            border: 1px solid #e5e5e5;
+            border-radius: 4px;
+            padding: 12px;
+            margin-top: 12px;
+            font-size: 0.85rem;
+            color: #666;
+            display: none;
+        }
+
+        .quiz-progress {
+            background: #e9ecef;
+            border-radius: 10px;
+            height: 8px;
+            margin: 16px 0;
+            overflow: hidden;
+        }
+
+        .quiz-progress-bar {
+            background: #28a745;
+            height: 100%;
+            transition: width 0.3s ease;
+            border-radius: 10px;
+        }
+
+        .efficiency-bar {
+            background: #1a4fa0;
+            height: 20px;
+            border-radius: 10px;
+            margin: 8px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .efficiency-level {
+            background: #28a745;
+            height: 100%;
+            transition: width 0.3s ease;
+            border-radius: 10px;
+        }
+
+        .efficiency-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .cost-breakdown {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 8px;
+        }
+
+        .cost-breakdown .cost-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 4px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .game-area {
+                grid-template-columns: 260px 1fr 260px;
+                gap: 30px;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .game-area {
+                grid-template-columns: 1fr 1fr;
+                gap: 30px;
+            }
+            
+            .chart-container {
+                grid-column: 1 / -1;
+                order: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .game-area {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Production & Cost Simulator</h1>
+            <p>Interactive microeconomics production theory and cost analysis tool</p>
+        </div>
+
+        <div class="game-area">
+            <!-- Left Panel: Controls -->
+            <div class="panel">
+                <h3>Production Factors</h3>
+                
+                <div class="control-group">
+                    <label for="laborUnits">Labor Units (Variable)</label>
+                    <div class="slider-container">
+                        <input type="range" id="laborUnits" class="slider" min="0" max="20" value="5" step="1">
+                    </div>
+                    <div class="slider-value" id="laborUnitsValue">5 workers</div>
+                </div>
+
+                <div class="control-group">
+                    <label for="capitalUnits">Capital Units (Fixed)</label>
+                    <div class="slider-container">
+                        <input type="range" id="capitalUnits" class="slider" min="1" max="10" value="3" step="1">
+                    </div>
+                    <div class="slider-value" id="capitalUnitsValue">3 machines</div>
+                </div>
+
+                <div class="control-group">
+                    <label for="wageRate">Wage Rate ($/hour)</label>
+                    <div class="slider-container">
+                        <input type="range" id="wageRate" class="slider" min="10" max="50" value="20" step="1">
+                    </div>
+                    <div class="slider-value" id="wageRateValue">$20/hour</div>
+                </div>
+
+                <div class="control-group">
+                    <label for="capitalCost">Capital Cost ($/unit)</label>
+                    <div class="slider-container">
+                        <input type="range" id="capitalCost" class="slider" min="50" max="200" value="100" step="10">
+                    </div>
+                    <div class="slider-value" id="capitalCostValue">$100/unit</div>
+                </div>
+
+                <div class="section-divider"></div>
+
+                <h3>Production Function</h3>
+                <div class="control-group">
+                    <label for="productivity">Technology Level</label>
+                    <div class="slider-container">
+                        <input type="range" id="productivity" class="slider" min="50" max="200" value="100" step="10">
+                    </div>
+                    <div class="slider-value" id="productivityValue">100%</div>
+                </div>
+
+                <div class="section-divider"></div>
+
+                <h3>Market Scenarios</h3>
+                <div class="button-group">
+                    <button class="button button-small" onclick="runScenario('recession')">Recession</button>
+                    <button class="button button-small" onclick="runScenario('boom')">Economic Boom</button>
+                </div>
+                <div class="button-group">
+                    <button class="button button-small" onclick="runScenario('tech-advance')">Tech Advance</button>
+                    <button class="button button-small" onclick="runScenario('wage-increase')">Wage Increase</button>
+                </div>
+
+                <button class="button" onclick="resetProduction()">Reset Production</button>
+                <button class="button" onclick="toggleQuiz()">Start Quiz</button>
+            </div>
+
+            <!-- Center Panel: Chart -->
+            <div class="chart-container">
+                <canvas id="productionChart"></canvas>
+            </div>
+
+            <!-- Right Panel: Information -->
+            <div>
+                <!-- Production Analysis -->
+                <div class="info-card">
+                    <h4>Production Analysis</h4>
+                    
+                    <div class="production-indicator increasing" id="productionType">
+                        Increasing Returns
+                    </div>
+
+                    <div class="metric-grid">
+                        <div class="metric">
+                            <div class="metric-label">Total Product</div>
+                            <div class="metric-value" id="totalProduct">150</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">Marginal Product</div>
+                            <div class="metric-value" id="marginalProduct">25</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">Average Product</div>
+                            <div class="metric-value" id="averageProduct">30</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">Productivity</div>
+                            <div class="metric-value" id="productivityLevel">100%</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cost Analysis -->
+                <div class="info-card">
+                    <h4>Cost Analysis</h4>
+                    <div class="metric-grid">
+                        <div class="metric">
+                            <div class="metric-label">Total Cost</div>
+                            <div class="metric-value" id="totalCost">$400</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">Marginal Cost</div>
+                            <div class="metric-value" id="marginalCost">$0.80</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">Average Cost</div>
+                            <div class="metric-value" id="averageCost">$2.67</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">Avg Variable Cost</div>
+                            <div class="metric-value" id="avgVariableCost">$0.67</div>
+                        </div>
+                    </div>
+                    <div class="cost-breakdown">
+                        <div class="cost-item">
+                            <span>Fixed Cost:</span>
+                            <span id="fixedCost">$300</span>
+                        </div>
+                        <div class="cost-item">
+                            <span>Variable Cost:</span>
+                            <span id="variableCost">$100</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Efficiency Analysis -->
+                <div class="info-card">
+                    <h4>Efficiency Analysis</h4>
+                    <div class="efficiency-bar">
+                        <div class="efficiency-level" id="efficiencyLevel"></div>
+                        <div class="efficiency-text" id="efficiencyText">85% Efficient</div>
+                    </div>
+                    <div class="description" id="efficiencyDescription">
+                        Operating at high efficiency with good labor utilization
+                    </div>
+                </div>
+
+                <!-- Economic Concepts -->
+                <div class="info-card">
+                    <h4>Key Concepts</h4>
+                    <div style="font-size: 0.8rem; color: #666; line-height: 1.4;">
+                        <strong>Marginal Product:</strong> Additional output from one more worker<br>
+                        <strong>Marginal Cost:</strong> Cost of producing one more unit<br>
+                        <strong>Economies of Scale:</strong> Lower costs with higher production
+                    </div>
+                </div>
+
+                <!-- Download Button -->
+                <button class="button" onclick="downloadTheoryGuide()">Download Theory Guide</button>
+            </div>
+        </div>
+
+        <!-- Quiz Section -->
+        <div class="quiz-section" id="quizSection">
+            <h3>Production & Cost Quiz</h3>
+            
+            <div class="quiz-progress">
+                <div class="quiz-progress-bar" id="progressBar"></div>
+            </div>
+            
+            <div class="quiz-question" id="quizQuestion">
+                What happens to marginal product when diminishing returns set in?
+            </div>
+            
+            <div class="quiz-options" id="quizOptions">
+                <div class="quiz-option" onclick="selectQuizOption(this, false)">Marginal product increases</div>
+                <div class="quiz-option" onclick="selectQuizOption(this, true)">Marginal product decreases</div>
+                <div class="quiz-option" onclick="selectQuizOption(this, false)">Marginal product stays constant</div>
+                <div class="quiz-option" onclick="selectQuizOption(this, false)">Marginal product becomes negative</div>
+            </div>
+            
+            <div class="quiz-feedback" id="quizFeedback">
+                Correct! The law of diminishing returns states that marginal product decreases as more variable inputs are added to fixed inputs.
+            </div>
+
+            <button class="button" onclick="nextQuestion()" style="margin-top: 16px; display: none;" id="nextBtn">Next Question</button>
+            <button class="button" onclick="toggleQuiz()" style="margin-top: 16px;">Close Quiz</button>
+        </div>
+    </div>
+
+    <script>
+        // Game state
+        let chart;
+        let quizActive = false;
+        let currentQuestionIndex = 0;
+        let quizScore = 0;
+
+        let productionState = {
+            laborUnits: 5,
+            capitalUnits: 3,
+            wageRate: 20,
+            capitalCost: 100,
+            productivity: 100
+        };
+
+        // Quiz questions
+        const quizQuestions = [
+            {
+                question: "What happens to marginal product when diminishing returns set in?",
+                options: ["Marginal product increases", "Marginal product decreases", "Marginal product stays constant", "Marginal product becomes negative"],
+                correct: 1,
+                explanation: "Correct! The law of diminishing returns states that marginal product decreases as more variable inputs are added to fixed inputs."
+            },
+            {
+                question: "Which cost remains constant regardless of production level?",
+                options: ["Variable cost", "Marginal cost", "Fixed cost", "Average cost"],
+                correct: 2,
+                explanation: "Correct! Fixed costs remain constant regardless of production level - they include rent, insurance, and equipment costs."
+            },
+            {
+                question: "What is marginal cost?",
+                options: ["Total cost divided by quantity", "The cost of the last unit produced", "Fixed cost plus variable cost", "The change in total cost from producing one more unit"],
+                correct: 3,
+                explanation: "Correct! Marginal cost is the change in total cost that results from producing one additional unit of output."
+            },
+            {
+                question: "When does a firm experience economies of scale?",
+                options: ["When average cost increases with output", "When average cost decreases with output", "When marginal cost equals average cost", "When fixed costs are zero"],
+                correct: 1,
+                explanation: "Correct! Economies of scale occur when average cost decreases as production increases, often due to better utilization of fixed resources."
+            },
+            {
+                question: "What is the relationship between marginal product and marginal cost?",
+                options: ["They always move in the same direction", "They move in opposite directions", "They are unrelated", "They are always equal"],
+                correct: 1,
+                explanation: "Correct! Marginal product and marginal cost have an inverse relationship - when MP increases, MC decreases, and vice versa."
+            },
+            {
+                question: "Which of the following is NOT a fixed cost?",
+                options: ["Rent", "Insurance", "Raw materials", "Equipment depreciation"],
+                correct: 2,
+                explanation: "Correct! Raw materials are variable costs because they change with production level, while rent, insurance, and depreciation are fixed costs."
+            },
+            {
+                question: "What does it mean when marginal cost equals average cost?",
+                options: ["Production should stop", "Average cost is at its minimum", "Fixed costs are zero", "Marginal product is maximized"],
+                correct: 1,
+                explanation: "Correct! When marginal cost equals average cost, average cost is at its minimum point. This is a key principle in cost theory."
+            },
+            {
+                question: "In the short run, which factor of production is typically fixed?",
+                options: ["Labor", "Raw materials", "Capital (machinery/equipment)", "Energy"],
+                correct: 2,
+                explanation: "Correct! In the short run, capital (machinery, equipment, buildings) is typically fixed while labor and materials are variable."
+            },
+            {
+                question: "What causes the law of diminishing returns?",
+                options: ["Increasing fixed costs", "Adding variable inputs to fixed inputs", "Decreasing technology", "Higher wages"],
+                correct: 1,
+                explanation: "Correct! Diminishing returns occur when you add more variable inputs (like labor) to fixed inputs (like capital), causing efficiency to decrease."
+            },
+            {
+                question: "Which cost curve is U-shaped in the short run?",
+                options: ["Fixed cost", "Variable cost", "Average cost", "Total cost"],
+                correct: 2,
+                explanation: "Correct! The average cost curve is U-shaped due to initially decreasing fixed costs per unit, then increasing variable costs per unit."
+            },
+            {
+                question: "What is average variable cost?",
+                options: ["Total cost divided by quantity", "Variable cost divided by quantity", "Fixed cost divided by quantity", "Marginal cost times quantity"],
+                correct: 1,
+                explanation: "Correct! Average variable cost is total variable cost divided by the quantity of output produced."
+            },
+            {
+                question: "When is marginal product at its maximum?",
+                options: ["When total product is maximized", "When marginal cost is minimized", "When average product is maximized", "When fixed costs are lowest"],
+                correct: 1,
+                explanation: "Correct! Marginal product is maximized when marginal cost is at its minimum, reflecting the inverse relationship between them."
+            },
+            {
+                question: "What happens to average fixed cost as production increases?",
+                options: ["It increases", "It decreases", "It stays constant", "It becomes zero"],
+                correct: 1,
+                explanation: "Correct! Average fixed cost decreases as production increases because fixed costs are spread over more units of output."
+            },
+            {
+                question: "Which statement about total cost is correct?",
+                options: ["TC = FC + VC", "TC = MC × Q", "TC = AC × FC", "TC = VC - FC"],
+                correct: 0,
+                explanation: "Correct! Total cost equals fixed cost plus variable cost (TC = FC + VC). This is the fundamental cost identity."
+            },
+            {
+                question: "What is the production function?",
+                options: ["The relationship between inputs and costs", "The relationship between inputs and output", "The relationship between price and quantity", "The relationship between revenue and profit"],
+                correct: 1,
+                explanation: "Correct! The production function shows the relationship between inputs (labor, capital) and the maximum output that can be produced."
+            },
+            {
+                question: "When does a firm experience diseconomies of scale?",
+                options: ["When average cost decreases with output", "When average cost increases with output", "When marginal cost is zero", "When fixed costs increase"],
+                correct: 1,
+                explanation: "Correct! Diseconomies of scale occur when average cost increases as production increases, often due to management inefficiencies."
+            },
+            {
+                question: "What is the marginal rate of technical substitution (MRTS)?",
+                options: ["The rate at which one input can be substituted for another", "The rate of change in marginal cost", "The rate of change in output", "The rate of change in productivity"],
+                correct: 0,
+                explanation: "Correct! MRTS measures the rate at which one input can be substituted for another while keeping output constant."
+            },
+            {
+                question: "Which cost is also known as 'sunk cost'?",
+                options: ["Variable cost", "Marginal cost", "Fixed cost", "Average cost"],
+                correct: 2,
+                explanation: "Correct! Fixed costs are often sunk costs because they cannot be recovered once incurred, regardless of production decisions."
+            },
+            {
+                question: "What does the law of variable proportions describe?",
+                options: ["How costs change with output", "How output changes when one input is varied", "How prices change with demand", "How technology affects production"],
+                correct: 1,
+                explanation: "Correct! The law of variable proportions describes how output changes when one input is varied while others remain fixed."
+            },
+            {
+                question: "In the long run, what happens to all costs?",
+                options: ["They all become fixed", "They all become variable", "They all decrease", "They all increase"],
+                correct: 1,
+                explanation: "Correct! In the long run, all costs become variable because firms can adjust all inputs, including capital and facilities."
+            }
+        ];
+
+        // Initialize the chart
+        function initChart() {
+            const ctx = document.getElementById('productionChart').getContext('2d');
+            
+            Chart.defaults.font.family = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+            Chart.defaults.color = '#666';
+            
+            chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [
+                        {
+                            label: 'Total Product',
+                            data: [],
+                            borderColor: '#1a4fa0',
+                            backgroundColor: 'rgba(0, 122, 204, 0.1)',
+                            borderWidth: 2,
+                            fill: false,
+                            tension: 0.1,
+                            pointRadius: 3,
+                            pointHoverRadius: 5
+                        },
+                        {
+                            label: 'Marginal Product',
+                            data: [],
+                            borderColor: '#28a745',
+                            backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                            borderWidth: 2,
+                            fill: false,
+                            tension: 0.1,
+                            pointRadius: 3,
+                            pointHoverRadius: 5
+                        },
+                        {
+                            label: 'Average Product',
+                            data: [],
+                            borderColor: '#ffc107',
+                            backgroundColor: 'rgba(255, 193, 7, 0.1)',
+                            borderWidth: 2,
+                            fill: false,
+                            tension: 0.1,
+                            pointRadius: 3,
+                            pointHoverRadius: 5
+                        },
+                        {
+                            label: 'Average Cost',
+                            data: [],
+                            borderColor: '#dc3545',
+                            backgroundColor: 'rgba(220, 53, 69, 0.1)',
+                            borderWidth: 2,
+                            fill: false,
+                            tension: 0.1,
+                            pointRadius: 3,
+                            pointHoverRadius: 5
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                font: { size: 12, weight: '400' },
+                                usePointStyle: true,
+                                boxWidth: 12,
+                                padding: 20
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: '#1a1a1a',
+                            titleColor: '#fff',
+                            bodyColor: '#fff',
+                            borderColor: '#333',
+                            borderWidth: 1,
+                            cornerRadius: 4,
+                            displayColors: true
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Labor Units',
+                                font: { size: 12, weight: '400' },
+                                color: '#666'
+                            },
+                            grid: { 
+                                color: '#f0f0f0',
+                                lineWidth: 1
+                            },
+                            ticks: {
+                                color: '#999',
+                                font: { size: 11 }
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Output / Cost',
+                                font: { size: 12, weight: '400' },
+                                color: '#666'
+                            },
+                            grid: { 
+                                color: '#f0f0f0',
+                                lineWidth: 1
+                            },
+                            ticks: {
+                                color: '#999',
+                                font: { size: 11 }
+                            }
+                        }
+                    }
+                }
+            });
+
+            updateChart();
+        }
+
+        // Production function with diminishing returns
+        function calculateProduction(labor, capital, productivity) {
+            const techFactor = productivity / 100;
+            // Cobb-Douglas production function with diminishing returns
+            const output = techFactor * Math.pow(labor, 0.7) * Math.pow(capital, 0.3) * 10;
+            return Math.max(0, output);
+        }
+
+        // Calculate costs and production metrics
+        function calculateMetrics() {
+            const { laborUnits, capitalUnits, wageRate, capitalCost, productivity } = productionState;
+            
+            // Calculate production data for different labor levels
+            const labels = [];
+            const totalProductData = [];
+            const marginalProductData = [];
+            const averageProductData = [];
+            const averageCostData = [];
+            
+            let previousOutput = 0;
+            
+            for (let labor = 0; labor <= 20; labor++) {
+                const output = calculateProduction(labor, capitalUnits, productivity);
+                const marginalProduct = labor === 0 ? 0 : output - previousOutput;
+                const averageProduct = labor === 0 ? 0 : output / labor;
+                
+                // Calculate costs
+                const fixedCost = capitalUnits * capitalCost;
+                const variableCost = labor * wageRate;
+                const totalCost = fixedCost + variableCost;
+                const averageCost = output > 0 ? totalCost / output : 0;
+                
+                labels.push(labor);
+                totalProductData.push(output);
+                marginalProductData.push(marginalProduct);
+                averageProductData.push(averageProduct);
+                averageCostData.push(averageCost);
+                
+                previousOutput = output;
+            }
+            
+            // Current production metrics
+            const currentOutput = calculateProduction(laborUnits, capitalUnits, productivity);
+            const previousOutputCurrent = laborUnits > 0 ? calculateProduction(laborUnits - 1, capitalUnits, productivity) : 0;
+            const currentMarginalProduct = laborUnits > 0 ? currentOutput - previousOutputCurrent : 0;
+            const currentAverageProduct = laborUnits > 0 ? currentOutput / laborUnits : 0;
+            
+            // Cost calculations
+            const fixedCost = capitalUnits * capitalCost;
+            const variableCost = laborUnits * wageRate;
+            const totalCost = fixedCost + variableCost;
+            const averageCost = currentOutput > 0 ? totalCost / currentOutput : 0;
+            const averageVariableCost = currentOutput > 0 ? variableCost / currentOutput : 0;
+            const marginalCost = currentMarginalProduct > 0 ? wageRate / currentMarginalProduct : 0;
+            
+            // Efficiency calculation (based on optimal labor utilization)
+            const optimalLabor = Math.pow(capitalUnits * 0.3 / 0.7, 1 / 0.3) * (productivity / 100);
+            const efficiency = Math.min(100, Math.max(0, (1 - Math.abs(laborUnits - optimalLabor) / Math.max(optimalLabor, 1)) * 100));
+            
+            return {
+                labels,
+                totalProductData,
+                marginalProductData,
+                averageProductData,
+                averageCostData,
+                currentOutput,
+                currentMarginalProduct,
+                currentAverageProduct,
+                fixedCost,
+                variableCost,
+                totalCost,
+                averageCost,
+                averageVariableCost,
+                marginalCost,
+                efficiency
+            };
+        }
+
+        // Update chart and display
+        function updateChart() {
+            const metrics = calculateMetrics();
+            
+            // Update chart data
+            chart.data.labels = metrics.labels;
+            chart.data.datasets[0].data = metrics.totalProductData;
+            chart.data.datasets[1].data = metrics.marginalProductData;
+            chart.data.datasets[2].data = metrics.averageProductData;
+            chart.data.datasets[3].data = metrics.averageCostData;
+            
+            chart.update('none');
+            
+            // Update displays
+            updateMetricsDisplay(metrics);
+        }
+
+        // Update metrics display
+        function updateMetricsDisplay(metrics) {
+            document.getElementById('totalProduct').textContent = Math.round(metrics.currentOutput);
+            document.getElementById('marginalProduct').textContent = metrics.currentMarginalProduct.toFixed(1);
+            document.getElementById('averageProduct').textContent = metrics.currentAverageProduct.toFixed(1);
+            document.getElementById('productivityLevel').textContent = `${productionState.productivity}%`;
+            
+            document.getElementById('totalCost').textContent = `${Math.round(metrics.totalCost)}`;
+            document.getElementById('marginalCost').textContent = `${metrics.marginalCost.toFixed(2)}`;
+            document.getElementById('averageCost').textContent = `${metrics.averageCost.toFixed(2)}`;
+            document.getElementById('avgVariableCost').textContent = `${metrics.averageVariableCost.toFixed(2)}`;
+            document.getElementById('fixedCost').textContent = `${Math.round(metrics.fixedCost)}`;
+            document.getElementById('variableCost').textContent = `${Math.round(metrics.variableCost)}`;
+            
+            // Update efficiency display
+            document.getElementById('efficiencyLevel').style.width = `${metrics.efficiency}%`;
+            document.getElementById('efficiencyText').textContent = `${Math.round(metrics.efficiency)}% Efficient`;
+            
+            // Update production type indicator
+            updateProductionTypeIndicator(metrics.currentMarginalProduct);
+            
+            // Update efficiency description
+            updateEfficiencyDescription(metrics.efficiency);
+        }
+
+        // Update production type indicator
+        function updateProductionTypeIndicator(marginalProduct) {
+            const indicator = document.getElementById('productionType');
+            const prevLabor = Math.max(0, productionState.laborUnits - 1);
+            const prevOutput = calculateProduction(prevLabor, productionState.capitalUnits, productionState.productivity);
+            const prevMarginalProduct = prevLabor > 0 ? prevOutput - calculateProduction(prevLabor - 1, productionState.capitalUnits, productionState.productivity) : 0;
+            
+            if (marginalProduct > prevMarginalProduct) {
+                indicator.className = 'production-indicator increasing';
+                indicator.textContent = 'Increasing Returns';
+            } else if (marginalProduct < prevMarginalProduct) {
+                indicator.className = 'production-indicator decreasing';
+                indicator.textContent = 'Diminishing Returns';
+            } else {
+                indicator.className = 'production-indicator constant';
+                indicator.textContent = 'Constant Returns';
+            }
+        }
+
+        // Update efficiency description
+        function updateEfficiencyDescription(efficiency) {
+            const description = document.getElementById('efficiencyDescription');
+            
+            if (efficiency > 80) {
+                description.textContent = 'Operating at high efficiency with optimal labor utilization';
+            } else if (efficiency > 60) {
+                description.textContent = 'Good efficiency but room for improvement in resource allocation';
+            } else if (efficiency > 40) {
+                description.textContent = 'Moderate efficiency - consider adjusting labor or capital';
+            } else {
+                description.textContent = 'Low efficiency - significant waste in resource utilization';
+            }
+        }
+
+        // Run scenario
+        function runScenario(scenarioType) {
+            switch (scenarioType) {
+                case 'recession':
+                    productionState.laborUnits = Math.max(1, productionState.laborUnits - 3);
+                    productionState.wageRate = Math.max(10, productionState.wageRate - 5);
+                    productionState.productivity = Math.max(50, productionState.productivity - 20);
+                    break;
+                case 'boom':
+                    productionState.laborUnits = Math.min(20, productionState.laborUnits + 4);
+                    productionState.wageRate = Math.min(50, productionState.wageRate + 8);
+                    productionState.productivity = Math.min(200, productionState.productivity + 30);
+                    break;
+                case 'tech-advance':
+                    productionState.productivity = Math.min(200, productionState.productivity + 40);
+                    productionState.capitalCost = Math.min(200, productionState.capitalCost + 30);
+                    break;
+                case 'wage-increase':
+                    productionState.wageRate = Math.min(50, productionState.wageRate + 15);
+                    productionState.laborUnits = Math.max(1, productionState.laborUnits - 2);
+                    break;
+            }
+            
+            updateSliderDisplays();
+            updateChart();
+        }
+
+        // Reset production to default values
+        function resetProduction() {
+            productionState = {
+                laborUnits: 5,
+                capitalUnits: 3,
+                wageRate: 20,
+                capitalCost: 100,
+                productivity: 100
+            };
+            
+            updateSliderDisplays();
+            updateChart();
+        }
+
+        // Update slider displays
+        function updateSliderDisplays() {
+            Object.keys(productionState).forEach(key => {
+                const slider = document.getElementById(key);
+                const display = document.getElementById(key + 'Value');
+                
+                if (slider && display) {
+                    slider.value = productionState[key];
+                    
+                    if (key === 'laborUnits') {
+                        display.textContent = `${productionState[key]} workers`;
+                    } else if (key === 'capitalUnits') {
+                        display.textContent = `${productionState[key]} machines`;
+                    } else if (key === 'wageRate') {
+                        display.textContent = `${productionState[key]}/hour`;
+                    } else if (key === 'capitalCost') {
+                        display.textContent = `${productionState[key]}/unit`;
+                    } else if (key === 'productivity') {
+                        display.textContent = `${productionState[key]}%`;
+                    }
+                }
+            });
+        }
+
+        // Toggle quiz
+        function toggleQuiz() {
+            const quizSection = document.getElementById('quizSection');
+            quizActive = !quizActive;
+            
+            if (quizActive) {
+                quizSection.style.display = 'block';
+                currentQuestionIndex = 0;
+                quizScore = 0;
+                showQuestion();
+            } else {
+                quizSection.style.display = 'none';
+            }
+        }
+
+        // Show current question
+        function showQuestion() {
+            if (currentQuestionIndex >= quizQuestions.length) {
+                showQuizResults();
+                return;
+            }
+            
+            const question = quizQuestions[currentQuestionIndex];
+            document.getElementById('quizQuestion').textContent = question.question;
+            
+            const optionsContainer = document.getElementById('quizOptions');
+            optionsContainer.innerHTML = '';
+            
+            question.options.forEach((option, index) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'quiz-option';
+                optionDiv.textContent = option;
+                optionDiv.onclick = () => selectQuizOption(optionDiv, index === question.correct);
+                optionsContainer.appendChild(optionDiv);
+            });
+            
+            document.getElementById('quizFeedback').style.display = 'none';
+            document.getElementById('nextBtn').style.display = 'none';
+            
+            // Update progress bar
+            const progress = (currentQuestionIndex / quizQuestions.length) * 100;
+            document.getElementById('progressBar').style.width = `${progress}%`;
+        }
+
+        // Select quiz option
+        function selectQuizOption(element, isCorrect) {
+            const question = quizQuestions[currentQuestionIndex];
+            const options = document.querySelectorAll('.quiz-option');
+            
+            if (isCorrect) {
+                quizScore++;
+            }
+            
+            // Disable all options and show correct/incorrect
+            options.forEach((option, index) => {
+                option.onclick = null;
+                if (index === question.correct) {
+                    option.classList.add('correct');
+                } else if (option === element && !isCorrect) {
+                    option.classList.add('incorrect');
+                }
+            });
+            
+            // Show feedback
+            const feedback = document.getElementById('quizFeedback');
+            feedback.textContent = question.explanation;
+            feedback.style.display = 'block';
+            
+            // Show next button
+            document.getElementById('nextBtn').style.display = 'block';
+        }
+
+        // Next question
+        function nextQuestion() {
+            currentQuestionIndex++;
+            showQuestion();
+        }
+
+        // Show quiz results
+        function showQuizResults() {
+            const percentage = Math.round((quizScore / quizQuestions.length) * 100);
+            
+            document.getElementById('quizQuestion').textContent = 
+                `Quiz completed! You scored ${quizScore}/${quizQuestions.length} (${percentage}%)`;
+            
+            document.getElementById('quizOptions').innerHTML = '';
+            document.getElementById('quizFeedback').style.display = 'none';
+            document.getElementById('nextBtn').style.display = 'none';
+            
+            // Complete progress bar
+            document.getElementById('progressBar').style.width = '100%';
+        }
+
+        // Download theory guide
+        function downloadTheoryGuide() {
+            const guideContent = createProductionCostTheoryGuide();
+            
+            const blob = new Blob([guideContent], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'production_cost_theory_guide.html';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Create theory guide content
+        function createProductionCostTheoryGuide() {
+            return `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Production & Cost Theory Guide</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            color: #333;
+            background: white;
+        }
+        
+        h1 {
+            color: #1a1a1a;
+            border-bottom: 3px solid #1a4fa0;
+            padding-bottom: 10px;
+            font-size: 2.2em;
+            margin-bottom: 30px;
+        }
+        
+        h2 {
+            color: #1a4fa0;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            border-left: 4px solid #1a4fa0;
+            padding-left: 15px;
+        }
+        
+        h3 {
+            color: #333;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+        
+        h4 {
+            color: #666;
+            margin-top: 25px;
+            margin-bottom: 10px;
+            font-size: 1em;
+            font-weight: 600;
+        }
+        
+        p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+        
+        ul, ol {
+            margin-bottom: 15px;
+            padding-left: 25px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        code {
+            background: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        
+        .toc {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+            margin: 30px 0;
+        }
+        
+        .toc h3 {
+            margin-top: 0;
+            color: #1a4fa0;
+        }
+        
+        .toc ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        
+        .toc a {
+            color: #1a4fa0;
+            text-decoration: none;
+        }
+        
+        .toc a:hover {
+            text-decoration: underline;
+        }
+        
+        .highlight-box {
+            background: #e7f3ff;
+            border-left: 4px solid #1a4fa0;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        
+        .formula-box {
+            background: #f0f8f0;
+            border: 1px solid #90c695;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .example-box {
+            background: #fff7e6;
+            border: 1px solid #ffb366;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.9em;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        th {
+            background: #f5f5f5;
+            font-weight: 600;
+        }
+        
+        hr {
+            border: none;
+            height: 2px;
+            background: #e0e0e0;
+            margin: 40px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Production & Cost Theory Guide</h1>
+    <p><em>Understanding Production Functions and Cost Structures</em></p>
+    
+    <div class="toc">
+        <h3>Table of Contents</h3>
+        <ul>
+            <li><a href="#production-theory">1. Production Theory Fundamentals</a></li>
+            <li><a href="#production-function">2. The Production Function</a></li>
+            <li><a href="#short-run">3. Short-Run Production</a></li>
+            <li><a href="#cost-theory">4. Cost Theory</a></li>
+            <li><a href="#short-run-costs">5. Short-Run Cost Curves</a></li>
+            <li><a href="#long-run">6. Long-Run Production and Costs</a></li>
+            <li><a href="#returns-to-scale">7. Returns to Scale</a></li>
+            <li><a href="#applications">8. Real-World Applications</a></li>
+            <li><a href="#simulator">9. How the Simulator Works</a></li>
+        </ul>
+    </div>
+
+    <h2 id="production-theory">1. Production Theory Fundamentals</h2>
+
+    <h3>What is Production?</h3>
+    <p><strong>Production</strong> is the process of transforming inputs (factors of production) into outputs (goods and services). It involves combining resources efficiently to create value.</p>
+
+    <div class="highlight-box">
+        <p><strong>Key Insight:</strong> Production theory explains how firms combine inputs to produce outputs and how costs behave as production levels change. This is fundamental to understanding firm behavior and market supply.</p>
+    </div>
+
+    <h3>Factors of Production</h3>
+    <ul>
+        <li><strong>Land:</strong> Natural resources and physical space</li>
+        <li><strong>Labor:</strong> Human effort and skills</li>
+        <li><strong>Capital:</strong> Machinery, equipment, and buildings</li>
+        <li><strong>Entrepreneurship:</strong> Organization and risk-taking</li>
+    </ul>
+
+    <h3>Types of Inputs</h3>
+    <h4>Fixed Inputs</h4>
+    <ul>
+        <li>Cannot be changed in the short run</li>
+        <li>Examples: Factory buildings, heavy machinery</li>
+        <li>Generate fixed costs</li>
+    </ul>
+
+    <h4>Variable Inputs</h4>
+    <ul>
+        <li>Can be adjusted in the short run</li>
+        <li>Examples: Labor hours, raw materials</li>
+        <li>Generate variable costs</li>
+    </ul>
+
+    <h2 id="production-function">2. The Production Function</h2>
+
+    <h3>Definition</h3>
+    <p>The <strong>production function</strong> shows the maximum output that can be produced from given combinations of inputs, assuming efficient production techniques.</p>
+
+    <div class="formula-box">
+        <strong>General Form:</strong> Q = f(L, K, ...)<br><br>
+        Where:<br>
+        • Q = Quantity of output<br>
+        • L = Labor input<br>
+        • K = Capital input<br>
+        • f = Production function
+    </div>
+
+    <h3>Common Production Functions</h3>
+
+    <h4>Linear Production Function</h4>
+    <div class="formula-box">
+        Q = aL + bK<br><br>
+        Perfect substitutes between inputs
+    </div>
+
+    <h4>Cobb-Douglas Production Function</h4>
+    <div class="formula-box">
+        Q = AL^α K^β<br><br>
+        Where:<br>
+        • A = Technology parameter<br>
+        • α, β = Output elasticities<br>
+        • α + β determines returns to scale
+    </div>
+
+    <h4>Leontief Production Function</h4>
+    <div class="formula-box">
+        Q = min(L/a, K/b)<br><br>
+        Fixed proportions (no substitution possible)
+    </div>
+
+    <h3>Properties of Production Functions</h3>
+    <ol>
+        <li><strong>Positive marginal products:</strong> More input → more output</li>
+        <li><strong>Diminishing marginal products:</strong> Each additional unit of input adds less output</li>
+        <li><strong>Efficiency:</strong> Maximum output for given inputs</li>
+    </ol>
+
+    <h2 id="short-run">3. Short-Run Production</h2>
+
+    <h3>Key Concepts</h3>
+    <p>In the short run, at least one input is fixed (typically capital), while others are variable (typically labor).</p>
+
+    <h3>Production Measures</h3>
+
+    <h4>Total Product (TP)</h4>
+    <ul>
+        <li>Total output produced by all units of variable input</li>
+        <li>Shows the production function graphically</li>
+    </ul>
+
+    <h4>Marginal Product (MP)</h4>
+    <div class="formula-box">
+        MP = ΔTP / ΔL<br><br>
+        The additional output from one more unit of labor
+    </div>
+
+    <h4>Average Product (AP)</h4>
+    <div class="formula-box">
+        AP = TP / L<br><br>
+        Output per unit of labor
+    </div>
+
+    <h3>Law of Diminishing Returns</h3>
+    <p>As more units of a variable input are added to fixed inputs, the marginal product of the variable input will eventually decrease.</p>
+
+    <div class="example-box">
+        <h4>Example: Pizza Restaurant</h4>
+        <p><strong>Fixed input:</strong> Kitchen (1 oven, limited space)</p>
+        <p><strong>Variable input:</strong> Chefs</p>
+        <ul>
+            <li><strong>1 chef:</strong> 20 pizzas/hour</li>
+            <li><strong>2 chefs:</strong> 45 pizzas/hour (MP = 25)</li>
+            <li><strong>3 chefs:</strong> 60 pizzas/hour (MP = 15)</li>
+            <li><strong>4 chefs:</strong> 70 pizzas/hour (MP = 10)</li>
+            <li><strong>5 chefs:</strong> 75 pizzas/hour (MP = 5)</li>
+        </ul>
+        <p>Notice how marginal product decreases as more chefs are added to the fixed kitchen.</p>
+    </div>
+
+    <h3>Stages of Production</h3>
+    <h4>Stage I: Increasing Returns</h4>
+    <ul>
+        <li>MP > AP and both are increasing</li>
+        <li>Fixed inputs are underutilized</li>
+        <li>Firms want to expand production</li>
+    </ul>
+
+    <h4>Stage II: Diminishing Returns</h4>
+    <ul>
+        <li>MP < AP, MP is decreasing, AP may be increasing or decreasing</li>
+        <li>Rational production range</li>
+        <li>Most efficient use of fixed inputs</li>
+    </ul>
+
+    <h4>Stage III: Negative Returns</h4>
+    <ul>
+        <li>MP < 0, total product is decreasing</li>
+        <li>Too much variable input</li>
+        <li>Firms should reduce production</li>
+    </ul>
+
+    <h2 id="cost-theory">4. Cost Theory</h2>
+
+    <h3>Types of Costs</h3>
+
+    <h4>Fixed Costs (FC)</h4>
+    <ul>
+        <li>Do not change with output level</li>
+        <li>Must be paid even if output is zero</li>
+        <li>Examples: Rent, insurance, loan payments</li>
+    </ul>
+
+    <h4>Variable Costs (VC)</h4>
+    <ul>
+        <li>Change with output level</li>
+        <li>Zero when output is zero</li>
+        <li>Examples: Raw materials, hourly wages</li>
+    </ul>
+
+    <h4>Total Cost (TC)</h4>
+    <div class="formula-box">
+        TC = FC + VC<br><br>
+        The sum of all costs of production
+    </div>
+
+    <h3>Cost Relationships</h3>
+    <p>There's an inverse relationship between productivity and costs:</p>
+    <ul>
+        <li>When marginal product increases, marginal cost decreases</li>
+        <li>When marginal product decreases, marginal cost increases</li>
+    </ul>
+
+    <h2 id="short-run-costs">5. Short-Run Cost Curves</h2>
+
+    <h3>Average Cost Measures</h3>
+
+    <h4>Average Fixed Cost (AFC)</h4>
+    <div class="formula-box">
+        AFC = FC / Q<br><br>
+        Fixed cost per unit of output
+    </div>
+    <ul>
+        <li>Always decreasing as output increases</li>
+        <li>Approaches zero but never reaches it</li>
+        <li>Hyperbolic shape</li>
+    </ul>
+
+    <h4>Average Variable Cost (AVC)</h4>
+    <div class="formula-box">
+        AVC = VC / Q<br><br>
+        Variable cost per unit of output
+    </div>
+    <ul>
+        <li>U-shaped curve</li>
+        <li>Initially decreases due to increasing returns</li>
+        <li>Eventually increases due to diminishing returns</li>
+    </ul>
+
+    <h4>Average Total Cost (ATC)</h4>
+    <div class="formula-box">
+        ATC = TC / Q = AFC + AVC<br><br>
+        Total cost per unit of output
+    </div>
+    <ul>
+        <li>U-shaped curve</li>
+        <li>Initially decreases as fixed costs are spread over more units</li>
+        <li>Eventually increases due to diminishing returns</li>
+    </ul>
+
+    <h3>Marginal Cost (MC)</h3>
+    <div class="formula-box">
+        MC = ΔTC / ΔQ<br><br>
+        The cost of producing one additional unit
+    </div>
+
+    <h4>Properties of Marginal Cost</h4>
+    <ul>
+        <li>U-shaped curve</li>
+        <li>Intersects AVC and ATC at their minimum points</li>
+        <li>When MC < ATC, ATC is decreasing</li>
+        <li>When MC > ATC, ATC is increasing</li>
+    </ul>
+
+    <h3>Relationship Between Cost Curves</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Output Level</th>
+                <th>AFC</th>
+                <th>AVC</th>
+                <th>ATC</th>
+                <th>MC</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Low</td>
+                <td>High</td>
+                <td>High</td>
+                <td>High</td>
+                <td>Decreasing</td>
+            </tr>
+            <tr>
+                <td>Medium</td>
+                <td>Medium</td>
+                <td>Minimum</td>
+                <td>Decreasing</td>
+                <td>Minimum</td>
+            </tr>
+            <tr>
+                <td>High</td>
+                <td>Low</td>
+                <td>Increasing</td>
+                <td>Minimum</td>
+                <td>Increasing</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2 id="long-run">6. Long-Run Production and Costs</h2>
+
+    <h3>Long-Run Characteristics</h3>
+    <ul>
+        <li>All inputs are variable</li>
+        <li>No fixed costs</li>
+        <li>Firms can choose optimal plant size</li>
+        <li>More flexibility in production decisions</li>
+    </ul>
+
+    <h3>Long-Run Average Cost (LRAC)</h3>
+    <p>The <strong>envelope curve</strong> that shows the minimum average cost for each level of output when all inputs can be varied.</p>
+
+    <h4>Shape of LRAC</h4>
+    <ul>
+        <li><strong>Initially decreasing:</strong> Economies of scale</li>
+        <li><strong>Flat portion:</strong> Constant returns to scale</li>
+        <li><strong>Eventually increasing:</strong> Diseconomies of scale</li>
+    </ul>
+
+    <h3>Isoquants and Isocosts</h3>
+
+    <h4>Isoquants</h4>
+    <ul>
+        <li>Show all combinations of inputs that produce the same output</li>
+        <li>Downward sloping and convex to origin</li>
+        <li>Higher isoquants represent higher output levels</li>
+    </ul>
+
+    <h4>Isocosts</h4>
+    <ul>
+        <li>Show all combinations of inputs that cost the same</li>
+        <li>Straight lines with slope = -w/r (wage rate/rental rate)</li>
+        <li>Higher isocosts represent higher total costs</li>
+    </ul>
+
+    <h4>Cost Minimization</h4>
+    <p>Optimal input combination occurs where isoquant is tangent to isocost line:</p>
+    <div class="formula-box">
+        MP_L / w = MP_K / r<br><br>
+        Marginal product per dollar must be equal across all inputs
+    </div>
+
+    <h2 id="returns-to-scale">7. Returns to Scale</h2>
+
+    <h3>Definition</h3>
+    <p>Returns to scale describe how output changes when all inputs are increased proportionally.</p>
+
+    <h3>Types of Returns to Scale</h3>
+
+    <h4>Increasing Returns to Scale (IRS)</h4>
+    <ul>
+        <li>Output increases more than proportionally to input increases</li>
+        <li>Economies of scale present</li>
+        <li>LRAC is decreasing</li>
+        <li>Common in industries with high fixed costs</li>
+    </ul>
+
+    <h4>Constant Returns to Scale (CRS)</h4>
+    <ul>
+        <li>Output increases proportionally to input increases</li>
+        <li>No economies or diseconomies of scale</li>
+        <li>LRAC is flat</li>
+        <li>Efficient scale of operation</li>
+    </ul>
+
+    <h4>Decreasing Returns to Scale (DRS)</h4>
+    <ul>
+        <li>Output increases less than proportionally to input increases</li>
+        <li>Diseconomies of scale present</li>
+        <li>LRAC is increasing</li>
+        <li>Often due to management difficulties</li>
+    </ul>
+
+    <h3>Mathematical Representation</h3>
+    <p>If all inputs are multiplied by factor λ:</p>
+    <div class="formula-box">
+        <strong>IRS:</strong> f(λL, λK) > λf(L, K)<br>
+        <strong>CRS:</strong> f(λL, λK) = λf(L, K)<br>
+        <strong>DRS:</strong> f(λL, λK) < λf(L, K)
+    </div>
+
+    <h3>Sources of Economies of Scale</h3>
+    <ul>
+        <li><strong>Technical economies:</strong> Indivisibilities, specialization</li>
+        <li><strong>Managerial economies:</strong> Specialized management functions</li>
+        <li><strong>Financial economies:</strong> Access to capital markets</li>
+        <li><strong>Marketing economies:</strong> Bulk purchasing, advertising</li>
+        <li><strong>Risk-bearing economies:</strong> Diversification</li>
+    </ul>
+
+    <h3>Sources of Diseconomies of Scale</h3>
+    <ul>
+        <li><strong>Management difficulties:</strong> Coordination problems</li>
+        <li><strong>Communication problems:</strong> Information flow issues</li>
+        <li><strong>Bureaucracy:</strong> Slower decision-making</li>
+        <li><strong>Motivation problems:</strong> Worker alienation</li>
+    </ul>
+
+    <h2 id="applications">8. Real-World Applications</h2>
+
+    <h3>Manufacturing Industries</h3>
+
+    <h4>Automobile Industry</h4>
+    <ul>
+        <li><strong>High fixed costs:</strong> Assembly plants, tooling</li>
+        <li><strong>Economies of scale:</strong> Spreading fixed costs over more units</li>
+        <li><strong>Learning by doing:</strong> Productivity improvements over time</li>
+        <li><strong>Optimal plant size:</strong> Balancing scale economies with flexibility</li>
+    </ul>
+
+    <h4>Technology Sector</h4>
+    <ul>
+        <li><strong>Software development:</strong> High initial development costs, low marginal costs</li>
+        <li><strong>Network effects:</strong> Value increases with number of users</li>
+        <li><strong>Rapid obsolescence:</strong> Need for continuous innovation</li>
+    </ul>
+
+    <h3>Service Industries</h3>
+
+    <h4>Airlines</h4>
+    <ul>
+        <li><strong>High fixed costs:</strong> Aircraft, maintenance facilities</li>
+        <li><strong>Capacity constraints:</strong> Cannot easily adjust short-run capacity</li>
+        <li><strong>Load factor optimization:</strong> Filling seats to spread fixed costs</li>
+    </ul>
+
+    <h4>Healthcare</h4>
+    <ul>
+        <li><strong>Specialized equipment:</strong> High capital requirements</li>
+        <li><strong>Skilled labor:</strong> Difficult to substitute inputs</li>
+        <li><strong>Capacity utilization:</strong> Balancing accessibility with efficiency</li>
+    </ul>
+
+    <h3>Agricultural Production</h3>
+    <ul>
+        <li><strong>Land as fixed input:</strong> Cannot be easily expanded</li>
+        <li><strong>Seasonal production:</strong> Time constraints on planting/harvesting</li>
+        <li><strong>Weather dependence:</strong> Uncertain production conditions</li>
+        <li><strong>Diminishing returns:</strong> Intensive cultivation limits</li>
+    </ul>
+
+    <h3>Business Decision Applications</h3>
+
+    <h4>Capacity Planning</h4>
+    <ul>
+        <li>Determining optimal plant size</li>
+        <li>Balancing fixed and variable costs</li>
+        <li>Considering demand forecasts</li>
+    </ul>
+
+    <h4>Make vs. Buy Decisions</h4>
+    <ul>
+        <li>Comparing internal production costs</li>
+        <li>Evaluating supplier pricing</li>
+        <li>Considering transaction costs</li>
+    </ul>
+
+    <h4>Pricing Strategies</h4>
+    <ul>
+        <li>Understanding cost structure</li>
+        <li>Setting prices above marginal cost</li>
+        <li>Covering fixed costs in the long run</li>
+    </ul>
+
+    <h2 id="simulator">9. How the Simulator Works</h2>
+
+    <h3>Production Function Model</h3>
+    <p>The simulator uses a Cobb-Douglas production function:</p>
+    <div class="formula-box">
+        Q = A × L^0.7 × K^0.3 × 10<br><br>
+        Where:<br>
+        • A = Technology factor (productivity/100)<br>
+        • L = Labor units<br>
+        • K = Capital units<br>
+        • 0.7 and 0.3 are elasticity parameters
+    </div>
+
+    <h3>Cost Calculations</h3>
+
+    <h4>Fixed Costs</h4>
+    <div class="formula-box">
+        FC = Capital Units × Capital Cost per Unit
+    </div>
+
+    <h4>Variable Costs</h4>
+    <div class="formula-box">
+        VC = Labor Units × Wage Rate
+    </div>
+
+    <h4>Total Cost</h4>
+    <div class="formula-box">
+        TC = FC + VC
+    </div>
+
+    <h4>Marginal Cost</h4>
+    <div class="formula-box">
+        MC = Wage Rate / Marginal Product of Labor
+    </div>
+
+    <h3>Key Metrics Displayed</h3>
+
+    <h4>Production Metrics</h4>
+    <ul>
+        <li><strong>Total Product:</strong> Output from current input combination</li>
+        <li><strong>Marginal Product:</strong> Additional output from one more worker</li>
+        <li><strong>Average Product:</strong> Output per worker</li>
+        <li><strong>Productivity Level:</strong> Technology effectiveness</li>
+    </ul>
+
+    <h4>Cost Metrics</h4>
+    <ul>
+        <li><strong>Total Cost:</strong> Sum of fixed and variable costs</li>
+        <li><strong>Marginal Cost:</strong> Cost of producing one more unit</li>
+        <li><strong>Average Cost:</strong> Cost per unit of output</li>
+        <li><strong>Average Variable Cost:</strong> Variable cost per unit</li>
+    </ul>
+
+    <h3>Interactive Features</h3>
+
+    <h4>Slider Controls</h4>
+    <ul>
+        <li><strong>Labor Units:</strong> Variable input (0-20 workers)</li>
+        <li><strong>Capital Units:</strong> Fixed input (1-10 machines)</li>
+        <li><strong>Wage Rate:</strong> Cost per labor unit ($10-50/hour)</li>
+        <li><strong>Capital Cost:</strong> Cost per capital unit ($50-200/unit)</li>
+        <li><strong>Technology Level:</strong> Productivity multiplier (50-200%)</li>
+    </ul>
+
+    <h4>Scenario Buttons</h4>
+    <ul>
+        <li><strong>Recession:</strong> Reduces labor, wages, and productivity</li>
+        <li><strong>Economic Boom:</strong> Increases labor, wages, and productivity</li>
+        <li><strong>Tech Advance:</strong> Improves productivity, increases capital cost</li>
+        <li><strong>Wage Increase:</strong> Raises wages, may reduce labor demand</li>
+    </ul>
+
+    <h3>Chart Visualization</h3>
+    <p>The interactive chart displays four key curves:</p>
+    <ul>
+        <li><strong>Total Product:</strong> Shows total output at different labor levels</li>
+        <li><strong>Marginal Product:</strong> Shows additional output from each worker</li>
+        <li><strong>Average Product:</strong> Shows output per worker</li>
+        <li><strong>Marginal Cost:</strong> Shows cost of additional output</li>
+    </ul>
+
+    <h3>Efficiency Analysis</h3>
+    <p>The simulator calculates efficiency based on optimal labor utilization:</p>
+    <div class="formula-box">
+        Optimal Labor = (K × 0.3 / 0.7)^(1/0.3) × (A/100)<br><br>
+        Efficiency = 1 - |Actual Labor - Optimal Labor| / Optimal Labor
+    </div>
+
+    <h3>Learning Objectives</h3>
+    <ol>
+        <li><strong>Understand production relationships:</strong> How inputs convert to outputs</li>
+        <li><strong>Observe diminishing returns:</strong> Why marginal product decreases</li>
+        <li><strong>Analyze cost behavior:</strong> How costs change with production</li>
+        <li><strong>Explore efficiency:</strong> Optimal resource utilization</li>
+        <li><strong>Apply economic concepts:</strong> Connect theory to business decisions</li>
+    </ol>
+
+    <hr>
+
+    <h2>Key Takeaways</h2>
+
+    <h3>For Students</h3>
+    <ol>
+        <li><strong>Master the relationships:</strong> Production function, cost curves, and their connections</li>
+        <li><strong>Understand diminishing returns:</strong> Why it occurs and its implications</li>
+        <li><strong>Learn cost behavior:</strong> Fixed vs. variable costs and their patterns</li>
+        <li><strong>Recognize efficiency:</strong> Optimal input combinations and scale effects</li>
+    </ol>
+
+    <h3>For Business Applications</h3>
+    <ol>
+        <li><strong>Capacity planning:</strong> Determine optimal production levels</li>
+        <li><strong>Cost management:</strong> Understand cost drivers and control points</li>
+        <li><strong>Resource allocation:</strong> Optimize input combinations</li>
+        <li><strong>Strategic decisions:</strong> Make vs. buy, expansion timing</li>
+    </ol>
+
+    <h3>Advanced Concepts to Explore</h3>
+    <ul>
+        <li><strong>Multi-output production:</strong> Joint production and cost allocation</li>
+        <li><strong>Dynamic production:</strong> Learning curves and experience effects</li>
+        <li><strong>Stochastic production:</strong> Uncertainty and risk management</li>
+        <li><strong>Environmental constraints:</strong> Sustainable production methods</li>
+    </ul>
+
+    <div class="highlight-box">
+        <p><em>Production and cost theory forms the foundation of microeconomic analysis of firms. Understanding these concepts is essential for making informed business decisions, from day-to-day operations to long-term strategic planning. The relationship between inputs, outputs, and costs drives much of economic behavior in markets.</em></p>
+    </div>
+
+</body>
+</html>`;
+        }
+
+        // Event handlers for sliders
+        function setupSliders() {
+            const sliders = ['laborUnits', 'capitalUnits', 'wageRate', 'capitalCost', 'productivity'];
+            
+            sliders.forEach(slider => {
+                const element = document.getElementById(slider);
+                const valueDisplay = document.getElementById(slider + 'Value');
+                
+                element.addEventListener('input', (e) => {
+                    const value = parseInt(e.target.value);
+                    productionState[slider] = value;
+                    
+                    if (slider === 'laborUnits') {
+                        valueDisplay.textContent = `${value} workers`;
+                    } else if (slider === 'capitalUnits') {
+                        valueDisplay.textContent = `${value} machines`;
+                    } else if (slider === 'wageRate') {
+                        valueDisplay.textContent = `${value}/hour`;
+                    } else if (slider === 'capitalCost') {
+                        valueDisplay.textContent = `${value}/unit`;
+                    } else if (slider === 'productivity') {
+                        valueDisplay.textContent = `${value}%`;
+                    }
+                    
+                    updateChart();
+                });
+            });
+        }
+
+        // Initialize the game
+        document.addEventListener('DOMContentLoaded', () => {
+            initChart();
+            setupSliders();
+            updateSliderDisplays();
+        });
+    </script>
+</body>
+</html>

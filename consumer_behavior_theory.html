@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consumer Behavior Theory Guide</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            color: #333;
+            background: white;
+        }
+        
+        h1 {
+            color: #1a1a1a;
+            border-bottom: 3px solid #1a4fa0;
+            padding-bottom: 10px;
+            font-size: 2.2em;
+            margin-bottom: 30px;
+        }
+        
+        h2 {
+            color: #1a4fa0;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            border-left: 4px solid #1a4fa0;
+            padding-left: 15px;
+        }
+        
+        h3 {
+            color: #333;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+        
+        h4 {
+            color: #666;
+            margin-top: 25px;
+            margin-bottom: 10px;
+            font-size: 1em;
+            font-weight: 600;
+        }
+        
+        p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+        
+        ul, ol {
+            margin-bottom: 15px;
+            padding-left: 25px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        code {
+            background: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        
+        .toc {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+            margin: 30px 0;
+        }
+        
+        .toc h3 {
+            margin-top: 0;
+            color: #1a4fa0;
+        }
+        
+        .toc ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        
+        .toc a {
+            color: #1a4fa0;
+            text-decoration: none;
+        }
+        
+        .toc a:hover {
+            text-decoration: underline;
+        }
+        
+        .highlight-box {
+            background: #e7f3ff;
+            border-left: 4px solid #1a4fa0;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        
+        .formula-box {
+            background: #f0f8f0;
+            border: 1px solid #90c695;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .example-box {
+            background: #fff7e6;
+            border: 1px solid #ffb366;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.9em;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        th {
+            background: #f5f5f5;
+            font-weight: 600;
+        }
+        
+        hr {
+            border: none;
+            height: 2px;
+            background: #e0e0e0;
+            margin: 40px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Consumer Behavior Theory Guide</h1>
+    <p><em>Understanding Consumer Choice and Decision-Making</em></p>
+    
+    <div class="toc">
+        <h3>Table of Contents</h3>
+        <ul>
+            <li><a href="#foundation">1. Foundation of Consumer Theory</a></li>
+            <li><a href="#utility">2. Utility Theory</a></li>
+            <li><a href="#budget">3. Budget Constraints</a></li>
+            <li><a href="#optimization">4. Consumer Optimization</a></li>
+            <li><a href="#behavioral">5. Behavioral Economics</a></li>
+            <li><a href="#effects">6. Income and Substitution Effects</a></li>
+            <li><a href="#applications">7. Real-World Applications</a></li>
+            <li><a href="#simulator">8. How the Simulator Works</a></li>
+        </ul>
+    </div>
+
+    <h2 id="foundation">1. Foundation of Consumer Theory</h2>
+
+    <h3>What is Consumer Behavior?</h3>
+    <p><strong>Consumer behavior</strong> is the study of how individuals make decisions to spend their available resources (time, money, effort) on consumption-related items. It encompasses the processes consumers use to select, purchase, use, and dispose of products and services.</p>
+
+    <div class="highlight-box">
+        <p><strong>Key Insight:</strong> Consumer theory provides the foundation for understanding market demand and helps businesses make strategic decisions about pricing, product development, and marketing.</p>
+    </div>
+
+    <h3>Basic Assumptions</h3>
+    <ol>
+        <li><strong>Rationality:</strong> Consumers make logical decisions to maximize satisfaction</li>
+        <li><strong>Complete Information:</strong> Consumers know all available options and prices</li>
+        <li><strong>Consistent Preferences:</strong> Consumer preferences don't change randomly</li>
+        <li><strong>Transitivity:</strong> If A is preferred to B, and B to C, then A is preferred to C</li>
+        <li><strong>Non-satiation:</strong> More is generally preferred to less</li>
+    </ol>
+
+    <h3>Consumer Decision Process</h3>
+    <ul>
+        <li><strong>Problem Recognition:</strong> Identifying a need or want</li>
+        <li><strong>Information Search:</strong> Gathering data about alternatives</li>
+        <li><strong>Evaluation:</strong> Comparing options based on criteria</li>
+        <li><strong>Purchase Decision:</strong> Selecting and buying a product</li>
+        <li><strong>Post-Purchase Evaluation:</strong> Assessing satisfaction</li>
+    </ul>
+
+    <h2 id="utility">2. Utility Theory</h2>
+
+    <h3>Understanding Utility</h3>
+    <p><strong>Utility</strong> represents the satisfaction or happiness a consumer derives from consuming goods and services. It's a subjective measure that varies between individuals and circumstances.</p>
+
+    <div class="formula-box">
+        <strong>Total Utility (TU)</strong> = Sum of satisfaction from all units consumed<br>
+        <strong>Marginal Utility (MU)</strong> = Change in total utility from consuming one additional unit<br><br>
+        MU = ΔTU / ΔQ<br><br>
+        Where ΔTU = change in total utility, ΔQ = change in quantity
+    </div>
+
+    <h3>Law of Diminishing Marginal Utility</h3>
+    <p>As consumption of a good increases, the marginal utility derived from each additional unit decreases. This explains why demand curves slope downward.</p>
+
+    <div class="example-box">
+        <h4>Example: Pizza Consumption</h4>
+        <ul>
+            <li><strong>1st slice:</strong> MU = 20 utils (very satisfying when hungry)</li>
+            <li><strong>2nd slice:</strong> MU = 15 utils (still enjoyable)</li>
+            <li><strong>3rd slice:</strong> MU = 10 utils (getting full)</li>
+            <li><strong>4th slice:</strong> MU = 5 utils (almost too much)</li>
+            <li><strong>5th slice:</strong> MU = 0 utils (completely full)</li>
+        </ul>
+    </div>
+
+    <h3>Types of Utility</h3>
+    <h4>Cardinal vs. Ordinal Utility</h4>
+    <ul>
+        <li><strong>Cardinal:</strong> Utility can be measured in absolute numbers</li>
+        <li><strong>Ordinal:</strong> Utility can only be ranked (modern approach)</li>
+    </ul>
+
+    <h4>Form, Time, Place, and Possession Utility</h4>
+    <ul>
+        <li><strong>Form:</strong> Value added by changing physical characteristics</li>
+        <li><strong>Time:</strong> Value from having products when needed</li>
+        <li><strong>Place:</strong> Value from having products where needed</li>
+        <li><strong>Possession:</strong> Value from ownership transfer</li>
+    </ul>
+
+    <h2 id="budget">3. Budget Constraints</h2>
+
+    <h3>The Budget Line</h3>
+    <p>A <strong>budget constraint</strong> shows all combinations of goods that a consumer can afford given their income and the prices of goods.</p>
+
+    <div class="formula-box">
+        <strong>Budget Constraint:</strong> I = P₁Q₁ + P₂Q₂<br><br>
+        Where:<br>
+        • I = Consumer income<br>
+        • P₁, P₂ = Prices of goods 1 and 2<br>
+        • Q₁, Q₂ = Quantities of goods 1 and 2
+    </div>
+
+    <h3>Properties of Budget Lines</h3>
+    <ul>
+        <li><strong>Slope:</strong> -P₁/P₂ (relative price ratio)</li>
+        <li><strong>Intercepts:</strong> Show maximum affordable quantity of each good</li>
+        <li><strong>Shifts:</strong> Change with income or price changes</li>
+    </ul>
+
+    <h3>Changes in Budget Constraints</h3>
+    <h4>Income Changes</h4>
+    <ul>
+        <li><strong>Income increase:</strong> Budget line shifts outward (parallel)</li>
+        <li><strong>Income decrease:</strong> Budget line shifts inward (parallel)</li>
+    </ul>
+
+    <h4>Price Changes</h4>
+    <ul>
+        <li><strong>Price increase:</strong> Budget line rotates inward (steeper)</li>
+        <li><strong>Price decrease:</strong> Budget line rotates outward (flatter)</li>
+    </ul>
+
+    <h2 id="optimization">4. Consumer Optimization</h2>
+
+    <h3>Utility Maximization</h3>
+    <p>Consumers seek to maximize utility subject to their budget constraint. The optimal choice occurs where the marginal utility per dollar is equal across all goods.</p>
+
+    <div class="formula-box">
+        <strong>Utility Maximization Condition:</strong><br>
+        MU₁/P₁ = MU₂/P₂ = ... = MUₙ/Pₙ<br><br>
+        This is known as the <strong>Equimarginal Principle</strong>
+    </div>
+
+    <h3>Indifference Curves</h3>
+    <p>An <strong>indifference curve</strong> shows combinations of goods that provide the same level of utility to a consumer.</p>
+
+    <h4>Properties of Indifference Curves</h4>
+    <ol>
+        <li><strong>Downward sloping:</strong> To maintain constant utility</li>
+        <li><strong>Cannot intersect:</strong> Would violate transitivity</li>
+        <li><strong>Convex to origin:</strong> Due to diminishing marginal rate of substitution</li>
+        <li><strong>Higher curves preferred:</strong> More utility</li>
+    </ol>
+
+    <h3>Marginal Rate of Substitution (MRS)</h3>
+    <p>The MRS is the rate at which a consumer is willing to substitute one good for another while maintaining the same level of utility.</p>
+
+    <div class="formula-box">
+        <strong>MRS</strong> = -ΔQ₂/ΔQ₁ = MU₁/MU₂<br><br>
+        At equilibrium: MRS = P₁/P₂
+    </div>
+
+    <h2 id="behavioral">5. Behavioral Economics</h2>
+
+    <h3>Deviations from Rationality</h3>
+    <p>Real consumers often deviate from the rational model due to psychological, social, and cognitive factors.</p>
+
+    <h3>Key Behavioral Concepts</h3>
+
+    <h4>Loss Aversion</h4>
+    <ul>
+        <li>People feel losses more acutely than equivalent gains</li>
+        <li>Ratio is approximately 2:1 (losses hurt twice as much as gains feel good)</li>
+        <li>Explains why people avoid risks and stick with status quo</li>
+    </ul>
+
+    <h4>Anchoring Effect</h4>
+    <ul>
+        <li>Heavy reliance on first piece of information encountered</li>
+        <li>Initial price becomes reference point for future decisions</li>
+        <li>Used extensively in pricing strategies</li>
+    </ul>
+
+    <h4>Mental Accounting</h4>
+    <ul>
+        <li>People categorize money into different "accounts"</li>
+        <li>Treat money differently based on source or intended use</li>
+        <li>Example: Spending windfalls more freely than earned income</li>
+    </ul>
+
+    <h4>Endowment Effect</h4>
+    <ul>
+        <li>People value items more highly once they own them</li>
+        <li>Creates reluctance to trade or sell</li>
+        <li>Basis for "status quo bias"</li>
+    </ul>
+
+    <h4>Hyperbolic Discounting</h4>
+    <ul>
+        <li>Present bias: Overvaluing immediate rewards</li>
+        <li>Inconsistent time preferences</li>
+        <li>Explains procrastination and impulse buying</li>
+    </ul>
+
+    <h3>Social Influences</h3>
+    <h4>Conspicuous Consumption</h4>
+    <ul>
+        <li>Purchasing to display wealth or status</li>
+        <li>Veblen goods: Demand increases with price</li>
+        <li>Social signaling through consumption</li>
+    </ul>
+
+    <h4>Bandwagon Effect</h4>
+    <ul>
+        <li>Demand increases as more people consume</li>
+        <li>Social proof and conformity</li>
+        <li>Network effects in technology adoption</li>
+    </ul>
+
+    <h2 id="effects">6. Income and Substitution Effects</h2>
+
+    <h3>Income Effect</h3>
+    <p>The change in consumption due to a change in purchasing power, holding relative prices constant.</p>
+
+    <h4>Normal vs. Inferior Goods</h4>
+    <ul>
+        <li><strong>Normal goods:</strong> Consumption increases with income</li>
+        <li><strong>Inferior goods:</strong> Consumption decreases with income</li>
+        <li><strong>Luxury goods:</strong> Income elasticity > 1</li>
+        <li><strong>Necessity goods:</strong> Income elasticity < 1</li>
+    </ul>
+
+    <h3>Substitution Effect</h3>
+    <p>The change in consumption due to a change in relative prices, holding utility constant.</p>
+
+    <ul>
+        <li>Always moves in opposite direction to price change</li>
+        <li>Consumers substitute toward relatively cheaper goods</li>
+        <li>Pure price effect, isolated from income changes</li>
+    </ul>
+
+    <h3>Giffen Goods</h3>
+    <p>Rare goods where demand increases as price increases due to a strong negative income effect that overwhelms the substitution effect.</p>
+
+    <div class="example-box">
+        <h4>Historical Example: Irish Potato Famine</h4>
+        <p>When potato prices rose, poor families couldn't afford meat and had to buy more potatoes despite the higher price, as potatoes were their primary source of calories.</p>
+    </div>
+
+    <h2 id="applications">7. Real-World Applications</h2>
+
+    <h3>Marketing and Business Strategy</h3>
+
+    <h4>Price Discrimination</h4>
+    <ul>
+        <li><strong>First-degree:</strong> Different prices for each consumer</li>
+        <li><strong>Second-degree:</strong> Quantity-based pricing</li>
+        <li><strong>Third-degree:</strong> Group-based pricing (student discounts)</li>
+    </ul>
+
+    <h4>Product Bundling</h4>
+    <ul>
+        <li>Combining products to extract more consumer surplus</li>
+        <li>Examples: Cable packages, software suites</li>
+        <li>Works when consumers have different preferences</li>
+    </ul>
+
+    <h4>Loyalty Programs</h4>
+    <ul>
+        <li>Increase switching costs</li>
+        <li>Create artificial differentiation</li>
+        <li>Utilize loss aversion and endowment effect</li>
+    </ul>
+
+    <h3>Public Policy Applications</h3>
+
+    <h4>Nudge Theory</h4>
+    <ul>
+        <li>Using behavioral insights to guide choices</li>
+        <li>Default options (opt-out vs. opt-in)</li>
+        <li>Choice architecture design</li>
+    </ul>
+
+    <h4>Sin Taxes</h4>
+    <ul>
+        <li>Higher taxes on harmful goods (cigarettes, alcohol)</li>
+        <li>Relies on price sensitivity</li>
+        <li>Revenue generation and behavior modification</li>
+    </ul>
+
+    <h4>Consumer Protection</h4>
+    <ul>
+        <li>Information disclosure requirements</li>
+        <li>Cooling-off periods</li>
+        <li>Truth in advertising laws</li>
+    </ul>
+
+    <h3>Digital Economy Applications</h3>
+
+    <h4>Personalized Pricing</h4>
+    <ul>
+        <li>Dynamic pricing based on consumer data</li>
+        <li>Algorithmic price discrimination</li>
+        <li>Privacy and fairness concerns</li>
+    </ul>
+
+    <h4>Platform Economics</h4>
+    <ul>
+        <li>Network effects and switching costs</li>
+        <li>Two-sided markets</li>
+        <li>Freemium models</li>
+    </ul>
+
+    <h2 id="simulator">8. How the Simulator Works</h2>
+
+    <h3>Consumer Profile Variables</h3>
+
+    <h4>Income</h4>
+    <ul>
+        <li><strong>Range:</strong> $2,000 - $10,000 monthly</li>
+        <li><strong>Effect:</strong> Determines spending budget (10% allocation)</li>
+        <li><strong>Reality:</strong> Higher income increases purchasing power</li>
+    </ul>
+
+    <h4>Price Sensitivity</h4>
+    <ul>
+        <li><strong>Range:</strong> 10% - 100%</li>
+        <li><strong>Effect:</strong> Weights price heavily in utility calculation</li>
+        <li><strong>Reality:</strong> Budget-conscious consumers focus on price</li>
+    </ul>
+
+    <h4>Quality Importance</h4>
+    <ul>
+        <li><strong>Range:</strong> 10% - 100%</li>
+        <li><strong>Effect:</strong> Weights perceived quality in decisions</li>
+        <li><strong>Reality:</strong> Some consumers prioritize quality over price</li>
+    </ul>
+
+    <h4>Brand Loyalty</h4>
+    <ul>
+        <li><strong>Range:</strong> 0% - 100%</li>
+        <li><strong>Effect:</strong> Gives preference to "Product B" (established brand)</li>
+        <li><strong>Reality:</strong> Loyal customers less price-sensitive</li>
+    </ul>
+
+    <h3>Consumer Scenarios</h3>
+
+    <h4>Rational Consumer</h4>
+    <ul>
+        <li><strong>Behavior:</strong> Balances price and quality rationally</li>
+        <li><strong>Settings:</strong> Moderate price sensitivity, high quality focus</li>
+        <li><strong>Decision:</strong> Based on utility-to-price ratio</li>
+    </ul>
+
+    <h4>Budget Conscious</h4>
+    <ul>
+        <li><strong>Behavior:</strong> Heavily weights price in decisions</li>
+        <li><strong>Settings:</strong> High price sensitivity, lower quality focus</li>
+        <li><strong>Decision:</strong> Usually chooses cheapest option</li>
+    </ul>
+
+    <h4>Luxury Seeker</h4>
+    <ul>
+        <li><strong>Behavior:</strong> Prefers premium products</li>
+        <li><strong>Settings:</strong> Low price sensitivity, high quality/brand focus</li>
+        <li><strong>Decision:</strong> Higher price can increase appeal</li>
+    </ul>
+
+    <h4>Impulsive Buyer</h4>
+    <ul>
+        <li><strong>Behavior:</strong> Makes emotional, inconsistent decisions</li>
+        <li><strong>Settings:</strong> Random utility adjustments</li>
+        <li><strong>Decision:</strong> Less predictable, influenced by mood</li>
+    </ul>
+
+    <h3>Utility Calculation Model</h3>
+
+    <div class="formula-box">
+        <strong>Base Utility Calculation:</strong><br>
+        Product A: 50 + (Quality Weight × 0.5) - (Price Sensitivity × Price / 100)<br>
+        Product B: 60 + (Quality Weight × 0.7) - (Price Sensitivity × Price / 100)<br><br>
+        
+        <strong>Scenario Modifiers:</strong><br>
+        • Budget: Heavy price penalty (Price × 1.5)<br>
+        • Luxury: Price bonus (Price × 0.3)<br>
+        • Impulsive: Random utility adjustment (±20)<br><br>
+        
+        <strong>Final Choice:</strong> Highest utility product wins
+    </div>
+
+    <h3>Interactive Features</h3>
+
+    <h4>Radar Chart Visualization</h4>
+    <ul>
+        <li><strong>Consumer Profile:</strong> Shows personality traits</li>
+        <li><strong>Product Fit:</strong> How well each product matches profile</li>
+        <li><strong>Real-time Updates:</strong> Changes as settings adjust</li>
+    </ul>
+
+    <h4>Budget Analysis</h4>
+    <ul>
+        <li><strong>Spending Budget:</strong> 10% of monthly income</li>
+        <li><strong>Visual Bar:</strong> Shows budget utilization</li>
+        <li><strong>Remaining Funds:</strong> Available for other purchases</li>
+    </ul>
+
+    <h4>Choice Reasoning</h4>
+    <ul>
+        <li><strong>Contextual Explanations:</strong> Why consumer chose specific product</li>
+        <li><strong>Scenario-specific:</strong> Different reasoning for each consumer type</li>
+        <li><strong>Educational Value:</strong> Connects theory to practice</li>
+    </ul>
+
+    <h3>Learning Objectives</h3>
+
+    <ol>
+        <li><strong>Understand utility maximization:</strong> How consumers make optimal choices</li>
+        <li><strong>Explore budget constraints:</strong> How income limits affect decisions</li>
+        <li><strong>Recognize behavioral factors:</strong> How real consumers deviate from theory</li>
+        <li><strong>Analyze trade-offs:</strong> Price vs. quality vs. brand considerations</li>
+        <li><strong>Apply economic concepts:</strong> Connect theory to real-world scenarios</li>
+    </ol>
+
+    <hr>
+
+    <h2>Key Takeaways</h2>
+
+    <h3>For Students</h3>
+    <ol>
+        <li><strong>Master the basics:</strong> Utility, budget constraints, and optimization</li>
+        <li><strong>Understand behavior:</strong> How real consumers differ from theory</li>
+        <li><strong>Recognize patterns:</strong> How different factors influence choices</li>
+        <li><strong>Apply concepts:</strong> Use theory to explain real-world decisions</li>
+    </ol>
+
+    <h3>For Business Applications</h3>
+    <ol>
+        <li><strong>Segment markets:</strong> Different consumer types need different approaches</li>
+        <li><strong>Price strategically:</strong> Understand price sensitivity variations</li>
+        <li><strong>Build loyalty:</strong> Create switching costs and emotional connections</li>
+        <li><strong>Design experiences:</strong> Use behavioral insights in product design</li>
+    </ol>
+
+    <h3>Advanced Concepts to Explore</h3>
+    <ul>
+        <li><strong>Prospect theory:</strong> How people evaluate gains and losses</li>
+        <li><strong>Neuroeconomics:</strong> Brain science of decision-making</li>
+        <li><strong>Social preferences:</strong> Fairness, altruism, and reciprocity</li>
+        <li><strong>Temporal choice:</strong> How people discount future utility</li>
+    </ul>
+
+    <div class="highlight-box">
+        <p><em>Consumer behavior theory provides the foundation for understanding market demand and consumer decision-making. While the traditional rational model offers important insights, incorporating behavioral economics gives a more complete picture of how people actually make choices in real markets.</em></p>
+    </div>
+
+</body>
+</html>

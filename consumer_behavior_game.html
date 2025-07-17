@@ -1,0 +1,1787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consumer Behavior Simulator</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #fafafa;
+            color: #1a1a1a;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .header h1 {
+            font-size: 2.2rem;
+            font-weight: 300;
+            color: #1a1a1a;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .header p {
+            font-size: 1rem;
+            color: #666;
+            font-weight: 400;
+        }
+
+        .game-area {
+            display: grid;
+            grid-template-columns: 280px 1fr 280px;
+            gap: 40px;
+            align-items: start;
+        }
+
+        .panel {
+            background: #fff;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            padding: 24px;
+        }
+
+        .panel h3 {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #1a1a1a;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .control-group {
+            margin-bottom: 24px;
+        }
+
+        .control-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .control-group label {
+            display: block;
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 8px;
+            font-weight: 400;
+        }
+
+        .slider-container {
+            position: relative;
+            margin-bottom: 8px;
+        }
+
+        .slider {
+            width: 100%;
+            height: 2px;
+            border-radius: 1px;
+            background: #e5e5e5;
+            outline: none;
+            -webkit-appearance: none;
+            cursor: pointer;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #1a1a1a;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .slider::-webkit-slider-thumb:hover {
+            background: #333;
+            transform: scale(1.2);
+        }
+
+        .slider::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #1a1a1a;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s ease;
+        }
+
+        .slider-value {
+            font-size: 0.8rem;
+            color: #999;
+            text-align: right;
+        }
+
+        .chart-container {
+            background: #fff;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            padding: 32px;
+            min-height: 500px;
+        }
+
+        .info-card {
+            background: #fff;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .info-card h4 {
+            font-size: 0.8rem;
+            color: #666;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 500;
+        }
+
+        .metric-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .metric {
+            text-align: center;
+        }
+
+        .metric-label {
+            font-size: 0.75rem;
+            color: #999;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .metric-value {
+            font-size: 1.4rem;
+            font-weight: 300;
+            color: #1a1a1a;
+        }
+
+        .button {
+            background: #1a1a1a;
+            color: #fff;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 400;
+            transition: all 0.2s ease;
+            width: 100%;
+            margin-bottom: 8px;
+        }
+
+        .button:hover {
+            background: #333;
+        }
+
+        .button.active {
+            background: #0066cc;
+        }
+
+        .button.active:hover {
+            background: #0052a3;
+        }
+
+        .button-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .button-small {
+            padding: 6px 12px;
+            font-size: 0.8rem;
+        }
+
+        .section-divider {
+            height: 1px;
+            background: #e5e5e5;
+            margin: 24px 0;
+        }
+
+        .scenario-indicator {
+            text-align: center;
+            margin: 16px 0;
+            padding: 12px;
+            border-radius: 4px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: #fff;
+            background: #28a745;
+        }
+
+        .normal { background: #28a745; }
+        .budget-conscious { background: #ffc107; color: #1a1a1a; }
+        .luxury-seeker { background: #6f42c1; }
+        .impulsive { background: #dc3545; }
+
+        .description {
+            font-size: 0.8rem;
+            color: #999;
+            margin-top: 8px;
+            font-style: italic;
+        }
+
+        .quiz-section {
+            background: #fff;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            padding: 24px;
+            margin-top: 40px;
+            display: none;
+        }
+
+        .quiz-question {
+            font-size: 1rem;
+            margin-bottom: 16px;
+            color: #1a1a1a;
+            font-weight: 400;
+        }
+
+        .quiz-options {
+            display: grid;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .quiz-option {
+            background: #f8f9fa;
+            border: 1px solid #e5e5e5;
+            padding: 12px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+        }
+
+        .quiz-option:hover {
+            background: #e9ecef;
+            border-color: #adb5bd;
+        }
+
+        .quiz-option.correct {
+            background: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+
+        .quiz-option.incorrect {
+            background: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+
+        .quiz-feedback {
+            background: #f8f9fa;
+            border: 1px solid #e5e5e5;
+            border-radius: 4px;
+            padding: 12px;
+            margin-top: 12px;
+            font-size: 0.85rem;
+            color: #666;
+            display: none;
+        }
+
+        .quiz-progress {
+            background: #e9ecef;
+            border-radius: 10px;
+            height: 8px;
+            margin: 16px 0;
+            overflow: hidden;
+        }
+
+        .quiz-progress-bar {
+            background: #28a745;
+            height: 100%;
+            transition: width 0.3s ease;
+            border-radius: 10px;
+        }
+
+        .budget-bar {
+            background: #1a4fa0;
+            height: 20px;
+            border-radius: 10px;
+            margin: 8px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .budget-used {
+            background: #28a745;
+            height: 100%;
+            transition: width 0.3s ease;
+            border-radius: 10px;
+        }
+
+        .budget-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .game-area {
+                grid-template-columns: 260px 1fr 260px;
+                gap: 30px;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .game-area {
+                grid-template-columns: 1fr 1fr;
+                gap: 30px;
+            }
+            
+            .chart-container {
+                grid-column: 1 / -1;
+                order: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .game-area {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Consumer Behavior Simulator</h1>
+            <p>Interactive consumer choice theory and behavioral economics tool</p>
+        </div>
+
+        <div class="game-area">
+            <!-- Left Panel: Controls -->
+            <div class="panel">
+                <h3>Consumer Profile</h3>
+                
+                <div class="control-group">
+                    <label for="income">Monthly Income ($)</label>
+                    <div class="slider-container">
+                        <input type="range" id="income" class="slider" min="2000" max="10000" value="5000" step="100">
+                    </div>
+                    <div class="slider-value" id="incomeValue">$5,000</div>
+                </div>
+
+                <div class="control-group">
+                    <label for="priceSignificance">Price Sensitivity</label>
+                    <div class="slider-container">
+                        <input type="range" id="priceSignificance" class="slider" min="10" max="100" value="50">
+                    </div>
+                    <div class="slider-value" id="priceSignificanceValue">50%</div>
+                </div>
+
+                <div class="control-group">
+                    <label for="qualityImportance">Quality Importance</label>
+                    <div class="slider-container">
+                        <input type="range" id="qualityImportance" class="slider" min="10" max="100" value="50">
+                    </div>
+                    <div class="slider-value" id="qualityImportanceValue">50%</div>
+                </div>
+
+                <div class="control-group">
+                    <label for="brandLoyalty">Brand Loyalty</label>
+                    <div class="slider-container">
+                        <input type="range" id="brandLoyalty" class="slider" min="0" max="100" value="30">
+                    </div>
+                    <div class="slider-value" id="brandLoyaltyValue">30%</div>
+                </div>
+
+                <div class="section-divider"></div>
+
+                <h3>Market Conditions</h3>
+
+                <div class="control-group">
+                    <label for="productAPrice">Product A Price ($)</label>
+                    <div class="slider-container">
+                        <input type="range" id="productAPrice" class="slider" min="10" max="200" value="50">
+                    </div>
+                    <div class="slider-value" id="productAPriceValue">$50</div>
+                </div>
+
+                <div class="control-group">
+                    <label for="productBPrice">Product B Price ($)</label>
+                    <div class="slider-container">
+                        <input type="range" id="productBPrice" class="slider" min="10" max="200" value="75">
+                    </div>
+                    <div class="slider-value" id="productBPriceValue">$75</div>
+                </div>
+
+                <div class="section-divider"></div>
+
+                <h3>Consumer Scenarios</h3>
+                <div class="button-group">
+                    <button class="button button-small" onclick="runScenario('rational')">Rational Choice</button>
+                    <button class="button button-small" onclick="runScenario('budget')">Budget Conscious</button>
+                </div>
+                <div class="button-group">
+                    <button class="button button-small" onclick="runScenario('luxury')">Luxury Seeker</button>
+                    <button class="button button-small" onclick="runScenario('impulsive')">Impulsive Buyer</button>
+                </div>
+
+                <button class="button" onclick="resetConsumer()">Reset Consumer</button>
+                <button class="button" onclick="toggleQuiz()">Start Quiz</button>
+            </div>
+
+            <!-- Center Panel: Chart -->
+            <div class="chart-container">
+                <canvas id="consumerChart"></canvas>
+            </div>
+
+            <!-- Right Panel: Information -->
+            <div>
+                <!-- Consumer Analysis -->
+                <div class="info-card">
+                    <h4>Consumer Analysis</h4>
+                    
+                    <div class="scenario-indicator normal" id="consumerType">
+                        Rational Consumer
+                    </div>
+
+                    <div class="metric-grid">
+                        <div class="metric">
+                            <div class="metric-label">Utility A</div>
+                            <div class="metric-value" id="utilityA">85</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">Utility B</div>
+                            <div class="metric-value" id="utilityB">75</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">Choice</div>
+                            <div class="metric-value" id="preferredChoice">Product A</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">Confidence</div>
+                            <div class="metric-value" id="confidence">92%</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Budget Analysis -->
+                <div class="info-card">
+                    <h4>Budget Analysis</h4>
+                    <div class="budget-bar">
+                        <div class="budget-used" id="budgetUsed"></div>
+                        <div class="budget-text" id="budgetText">$50 / $500</div>
+                    </div>
+                    <div class="metric-grid">
+                        <div class="metric">
+                            <div class="metric-label">Spending Budget</div>
+                            <div class="metric-value" id="spendingBudget">$500</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">Remaining</div>
+                            <div class="metric-value" id="remainingBudget">$450</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Comparison -->
+                <div class="info-card">
+                    <h4>Product Comparison</h4>
+                    <div class="metric-grid">
+                        <div class="metric">
+                            <div class="metric-label">Product A</div>
+                            <div class="metric-value" id="productADetails">📱 $50</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">Product B</div>
+                            <div class="metric-value" id="productBDetails">📱 $75</div>
+                        </div>
+                    </div>
+                    <div class="description" id="choiceReason">
+                        Better value for money based on utility-to-price ratio
+                    </div>
+                </div>
+
+                <!-- Economic Concepts -->
+                <div class="info-card">
+                    <h4>Economic Concepts</h4>
+                    <div style="font-size: 0.8rem; color: #666; line-height: 1.4;">
+                        <strong>Utility:</strong> Satisfaction from consumption<br>
+                        <strong>Marginal Utility:</strong> Additional satisfaction from one more unit<br>
+                        <strong>Consumer Surplus:</strong> Benefit beyond price paid
+                    </div>
+                </div>
+
+                <!-- Download Button -->
+                <button class="button" onclick="downloadTheoryGuide()">Download Theory Guide</button>
+            </div>
+        </div>
+
+        <!-- Quiz Section -->
+        <div class="quiz-section" id="quizSection">
+            <h3>Consumer Behavior Quiz</h3>
+            
+            <div class="quiz-progress">
+                <div class="quiz-progress-bar" id="progressBar"></div>
+            </div>
+            
+            <div class="quiz-question" id="quizQuestion">
+                What is the economic principle that states consumers aim to maximize satisfaction subject to their budget constraints?
+            </div>
+            
+            <div class="quiz-options" id="quizOptions">
+                <div class="quiz-option" onclick="selectQuizOption(this, false)">Law of Supply</div>
+                <div class="quiz-option" onclick="selectQuizOption(this, true)">Utility Maximization</div>
+                <div class="quiz-option" onclick="selectQuizOption(this, false)">Price Discrimination</div>
+                <div class="quiz-option" onclick="selectQuizOption(this, false)">Market Equilibrium</div>
+            </div>
+            
+            <div class="quiz-feedback" id="quizFeedback">
+                Correct! Utility maximization is the fundamental principle that consumers try to get the most satisfaction possible from their limited income.
+            </div>
+
+            <button class="button" onclick="nextQuestion()" style="margin-top: 16px; display: none;" id="nextBtn">Next Question</button>
+            <button class="button" onclick="toggleQuiz()" style="margin-top: 16px;">Close Quiz</button>
+        </div>
+    </div>
+
+    <script>
+        // Game state
+        let chart;
+        let quizActive = false;
+        let currentQuestionIndex = 0;
+        let quizScore = 0;
+
+        let consumerState = {
+            income: 5000,
+            priceSignificance: 50,
+            qualityImportance: 50,
+            brandLoyalty: 30,
+            productAPrice: 50,
+            productBPrice: 75,
+            scenario: 'rational'
+        };
+
+        // Quiz questions
+        const quizQuestions = [
+            {
+                question: "What is the economic principle that states consumers aim to maximize satisfaction subject to their budget constraints?",
+                options: ["Law of Supply", "Utility Maximization", "Price Discrimination", "Market Equilibrium"],
+                correct: 1,
+                explanation: "Correct! Utility maximization is the fundamental principle that consumers try to get the most satisfaction possible from their limited income."
+            },
+            {
+                question: "What does 'marginal utility' refer to?",
+                options: ["Total satisfaction from all units consumed", "Additional satisfaction from consuming one more unit", "The price paid for a product", "The average utility per dollar spent"],
+                correct: 1,
+                explanation: "Correct! Marginal utility is the additional satisfaction gained from consuming one more unit of a good or service."
+            },
+            {
+                question: "According to the law of diminishing marginal utility, what happens as you consume more of a good?",
+                options: ["Marginal utility increases", "Marginal utility decreases", "Marginal utility stays constant", "Total utility decreases"],
+                correct: 1,
+                explanation: "Correct! The law of diminishing marginal utility states that each additional unit provides less satisfaction than the previous one."
+            },
+            {
+                question: "What is consumer surplus?",
+                options: ["Money left over after buying everything", "The difference between what consumers are willing to pay and what they actually pay", "Extra products consumers don't need", "The total amount spent on goods"],
+                correct: 1,
+                explanation: "Correct! Consumer surplus represents the extra benefit consumers receive when they pay less than what they were willing to pay."
+            },
+            {
+                question: "In behavioral economics, what is 'loss aversion'?",
+                options: ["Preference for avoiding losses over acquiring gains", "Fear of spending money", "Avoiding risky investments", "Preferring cheaper products"],
+                correct: 0,
+                explanation: "Correct! Loss aversion means people feel the pain of losing something more strongly than the pleasure of gaining the same thing."
+            },
+            {
+                question: "What is the 'anchoring effect' in consumer behavior?",
+                options: ["Sticking to one brand forever", "Being influenced by the first piece of information encountered", "Buying products on sale", "Following social media influences"],
+                correct: 1,
+                explanation: "Correct! Anchoring occurs when consumers rely too heavily on the first piece of information (the 'anchor') when making decisions."
+            },
+            {
+                question: "What does price elasticity of demand measure in consumer behavior?",
+                options: ["How much consumers like a product", "How responsive demand is to price changes", "How often consumers buy a product", "How much consumers are willing to pay"],
+                correct: 1,
+                explanation: "Correct! Price elasticity measures how much the quantity demanded changes in response to a change in price."
+            },
+            {
+                question: "In the context of consumer choice, what is a 'budget constraint'?",
+                options: ["A limit on how much stores can charge", "The maximum amount a consumer can spend given their income", "Government spending limits", "Credit card limits"],
+                correct: 1,
+                explanation: "Correct! A budget constraint represents all combinations of goods a consumer can afford given their income and prices."
+            },
+            {
+                question: "What is 'conspicuous consumption'?",
+                options: ["Buying necessities only", "Purchasing goods to display wealth or status", "Buying in large quantities", "Consuming products quickly"],
+                correct: 1,
+                explanation: "Correct! Conspicuous consumption refers to buying expensive items to display wealth and social status rather than for practical use."
+            },
+            {
+                question: "What does the 'substitution effect' describe?",
+                options: ["Replacing old products with new ones", "When consumers switch to relatively cheaper alternatives", "Substituting wants for needs", "When stores substitute products"],
+                correct: 1,
+                explanation: "Correct! The substitution effect occurs when consumers switch to relatively cheaper alternatives when a product's price increases."
+            },
+            {
+                question: "In consumer theory, what is an 'indifference curve'?",
+                options: ["A line showing equal satisfaction levels", "A curve showing declining interest", "A graph of price changes", "A measurement of consumer apathy"],
+                correct: 0,
+                explanation: "Correct! An indifference curve shows combinations of goods that provide the consumer with the same level of satisfaction."
+            },
+            {
+                question: "What is 'mental accounting' in behavioral economics?",
+                options: ["Keeping track of all expenses", "Treating money differently based on its source or intended use", "Calculating utility maximization", "Budget planning methods"],
+                correct: 1,
+                explanation: "Correct! Mental accounting refers to how people categorize and treat money differently depending on where it comes from or what it's for."
+            },
+            {
+                question: "What is the 'endowment effect'?",
+                options: ["Getting money from inheritance", "Valuing something more highly just because you own it", "The effect of having more money", "Investment returns"],
+                correct: 1,
+                explanation: "Correct! The endowment effect is the tendency to value items more highly simply because you own them."
+            },
+            {
+                question: "In consumer behavior, what does 'satisficing' mean?",
+                options: ["Maximizing satisfaction from purchases", "Choosing the first option that meets minimum criteria", "Being satisfied with everything", "Optimizing every decision"],
+                correct: 1,
+                explanation: "Correct! Satisficing means choosing the first alternative that meets your minimum requirements rather than searching for the optimal choice."
+            },
+            {
+                question: "What is 'price discrimination' from a consumer perspective?",
+                options: ["Refusing to pay high prices", "When companies charge different prices to different consumers", "Comparing prices across stores", "Discriminating against expensive products"],
+                correct: 1,
+                explanation: "Correct! Price discrimination occurs when companies charge different prices to different consumers for the same product."
+            },
+            {
+                question: "What does 'consumer rationality' assume in economic theory?",
+                options: ["Consumers always make perfect decisions", "Consumers have consistent preferences and maximize utility", "Consumers never make mistakes", "Consumers always buy the cheapest option"],
+                correct: 1,
+                explanation: "Correct! Rationality assumes consumers have consistent, well-defined preferences and make choices to maximize their utility."
+            },
+            {
+                question: "What is the 'income effect' in consumer theory?",
+                options: ["How income affects social status", "How changes in income affect consumption patterns", "The effect of earning more money", "How income taxes affect spending"],
+                correct: 1,
+                explanation: "Correct! The income effect describes how changes in purchasing power (due to price or income changes) affect consumption."
+            },
+            {
+                question: "In behavioral economics, what is 'hyperbolic discounting'?",
+                options: ["A mathematical function", "Tendency to value immediate rewards more than future ones", "A type of price reduction", "A savings account method"],
+                correct: 1,
+                explanation: "Correct! Hyperbolic discounting explains why people tend to choose immediate rewards over larger future rewards."
+            },
+            {
+                question: "What is 'brand loyalty' in consumer behavior?",
+                options: ["Always buying the most expensive brand", "Consistent preference for a particular brand", "Loyalty programs offered by companies", "Refusing to try new products"],
+                correct: 1,
+                explanation: "Correct! Brand loyalty refers to a consumer's commitment to repeatedly purchase the same brand's products."
+            },
+            {
+                question: "What is the main idea behind 'prospect theory'?",
+                options: ["People research all options before buying", "People evaluate gains and losses differently from a reference point", "Consumers always seek the best prospects", "Marketing focuses on future benefits"],
+                correct: 1,
+                explanation: "Correct! Prospect theory shows that people make decisions based on perceived gains and losses from a reference point, not absolute outcomes."
+            }
+        ];
+
+        // Initialize the chart
+        function initChart() {
+            const ctx = document.getElementById('consumerChart').getContext('2d');
+            
+            Chart.defaults.font.family = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+            Chart.defaults.color = '#666';
+            
+            chart = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['Price Sensitivity', 'Quality Importance', 'Brand Loyalty', 'Value Seeking', 'Impulse Control', 'Research Tendency'],
+                    datasets: [
+                        {
+                            label: 'Consumer Profile',
+                            data: [50, 50, 30, 70, 60, 50],
+                            borderColor: '#1a4fa0',
+                            backgroundColor: 'rgba(0, 122, 204, 0.1)',
+                            borderWidth: 2,
+                            pointBackgroundColor: '#1a4fa0',
+                            pointBorderColor: '#fff',
+                            pointBorderWidth: 2,
+                            pointRadius: 4
+                        },
+                        {
+                            label: 'Product A Fit',
+                            data: [0, 0, 0, 0, 0, 0],
+                            borderColor: '#28a745',
+                            backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                            borderWidth: 2,
+                            pointBackgroundColor: '#28a745',
+                            pointBorderColor: '#fff',
+                            pointBorderWidth: 2,
+                            pointRadius: 4
+                        },
+                        {
+                            label: 'Product B Fit',
+                            data: [0, 0, 0, 0, 0, 0],
+                            borderColor: '#dc3545',
+                            backgroundColor: 'rgba(220, 53, 69, 0.1)',
+                            borderWidth: 2,
+                            pointBackgroundColor: '#dc3545',
+                            pointBorderColor: '#fff',
+                            pointBorderWidth: 2,
+                            pointRadius: 4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                font: { size: 12, weight: '400' },
+                                usePointStyle: true,
+                                boxWidth: 12,
+                                padding: 20
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: '#1a1a1a',
+                            titleColor: '#fff',
+                            bodyColor: '#fff',
+                            borderColor: '#333',
+                            borderWidth: 1,
+                            cornerRadius: 4,
+                            displayColors: true
+                        }
+                    },
+                    scales: {
+                        r: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                stepSize: 20,
+                                color: '#999',
+                                font: { size: 10 }
+                            },
+                            grid: {
+                                color: '#f0f0f0'
+                            },
+                            pointLabels: {
+                                color: '#666',
+                                font: { size: 11 }
+                            }
+                        }
+                    }
+                }
+            });
+
+            updateChart();
+        }
+
+        // Calculate consumer utility and preferences
+        function calculateUtility() {
+            const { income, priceSignificance, qualityImportance, brandLoyalty, productAPrice, productBPrice, scenario } = consumerState;
+            
+            // Calculate spending budget (10% of income for this product category)
+            const spendingBudget = income * 0.1;
+            
+            // Base utility calculations
+            let utilityA = 50; // Base utility
+            let utilityB = 60; // Product B has slightly higher base quality
+            
+            // Apply scenario-specific modifiers
+            switch (scenario) {
+                case 'rational':
+                    // Rational consumer considers price-to-quality ratio
+                    utilityA += (qualityImportance * 0.5) - (priceSignificance * productAPrice / 100);
+                    utilityB += (qualityImportance * 0.7) - (priceSignificance * productBPrice / 100);
+                    break;
+                    
+                case 'budget':
+                    // Budget-conscious heavily weights price
+                    utilityA += 60 - (productAPrice * 1.5);
+                    utilityB += 60 - (productBPrice * 1.5);
+                    break;
+                    
+                case 'luxury':
+                    // Luxury seeker prefers higher-priced items
+                    utilityA += (productAPrice * 0.3) + (qualityImportance * 0.3);
+                    utilityB += (productBPrice * 0.3) + (qualityImportance * 0.5);
+                    break;
+                    
+                case 'impulsive':
+                    // Impulsive buyer less price-sensitive, more brand-influenced
+                    utilityA += Math.random() * 40 - 20 + (brandLoyalty * 0.3);
+                    utilityB += Math.random() * 40 - 20 + (brandLoyalty * 0.5);
+                    break;
+            }
+            
+            // Apply brand loyalty effect
+            utilityB += brandLoyalty * 0.3; // Product B is the "preferred brand"
+            
+            // Ensure utilities are within reasonable bounds
+            utilityA = Math.max(0, Math.min(100, utilityA));
+            utilityB = Math.max(0, Math.min(100, utilityB));
+            
+            // Determine choice and confidence
+            const choice = utilityA > utilityB ? 'Product A' : 'Product B';
+            const utilityDiff = Math.abs(utilityA - utilityB);
+            const confidence = Math.min(95, 50 + (utilityDiff * 1.5));
+            
+            // Calculate choice reasoning
+            let reason = '';
+            if (scenario === 'budget') {
+                reason = choice === 'Product A' ? 'Lowest price option fits budget constraints' : 'Better value despite higher price';
+            } else if (scenario === 'luxury') {
+                reason = choice === 'Product B' ? 'Premium quality justifies higher price' : 'Unexpected choice for luxury seeker';
+            } else if (scenario === 'impulsive') {
+                reason = 'Decision influenced by immediate appeal and emotions';
+            } else {
+                reason = choice === 'Product A' ? 'Better value for money based on utility-to-price ratio' : 'Higher quality justifies premium price';
+            }
+            
+            return {
+                utilityA: Math.round(utilityA),
+                utilityB: Math.round(utilityB),
+                choice,
+                confidence: Math.round(confidence),
+                spendingBudget,
+                reason
+            };
+        }
+
+        // Update the chart and display
+        function updateChart() {
+            const { priceSignificance, qualityImportance, brandLoyalty, scenario } = consumerState;
+            const results = calculateUtility();
+            
+            // Calculate consumer profile based on scenario and settings
+            let profileData = [
+                priceSignificance,
+                qualityImportance,
+                brandLoyalty,
+                100 - priceSignificance, // Value seeking (inverse of price sensitivity)
+                scenario === 'impulsive' ? 20 : 70, // Impulse control
+                scenario === 'rational' ? 80 : scenario === 'budget' ? 60 : 40 // Research tendency
+            ];
+            
+            // Product fit calculations
+            let productAFit = [
+                Math.max(0, 100 - consumerState.productAPrice), // Price appeal
+                60, // Quality perception
+                30, // Brand strength
+                80, // Value proposition
+                70, // Impulse appeal
+                75  // Research appeal
+            ];
+            
+            let productBFit = [
+                Math.max(0, 100 - consumerState.productBPrice), // Price appeal
+                80, // Quality perception
+                70, // Brand strength
+                60, // Value proposition
+                50, // Impulse appeal
+                85  // Research appeal
+            ];
+            
+            // Update chart data
+            chart.data.datasets[0].data = profileData;
+            chart.data.datasets[1].data = productAFit;
+            chart.data.datasets[2].data = productBFit;
+            
+            chart.update('none');
+            
+            // Update metrics display
+            updateMetrics(results);
+        }
+
+        // Update the metrics display
+        function updateMetrics(results) {
+            document.getElementById('utilityA').textContent = results.utilityA;
+            document.getElementById('utilityB').textContent = results.utilityB;
+            document.getElementById('preferredChoice').textContent = results.choice;
+            document.getElementById('confidence').textContent = `${results.confidence}%`;
+            
+            // Update budget display
+            const chosenPrice = results.choice === 'Product A' ? consumerState.productAPrice : consumerState.productBPrice;
+            const budgetUsedPercent = (chosenPrice / results.spendingBudget) * 100;
+            
+            document.getElementById('spendingBudget').textContent = `${Math.round(results.spendingBudget)}`;
+            document.getElementById('remainingBudget').textContent = `${Math.round(results.spendingBudget - chosenPrice)}`;
+            document.getElementById('budgetUsed').style.width = `${Math.min(100, budgetUsedPercent)}%`;
+            document.getElementById('budgetText').textContent = `${chosenPrice} / ${Math.round(results.spendingBudget)}`;
+            
+            // Update product details
+            document.getElementById('productADetails').textContent = `📱 ${consumerState.productAPrice}`;
+            document.getElementById('productBDetails').textContent = `📱 ${consumerState.productBPrice}`;
+            document.getElementById('choiceReason').textContent = results.reason;
+            
+            // Update consumer type indicator
+            updateConsumerTypeIndicator();
+        }
+
+        // Update consumer type indicator
+        function updateConsumerTypeIndicator() {
+            const indicator = document.getElementById('consumerType');
+            const { scenario } = consumerState;
+            
+            switch (scenario) {
+                case 'rational':
+                    indicator.className = 'scenario-indicator normal';
+                    indicator.textContent = 'Rational Consumer';
+                    break;
+                case 'budget':
+                    indicator.className = 'scenario-indicator budget-conscious';
+                    indicator.textContent = 'Budget Conscious';
+                    break;
+                case 'luxury':
+                    indicator.className = 'scenario-indicator luxury-seeker';
+                    indicator.textContent = 'Luxury Seeker';
+                    break;
+                case 'impulsive':
+                    indicator.className = 'scenario-indicator impulsive';
+                    indicator.textContent = 'Impulsive Buyer';
+                    break;
+            }
+        }
+
+        // Run scenario
+        function runScenario(scenarioType) {
+            consumerState.scenario = scenarioType;
+            
+            switch (scenarioType) {
+                case 'rational':
+                    consumerState.priceSignificance = 60;
+                    consumerState.qualityImportance = 70;
+                    consumerState.brandLoyalty = 30;
+                    break;
+                case 'budget':
+                    consumerState.priceSignificance = 90;
+                    consumerState.qualityImportance = 40;
+                    consumerState.brandLoyalty = 20;
+                    break;
+                case 'luxury':
+                    consumerState.priceSignificance = 20;
+                    consumerState.qualityImportance = 90;
+                    consumerState.brandLoyalty = 70;
+                    break;
+                case 'impulsive':
+                    consumerState.priceSignificance = 30;
+                    consumerState.qualityImportance = 50;
+                    consumerState.brandLoyalty = 60;
+                    break;
+            }
+            
+            updateSliderDisplays();
+            updateChart();
+        }
+
+        // Reset consumer to default values
+        function resetConsumer() {
+            consumerState = {
+                income: 5000,
+                priceSignificance: 50,
+                qualityImportance: 50,
+                brandLoyalty: 30,
+                productAPrice: 50,
+                productBPrice: 75,
+                scenario: 'rational'
+            };
+            
+            updateSliderDisplays();
+            updateChart();
+        }
+
+        // Update slider displays
+        function updateSliderDisplays() {
+            Object.keys(consumerState).forEach(key => {
+                const slider = document.getElementById(key);
+                const display = document.getElementById(key + 'Value');
+                
+                if (slider && display) {
+                    slider.value = consumerState[key];
+                    
+                    if (key === 'income') {
+                        display.textContent = `${consumerState[key].toLocaleString()}`;
+                    } else if (key.includes('Price')) {
+                        display.textContent = `${consumerState[key]}`;
+                    } else {
+                        display.textContent = `${consumerState[key]}%`;
+                    }
+                }
+            });
+        }
+
+        // Toggle quiz
+        function toggleQuiz() {
+            const quizSection = document.getElementById('quizSection');
+            quizActive = !quizActive;
+            
+            if (quizActive) {
+                quizSection.style.display = 'block';
+                currentQuestionIndex = 0;
+                quizScore = 0;
+                showQuestion();
+            } else {
+                quizSection.style.display = 'none';
+            }
+        }
+
+        // Show current question
+        function showQuestion() {
+            if (currentQuestionIndex >= quizQuestions.length) {
+                showQuizResults();
+                return;
+            }
+            
+            const question = quizQuestions[currentQuestionIndex];
+            document.getElementById('quizQuestion').textContent = question.question;
+            
+            const optionsContainer = document.getElementById('quizOptions');
+            optionsContainer.innerHTML = '';
+            
+            question.options.forEach((option, index) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'quiz-option';
+                optionDiv.textContent = option;
+                optionDiv.onclick = () => selectQuizOption(optionDiv, index === question.correct);
+                optionsContainer.appendChild(optionDiv);
+            });
+            
+            document.getElementById('quizFeedback').style.display = 'none';
+            document.getElementById('nextBtn').style.display = 'none';
+            
+            // Update progress bar
+            const progress = (currentQuestionIndex / quizQuestions.length) * 100;
+            document.getElementById('progressBar').style.width = `${progress}%`;
+        }
+
+        // Select quiz option
+        function selectQuizOption(element, isCorrect) {
+            const question = quizQuestions[currentQuestionIndex];
+            const options = document.querySelectorAll('.quiz-option');
+            
+            if (isCorrect) {
+                quizScore++;
+            }
+            
+            // Disable all options and show correct/incorrect
+            options.forEach((option, index) => {
+                option.onclick = null;
+                if (index === question.correct) {
+                    option.classList.add('correct');
+                } else if (option === element && !isCorrect) {
+                    option.classList.add('incorrect');
+                }
+            });
+            
+            // Show feedback
+            const feedback = document.getElementById('quizFeedback');
+            feedback.textContent = question.explanation;
+            feedback.style.display = 'block';
+            
+            // Show next button
+            document.getElementById('nextBtn').style.display = 'block';
+        }
+
+        // Next question
+        function nextQuestion() {
+            currentQuestionIndex++;
+            showQuestion();
+        }
+
+        // Show quiz results
+        function showQuizResults() {
+            const percentage = Math.round((quizScore / quizQuestions.length) * 100);
+            
+            document.getElementById('quizQuestion').textContent = 
+                `Quiz completed! You scored ${quizScore}/${quizQuestions.length} (${percentage}%)`;
+            
+            document.getElementById('quizOptions').innerHTML = '';
+            document.getElementById('quizFeedback').style.display = 'none';
+            document.getElementById('nextBtn').style.display = 'none';
+            
+            // Complete progress bar
+            document.getElementById('progressBar').style.width = '100%';
+        }
+
+        // Download theory guide
+        function downloadTheoryGuide() {
+            const guideContent = createConsumerBehaviorTheoryGuide();
+            
+            const blob = new Blob([guideContent], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'consumer_behavior_theory_guide.html';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Create theory guide content
+        function createConsumerBehaviorTheoryGuide() {
+            return `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consumer Behavior Theory Guide</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            color: #333;
+            background: white;
+        }
+        
+        h1 {
+            color: #1a1a1a;
+            border-bottom: 3px solid #1a4fa0;
+            padding-bottom: 10px;
+            font-size: 2.2em;
+            margin-bottom: 30px;
+        }
+        
+        h2 {
+            color: #1a4fa0;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            border-left: 4px solid #1a4fa0;
+            padding-left: 15px;
+        }
+        
+        h3 {
+            color: #333;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+        
+        h4 {
+            color: #666;
+            margin-top: 25px;
+            margin-bottom: 10px;
+            font-size: 1em;
+            font-weight: 600;
+        }
+        
+        p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+        
+        ul, ol {
+            margin-bottom: 15px;
+            padding-left: 25px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        code {
+            background: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        
+        .toc {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+            margin: 30px 0;
+        }
+        
+        .toc h3 {
+            margin-top: 0;
+            color: #1a4fa0;
+        }
+        
+        .toc ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        
+        .toc a {
+            color: #1a4fa0;
+            text-decoration: none;
+        }
+        
+        .toc a:hover {
+            text-decoration: underline;
+        }
+        
+        .highlight-box {
+            background: #e7f3ff;
+            border-left: 4px solid #1a4fa0;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        
+        .formula-box {
+            background: #f0f8f0;
+            border: 1px solid #90c695;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .example-box {
+            background: #fff7e6;
+            border: 1px solid #ffb366;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.9em;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        th {
+            background: #f5f5f5;
+            font-weight: 600;
+        }
+        
+        hr {
+            border: none;
+            height: 2px;
+            background: #e0e0e0;
+            margin: 40px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Consumer Behavior Theory Guide</h1>
+    <p><em>Understanding Consumer Choice and Decision-Making</em></p>
+    
+    <div class="toc">
+        <h3>Table of Contents</h3>
+        <ul>
+            <li><a href="#foundation">1. Foundation of Consumer Theory</a></li>
+            <li><a href="#utility">2. Utility Theory</a></li>
+            <li><a href="#budget">3. Budget Constraints</a></li>
+            <li><a href="#optimization">4. Consumer Optimization</a></li>
+            <li><a href="#behavioral">5. Behavioral Economics</a></li>
+            <li><a href="#effects">6. Income and Substitution Effects</a></li>
+            <li><a href="#applications">7. Real-World Applications</a></li>
+            <li><a href="#simulator">8. How the Simulator Works</a></li>
+        </ul>
+    </div>
+
+    <h2 id="foundation">1. Foundation of Consumer Theory</h2>
+
+    <h3>What is Consumer Behavior?</h3>
+    <p><strong>Consumer behavior</strong> is the study of how individuals make decisions to spend their available resources (time, money, effort) on consumption-related items. It encompasses the processes consumers use to select, purchase, use, and dispose of products and services.</p>
+
+    <div class="highlight-box">
+        <p><strong>Key Insight:</strong> Consumer theory provides the foundation for understanding market demand and helps businesses make strategic decisions about pricing, product development, and marketing.</p>
+    </div>
+
+    <h3>Basic Assumptions</h3>
+    <ol>
+        <li><strong>Rationality:</strong> Consumers make logical decisions to maximize satisfaction</li>
+        <li><strong>Complete Information:</strong> Consumers know all available options and prices</li>
+        <li><strong>Consistent Preferences:</strong> Consumer preferences don't change randomly</li>
+        <li><strong>Transitivity:</strong> If A is preferred to B, and B to C, then A is preferred to C</li>
+        <li><strong>Non-satiation:</strong> More is generally preferred to less</li>
+    </ol>
+
+    <h3>Consumer Decision Process</h3>
+    <ul>
+        <li><strong>Problem Recognition:</strong> Identifying a need or want</li>
+        <li><strong>Information Search:</strong> Gathering data about alternatives</li>
+        <li><strong>Evaluation:</strong> Comparing options based on criteria</li>
+        <li><strong>Purchase Decision:</strong> Selecting and buying a product</li>
+        <li><strong>Post-Purchase Evaluation:</strong> Assessing satisfaction</li>
+    </ul>
+
+    <h2 id="utility">2. Utility Theory</h2>
+
+    <h3>Understanding Utility</h3>
+    <p><strong>Utility</strong> represents the satisfaction or happiness a consumer derives from consuming goods and services. It's a subjective measure that varies between individuals and circumstances.</p>
+
+    <div class="formula-box">
+        <strong>Total Utility (TU)</strong> = Sum of satisfaction from all units consumed<br>
+        <strong>Marginal Utility (MU)</strong> = Change in total utility from consuming one additional unit<br><br>
+        MU = ΔTU / ΔQ<br><br>
+        Where ΔTU = change in total utility, ΔQ = change in quantity
+    </div>
+
+    <h3>Law of Diminishing Marginal Utility</h3>
+    <p>As consumption of a good increases, the marginal utility derived from each additional unit decreases. This explains why demand curves slope downward.</p>
+
+    <div class="example-box">
+        <h4>Example: Pizza Consumption</h4>
+        <ul>
+            <li><strong>1st slice:</strong> MU = 20 utils (very satisfying when hungry)</li>
+            <li><strong>2nd slice:</strong> MU = 15 utils (still enjoyable)</li>
+            <li><strong>3rd slice:</strong> MU = 10 utils (getting full)</li>
+            <li><strong>4th slice:</strong> MU = 5 utils (almost too much)</li>
+            <li><strong>5th slice:</strong> MU = 0 utils (completely full)</li>
+        </ul>
+    </div>
+
+    <h3>Types of Utility</h3>
+    <h4>Cardinal vs. Ordinal Utility</h4>
+    <ul>
+        <li><strong>Cardinal:</strong> Utility can be measured in absolute numbers</li>
+        <li><strong>Ordinal:</strong> Utility can only be ranked (modern approach)</li>
+    </ul>
+
+    <h4>Form, Time, Place, and Possession Utility</h4>
+    <ul>
+        <li><strong>Form:</strong> Value added by changing physical characteristics</li>
+        <li><strong>Time:</strong> Value from having products when needed</li>
+        <li><strong>Place:</strong> Value from having products where needed</li>
+        <li><strong>Possession:</strong> Value from ownership transfer</li>
+    </ul>
+
+    <h2 id="budget">3. Budget Constraints</h2>
+
+    <h3>The Budget Line</h3>
+    <p>A <strong>budget constraint</strong> shows all combinations of goods that a consumer can afford given their income and the prices of goods.</p>
+
+    <div class="formula-box">
+        <strong>Budget Constraint:</strong> I = P₁Q₁ + P₂Q₂<br><br>
+        Where:<br>
+        • I = Consumer income<br>
+        • P₁, P₂ = Prices of goods 1 and 2<br>
+        • Q₁, Q₂ = Quantities of goods 1 and 2
+    </div>
+
+    <h3>Properties of Budget Lines</h3>
+    <ul>
+        <li><strong>Slope:</strong> -P₁/P₂ (relative price ratio)</li>
+        <li><strong>Intercepts:</strong> Show maximum affordable quantity of each good</li>
+        <li><strong>Shifts:</strong> Change with income or price changes</li>
+    </ul>
+
+    <h3>Changes in Budget Constraints</h3>
+    <h4>Income Changes</h4>
+    <ul>
+        <li><strong>Income increase:</strong> Budget line shifts outward (parallel)</li>
+        <li><strong>Income decrease:</strong> Budget line shifts inward (parallel)</li>
+    </ul>
+
+    <h4>Price Changes</h4>
+    <ul>
+        <li><strong>Price increase:</strong> Budget line rotates inward (steeper)</li>
+        <li><strong>Price decrease:</strong> Budget line rotates outward (flatter)</li>
+    </ul>
+
+    <h2 id="optimization">4. Consumer Optimization</h2>
+
+    <h3>Utility Maximization</h3>
+    <p>Consumers seek to maximize utility subject to their budget constraint. The optimal choice occurs where the marginal utility per dollar is equal across all goods.</p>
+
+    <div class="formula-box">
+        <strong>Utility Maximization Condition:</strong><br>
+        MU₁/P₁ = MU₂/P₂ = ... = MUₙ/Pₙ<br><br>
+        This is known as the <strong>Equimarginal Principle</strong>
+    </div>
+
+    <h3>Indifference Curves</h3>
+    <p>An <strong>indifference curve</strong> shows combinations of goods that provide the same level of utility to a consumer.</p>
+
+    <h4>Properties of Indifference Curves</h4>
+    <ol>
+        <li><strong>Downward sloping:</strong> To maintain constant utility</li>
+        <li><strong>Cannot intersect:</strong> Would violate transitivity</li>
+        <li><strong>Convex to origin:</strong> Due to diminishing marginal rate of substitution</li>
+        <li><strong>Higher curves preferred:</strong> More utility</li>
+    </ol>
+
+    <h3>Marginal Rate of Substitution (MRS)</h3>
+    <p>The MRS is the rate at which a consumer is willing to substitute one good for another while maintaining the same level of utility.</p>
+
+    <div class="formula-box">
+        <strong>MRS</strong> = -ΔQ₂/ΔQ₁ = MU₁/MU₂<br><br>
+        At equilibrium: MRS = P₁/P₂
+    </div>
+
+    <h2 id="behavioral">5. Behavioral Economics</h2>
+
+    <h3>Deviations from Rationality</h3>
+    <p>Real consumers often deviate from the rational model due to psychological, social, and cognitive factors.</p>
+
+    <h3>Key Behavioral Concepts</h3>
+
+    <h4>Loss Aversion</h4>
+    <ul>
+        <li>People feel losses more acutely than equivalent gains</li>
+        <li>Ratio is approximately 2:1 (losses hurt twice as much as gains feel good)</li>
+        <li>Explains why people avoid risks and stick with status quo</li>
+    </ul>
+
+    <h4>Anchoring Effect</h4>
+    <ul>
+        <li>Heavy reliance on first piece of information encountered</li>
+        <li>Initial price becomes reference point for future decisions</li>
+        <li>Used extensively in pricing strategies</li>
+    </ul>
+
+    <h4>Mental Accounting</h4>
+    <ul>
+        <li>People categorize money into different "accounts"</li>
+        <li>Treat money differently based on source or intended use</li>
+        <li>Example: Spending windfalls more freely than earned income</li>
+    </ul>
+
+    <h4>Endowment Effect</h4>
+    <ul>
+        <li>People value items more highly once they own them</li>
+        <li>Creates reluctance to trade or sell</li>
+        <li>Basis for "status quo bias"</li>
+    </ul>
+
+    <h4>Hyperbolic Discounting</h4>
+    <ul>
+        <li>Present bias: Overvaluing immediate rewards</li>
+        <li>Inconsistent time preferences</li>
+        <li>Explains procrastination and impulse buying</li>
+    </ul>
+
+    <h3>Social Influences</h3>
+    <h4>Conspicuous Consumption</h4>
+    <ul>
+        <li>Purchasing to display wealth or status</li>
+        <li>Veblen goods: Demand increases with price</li>
+        <li>Social signaling through consumption</li>
+    </ul>
+
+    <h4>Bandwagon Effect</h4>
+    <ul>
+        <li>Demand increases as more people consume</li>
+        <li>Social proof and conformity</li>
+        <li>Network effects in technology adoption</li>
+    </ul>
+
+    <h2 id="effects">6. Income and Substitution Effects</h2>
+
+    <h3>Income Effect</h3>
+    <p>The change in consumption due to a change in purchasing power, holding relative prices constant.</p>
+
+    <h4>Normal vs. Inferior Goods</h4>
+    <ul>
+        <li><strong>Normal goods:</strong> Consumption increases with income</li>
+        <li><strong>Inferior goods:</strong> Consumption decreases with income</li>
+        <li><strong>Luxury goods:</strong> Income elasticity > 1</li>
+        <li><strong>Necessity goods:</strong> Income elasticity < 1</li>
+    </ul>
+
+    <h3>Substitution Effect</h3>
+    <p>The change in consumption due to a change in relative prices, holding utility constant.</p>
+
+    <ul>
+        <li>Always moves in opposite direction to price change</li>
+        <li>Consumers substitute toward relatively cheaper goods</li>
+        <li>Pure price effect, isolated from income changes</li>
+    </ul>
+
+    <h3>Giffen Goods</h3>
+    <p>Rare goods where demand increases as price increases due to a strong negative income effect that overwhelms the substitution effect.</p>
+
+    <div class="example-box">
+        <h4>Historical Example: Irish Potato Famine</h4>
+        <p>When potato prices rose, poor families couldn't afford meat and had to buy more potatoes despite the higher price, as potatoes were their primary source of calories.</p>
+    </div>
+
+    <h2 id="applications">7. Real-World Applications</h2>
+
+    <h3>Marketing and Business Strategy</h3>
+
+    <h4>Price Discrimination</h4>
+    <ul>
+        <li><strong>First-degree:</strong> Different prices for each consumer</li>
+        <li><strong>Second-degree:</strong> Quantity-based pricing</li>
+        <li><strong>Third-degree:</strong> Group-based pricing (student discounts)</li>
+    </ul>
+
+    <h4>Product Bundling</h4>
+    <ul>
+        <li>Combining products to extract more consumer surplus</li>
+        <li>Examples: Cable packages, software suites</li>
+        <li>Works when consumers have different preferences</li>
+    </ul>
+
+    <h4>Loyalty Programs</h4>
+    <ul>
+        <li>Increase switching costs</li>
+        <li>Create artificial differentiation</li>
+        <li>Utilize loss aversion and endowment effect</li>
+    </ul>
+
+    <h3>Public Policy Applications</h3>
+
+    <h4>Nudge Theory</h4>
+    <ul>
+        <li>Using behavioral insights to guide choices</li>
+        <li>Default options (opt-out vs. opt-in)</li>
+        <li>Choice architecture design</li>
+    </ul>
+
+    <h4>Sin Taxes</h4>
+    <ul>
+        <li>Higher taxes on harmful goods (cigarettes, alcohol)</li>
+        <li>Relies on price sensitivity</li>
+        <li>Revenue generation and behavior modification</li>
+    </ul>
+
+    <h4>Consumer Protection</h4>
+    <ul>
+        <li>Information disclosure requirements</li>
+        <li>Cooling-off periods</li>
+        <li>Truth in advertising laws</li>
+    </ul>
+
+    <h3>Digital Economy Applications</h3>
+
+    <h4>Personalized Pricing</h4>
+    <ul>
+        <li>Dynamic pricing based on consumer data</li>
+        <li>Algorithmic price discrimination</li>
+        <li>Privacy and fairness concerns</li>
+    </ul>
+
+    <h4>Platform Economics</h4>
+    <ul>
+        <li>Network effects and switching costs</li>
+        <li>Two-sided markets</li>
+        <li>Freemium models</li>
+    </ul>
+
+    <h2 id="simulator">8. How the Simulator Works</h2>
+
+    <h3>Consumer Profile Variables</h3>
+
+    <h4>Income</h4>
+    <ul>
+        <li><strong>Range:</strong> $2,000 - $10,000 monthly</li>
+        <li><strong>Effect:</strong> Determines spending budget (10% allocation)</li>
+        <li><strong>Reality:</strong> Higher income increases purchasing power</li>
+    </ul>
+
+    <h4>Price Sensitivity</h4>
+    <ul>
+        <li><strong>Range:</strong> 10% - 100%</li>
+        <li><strong>Effect:</strong> Weights price heavily in utility calculation</li>
+        <li><strong>Reality:</strong> Budget-conscious consumers focus on price</li>
+    </ul>
+
+    <h4>Quality Importance</h4>
+    <ul>
+        <li><strong>Range:</strong> 10% - 100%</li>
+        <li><strong>Effect:</strong> Weights perceived quality in decisions</li>
+        <li><strong>Reality:</strong> Some consumers prioritize quality over price</li>
+    </ul>
+
+    <h4>Brand Loyalty</h4>
+    <ul>
+        <li><strong>Range:</strong> 0% - 100%</li>
+        <li><strong>Effect:</strong> Gives preference to "Product B" (established brand)</li>
+        <li><strong>Reality:</strong> Loyal customers less price-sensitive</li>
+    </ul>
+
+    <h3>Consumer Scenarios</h3>
+
+    <h4>Rational Consumer</h4>
+    <ul>
+        <li><strong>Behavior:</strong> Balances price and quality rationally</li>
+        <li><strong>Settings:</strong> Moderate price sensitivity, high quality focus</li>
+        <li><strong>Decision:</strong> Based on utility-to-price ratio</li>
+    </ul>
+
+    <h4>Budget Conscious</h4>
+    <ul>
+        <li><strong>Behavior:</strong> Heavily weights price in decisions</li>
+        <li><strong>Settings:</strong> High price sensitivity, lower quality focus</li>
+        <li><strong>Decision:</strong> Usually chooses cheapest option</li>
+    </ul>
+
+    <h4>Luxury Seeker</h4>
+    <ul>
+        <li><strong>Behavior:</strong> Prefers premium products</li>
+        <li><strong>Settings:</strong> Low price sensitivity, high quality/brand focus</li>
+        <li><strong>Decision:</strong> Higher price can increase appeal</li>
+    </ul>
+
+    <h4>Impulsive Buyer</h4>
+    <ul>
+        <li><strong>Behavior:</strong> Makes emotional, inconsistent decisions</li>
+        <li><strong>Settings:</strong> Random utility adjustments</li>
+        <li><strong>Decision:</strong> Less predictable, influenced by mood</li>
+    </ul>
+
+    <h3>Utility Calculation Model</h3>
+
+    <div class="formula-box">
+        <strong>Base Utility Calculation:</strong><br>
+        Product A: 50 + (Quality Weight × 0.5) - (Price Sensitivity × Price / 100)<br>
+        Product B: 60 + (Quality Weight × 0.7) - (Price Sensitivity × Price / 100)<br><br>
+        
+        <strong>Scenario Modifiers:</strong><br>
+        • Budget: Heavy price penalty (Price × 1.5)<br>
+        • Luxury: Price bonus (Price × 0.3)<br>
+        • Impulsive: Random utility adjustment (±20)<br><br>
+        
+        <strong>Final Choice:</strong> Highest utility product wins
+    </div>
+
+    <h3>Interactive Features</h3>
+
+    <h4>Radar Chart Visualization</h4>
+    <ul>
+        <li><strong>Consumer Profile:</strong> Shows personality traits</li>
+        <li><strong>Product Fit:</strong> How well each product matches profile</li>
+        <li><strong>Real-time Updates:</strong> Changes as settings adjust</li>
+    </ul>
+
+    <h4>Budget Analysis</h4>
+    <ul>
+        <li><strong>Spending Budget:</strong> 10% of monthly income</li>
+        <li><strong>Visual Bar:</strong> Shows budget utilization</li>
+        <li><strong>Remaining Funds:</strong> Available for other purchases</li>
+    </ul>
+
+    <h4>Choice Reasoning</h4>
+    <ul>
+        <li><strong>Contextual Explanations:</strong> Why consumer chose specific product</li>
+        <li><strong>Scenario-specific:</strong> Different reasoning for each consumer type</li>
+        <li><strong>Educational Value:</strong> Connects theory to practice</li>
+    </ul>
+
+    <h3>Learning Objectives</h3>
+
+    <ol>
+        <li><strong>Understand utility maximization:</strong> How consumers make optimal choices</li>
+        <li><strong>Explore budget constraints:</strong> How income limits affect decisions</li>
+        <li><strong>Recognize behavioral factors:</strong> How real consumers deviate from theory</li>
+        <li><strong>Analyze trade-offs:</strong> Price vs. quality vs. brand considerations</li>
+        <li><strong>Apply economic concepts:</strong> Connect theory to real-world scenarios</li>
+    </ol>
+
+    <hr>
+
+    <h2>Key Takeaways</h2>
+
+    <h3>For Students</h3>
+    <ol>
+        <li><strong>Master the basics:</strong> Utility, budget constraints, and optimization</li>
+        <li><strong>Understand behavior:</strong> How real consumers differ from theory</li>
+        <li><strong>Recognize patterns:</strong> How different factors influence choices</li>
+        <li><strong>Apply concepts:</strong> Use theory to explain real-world decisions</li>
+    </ol>
+
+    <h3>For Business Applications</h3>
+    <ol>
+        <li><strong>Segment markets:</strong> Different consumer types need different approaches</li>
+        <li><strong>Price strategically:</strong> Understand price sensitivity variations</li>
+        <li><strong>Build loyalty:</strong> Create switching costs and emotional connections</li>
+        <li><strong>Design experiences:</strong> Use behavioral insights in product design</li>
+    </ol>
+
+    <h3>Advanced Concepts to Explore</h3>
+    <ul>
+        <li><strong>Prospect theory:</strong> How people evaluate gains and losses</li>
+        <li><strong>Neuroeconomics:</strong> Brain science of decision-making</li>
+        <li><strong>Social preferences:</strong> Fairness, altruism, and reciprocity</li>
+        <li><strong>Temporal choice:</strong> How people discount future utility</li>
+    </ul>
+
+    <div class="highlight-box">
+        <p><em>Consumer behavior theory provides the foundation for understanding market demand and consumer decision-making. While the traditional rational model offers important insights, incorporating behavioral economics gives a more complete picture of how people actually make choices in real markets.</em></p>
+    </div>
+
+</body>
+</html>`;
+        }
+
+        // Event handlers for sliders
+        function setupSliders() {
+            const sliders = ['income', 'priceSignificance', 'qualityImportance', 'brandLoyalty', 'productAPrice', 'productBPrice'];
+            
+            sliders.forEach(slider => {
+                const element = document.getElementById(slider);
+                const valueDisplay = document.getElementById(slider + 'Value');
+                
+                element.addEventListener('input', (e) => {
+                    const value = parseInt(e.target.value);
+                    consumerState[slider] = value;
+                    
+                    if (slider === 'income') {
+                        valueDisplay.textContent = `${value.toLocaleString()}`;
+                    } else if (slider.includes('Price')) {
+                        valueDisplay.textContent = `${value}`;
+                    } else {
+                        valueDisplay.textContent = `${value}%`;
+                    }
+                    
+                    updateChart();
+                });
+            });
+        }
+
+        // Initialize the game
+        document.addEventListener('DOMContentLoaded', () => {
+            initChart();
+            setupSliders();
+            updateSliderDisplays();
+        });
+    </script>
+</body>
+</html>

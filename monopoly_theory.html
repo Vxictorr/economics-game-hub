@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monopoly Theory Guide</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            color: #333;
+            background: white;
+        }
+        
+        h1 {
+            color: #1a1a1a;
+            border-bottom: 3px solid #1a4fa0;
+            padding-bottom: 10px;
+            font-size: 2.2em;
+            margin-bottom: 30px;
+        }
+        
+        h2 {
+            color: #1a4fa0;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            border-left: 4px solid #1a4fa0;
+            padding-left: 15px;
+        }
+        
+        h3 {
+            color: #333;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+        
+        h4 {
+            color: #666;
+            margin-top: 25px;
+            margin-bottom: 10px;
+            font-size: 1em;
+            font-weight: 600;
+        }
+        
+        p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+        
+        ul, ol {
+            margin-bottom: 15px;
+            padding-left: 25px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        code {
+            background: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        
+        .toc {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+            margin: 30px 0;
+        }
+        
+        .toc h3 {
+            margin-top: 0;
+            color: #1a4fa0;
+        }
+        
+        .toc ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        
+        .toc a {
+            color: #1a4fa0;
+            text-decoration: none;
+        }
+        
+        .toc a:hover {
+            text-decoration: underline;
+        }
+        
+        .highlight-box {
+            background: #e7f3ff;
+            border-left: 4px solid #1a4fa0;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        
+        .formula-box {
+            background: #f0f8f0;
+            border: 1px solid #90c695;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .example-box {
+            background: #fff7e6;
+            border: 1px solid #ffb366;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.9em;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        th {
+            background: #f5f5f5;
+            font-weight: 600;
+        }
+        
+        hr {
+            border: none;
+            height: 2px;
+            background: #e0e0e0;
+            margin: 40px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Monopoly Theory Guide</h1>
+    <p><em>Understanding Market Power and Monopoly Behavior</em></p>
+    
+    <div class="toc">
+        <h3>Table of Contents</h3>
+        <ul>
+            <li><a href="#introduction">1. Introduction to Monopoly</a></li>
+            <li><a href="#characteristics">2. Characteristics of Monopoly</a></li>
+            <li><a href="#revenue-costs">3. Revenue and Cost Analysis</a></li>
+            <li><a href="#profit-maximization">4. Profit Maximization</a></li>
+            <li><a href="#welfare-effects">5. Welfare Effects and Efficiency</a></li>
+            <li><a href="#types">6. Types of Monopolies</a></li>
+            <li><a href="#barriers">7. Barriers to Entry</a></li>
+            <li><a href="#pricing-strategies">8. Pricing Strategies</a></li>
+            <li><a href="#regulation">9. Regulation and Antitrust</a></li>
+            <li><a href="#applications">10. Real-World Applications</a></li>
+            <li><a href="#simulator">11. How the Simulator Works</a></li>
+        </ul>
+    </div>
+
+    <h2 id="introduction">1. Introduction to Monopoly</h2>
+
+    <h3>What is a Monopoly?</h3>
+    <p>A <strong>monopoly</strong> is a market structure characterized by a single seller of a product or service with no close substitutes. The monopolist has substantial market power and can influence both price and quantity in the market.</p>
+
+    <div class="highlight-box">
+        <p><strong>Key Insight:</strong> Unlike perfectly competitive firms that are price takers, monopolists are price makers who can set prices above marginal cost, leading to economic profits and market inefficiencies.</p>
+    </div>
+
+    <h3>Historical Context</h3>
+    <p>Monopolies have existed throughout history, from ancient trading guilds to modern tech giants. The study of monopoly theory became prominent during the late 19th and early 20th centuries as large corporations dominated various industries.</p>
+
+    <h3>Why Study Monopolies?</h3>
+    <ul>
+        <li><strong>Market Power Analysis:</strong> Understanding how firms exercise control over markets</li>
+        <li><strong>Policy Implications:</strong> Informing antitrust and regulatory decisions</li>
+        <li><strong>Economic Efficiency:</strong> Analyzing welfare losses and market failures</li>
+        <li><strong>Innovation Trade-offs:</strong> Balancing innovation incentives with competition</li>
+    </ul>
+
+    <h2 id="characteristics">2. Characteristics of Monopoly</h2>
+
+    <h3>The Four Key Features</h3>
+
+    <h4>1. Single Seller</h4>
+    <ul>
+        <li>Only one firm produces and sells the product</li>
+        <li>The firm is the entire industry</li>
+        <li>No direct competitors in the market</li>
+        <li>Complete control over supply decisions</li>
+    </ul>
+
+    <h4>2. No Close Substitutes</h4>
+    <ul>
+        <li>Product has unique characteristics</li>
+        <li>Consumers cannot easily switch to alternatives</li>
+        <li>Cross-price elasticity with other goods is low</li>
+        <li>Creates captive consumer base</li>
+    </ul>
+
+    <h4>3. Significant Barriers to Entry</h4>
+    <ul>
+        <li>Legal, economic, or technological obstacles prevent competition</li>
+        <li>New firms cannot easily enter the market</li>
+        <li>Existing firm maintains market position</li>
+        <li>Source of sustained market power</li>
+    </ul>
+
+    <h4>4. Price Maker</h4>
+    <ul>
+        <li>Firm has control over price setting</li>
+        <li>Faces downward-sloping demand curve</li>
+        <li>Can choose price-quantity combination</li>
+        <li>Price decisions affect market outcomes</li>
+    </ul>
+
+    <h3>Market Structure Comparison</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Characteristic</th>
+                <th>Perfect Competition</th>
+                <th>Monopoly</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Number of sellers</td>
+                <td>Many</td>
+                <td>One</td>
+            </tr>
+            <tr>
+                <td>Product differentiation</td>
+                <td>Homogeneous</td>
+                <td>Unique</td>
+            </tr>
+            <tr>
+                <td>Barriers to entry</td>
+                <td>None</td>
+                <td>High</td>
+            </tr>
+            <tr>
+                <td>Price control</td>
+                <td>Price taker</td>
+                <td>Price maker</td>
+            </tr>
+            <tr>
+                <td>Long-run profits</td>
+                <td>Zero economic profit</td>
+                <td>Positive economic profit</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2 id="revenue-costs">3. Revenue and Cost Analysis</h2>
+
+    <h3>Demand and Revenue</h3>
+    <p>The monopolist faces the entire market demand curve, which is downward-sloping.</p>
+
+    <div class="formula-box">
+        <strong>Demand Function:</strong> P = a - bQ<br><br>
+        <strong>Total Revenue:</strong> TR = P × Q = aQ - bQ²<br><br>
+        <strong>Marginal Revenue:</strong> MR = dTR/dQ = a - 2bQ<br><br>
+        <strong>Key Relationship:</strong> MR < P (except at Q = 0)
+    </div>
+
+    <h4>Why Marginal Revenue is Less Than Price</h4>
+    <p>To sell an additional unit, the monopolist must lower the price on all units sold, not just the marginal unit. This creates two effects:</p>
+    <ul>
+        <li><strong>Output Effect:</strong> Revenue increases from selling one more unit</li>
+        <li><strong>Price Effect:</strong> Revenue decreases from lowering price on all previous units</li>
+    </ul>
+
+    <div class="example-box">
+        <h4>Example: Movie Theater Pricing</h4>
+        <p>A monopolist movie theater selling tickets:</p>
+        <ul>
+            <li><strong>Price = $12, Quantity = 100:</strong> TR = $1,200</li>
+            <li><strong>Price = $11, Quantity = 110:</strong> TR = $1,210</li>
+            <li><strong>Marginal Revenue:</strong> ($1,210 - $1,200) / (110 - 100) = $1</li>
+        </ul>
+        <p>Notice MR ($1) < P ($11) because revenue from the extra 10 tickets is offset by the $1 price reduction on the original 100 tickets.</p>
+    </div>
+
+    <h3>Cost Structure</h3>
+    <p>Monopolists face the same cost concepts as competitive firms:</p>
+
+    <div class="formula-box">
+        <strong>Total Cost:</strong> TC = FC + VC<br>
+        <strong>Average Total Cost:</strong> ATC = TC / Q<br>
+        <strong>Average Variable Cost:</strong> AVC = VC / Q<br>
+        <strong>Marginal Cost:</strong> MC = dTC / dQ
+    </div>
+
+    <h2 id="profit-maximization">4. Profit Maximization</h2>
+
+    <h3>The Fundamental Rule</h3>
+    <p>Like all firms, monopolists maximize profit where marginal revenue equals marginal cost:</p>
+
+    <div class="formula-box">
+        <strong>Profit Maximization Condition:</strong> MR = MC<br><br>
+        <strong>Key Difference from Perfect Competition:</strong><br>
+        Perfect Competition: P = MR = MC<br>
+        Monopoly: P > MR = MC
+    </div>
+
+    <h3>Step-by-Step Profit Maximization</h3>
+    <ol>
+        <li><strong>Find the quantity:</strong> Set MR = MC and solve for Q*</li>
+        <li><strong>Find the price:</strong> Use demand curve to find P* at Q*</li>
+        <li><strong>Calculate profit:</strong> π = (P* - ATC) × Q*</li>
+    </ol>
+
+    <div class="example-box">
+        <h4>Example: Pharmaceutical Patent</h4>
+        <p><strong>Given:</strong></p>
+        <ul>
+            <li>Demand: P = 100 - 2Q</li>
+            <li>Marginal Revenue: MR = 100 - 4Q</li>
+            <li>Marginal Cost: MC = 20</li>
+        </ul>
+        
+        <p><strong>Solution:</strong></p>
+        <ul>
+            <li><strong>Step 1:</strong> Set MR = MC → 100 - 4Q = 20 → Q* = 20</li>
+            <li><strong>Step 2:</strong> Find price → P* = 100 - 2(20) = $60</li>
+            <li><strong>Step 3:</strong> If ATC = $30, then profit = ($60 - $30) × 20 = $600</li>
+        </ul>
+    </div>
+
+    <h3>Graphical Analysis</h3>
+    <p>The monopoly equilibrium can be visualized where:</p>
+    <ul>
+        <li>MR curve intersects MC curve (determines quantity)</li>
+        <li>Demand curve determines price at that quantity</li>
+        <li>Profit is the rectangle between price and ATC</li>
+        <li>Deadweight loss triangle shows efficiency loss</li>
+    </ul>
+
+    <h2 id="welfare-effects">5. Welfare Effects and Efficiency</h2>
+
+    <h3>Allocative Inefficiency</h3>
+    <p>Monopolies create allocative inefficiency because price exceeds marginal cost:</p>
+
+    <div class="formula-box">
+        <strong>Efficient Allocation:</strong> P = MC<br>
+        <strong>Monopoly Allocation:</strong> P > MC<br><br>
+        <strong>Interpretation:</strong> Society values additional units more than they cost to produce, but the monopolist restricts output.
+    </div>
+
+    <h3>Deadweight Loss</h3>
+    <p><strong>Deadweight loss</strong> represents the reduction in total economic welfare due to monopoly pricing.</p>
+
+    <div class="formula-box">
+        <strong>Deadweight Loss Calculation:</strong><br>
+        DWL = ½ × (P_monopoly - P_competitive) × (Q_competitive - Q_monopoly)
+    </div>
+
+    <h4>Components of Welfare Loss</h4>
+    <ul>
+        <li><strong>Lost Consumer Surplus:</strong> Higher prices reduce consumer benefit</li>
+        <li><strong>Lost Producer Surplus:</strong> Reduced output eliminates potential gains</li>
+        <li><strong>Unrealized Trades:</strong> Mutually beneficial exchanges don't occur</li>
+    </ul>
+
+    <h3>Welfare Redistribution</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Welfare Component</th>
+                <th>Perfect Competition</th>
+                <th>Monopoly</th>
+                <th>Change</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Consumer Surplus</td>
+                <td>High</td>
+                <td>Low</td>
+                <td>Decreases</td>
+            </tr>
+            <tr>
+                <td>Producer Surplus</td>
+                <td>Normal profit</td>
+                <td>High (includes monopoly profit)</td>
+                <td>Increases</td>
+            </tr>
+            <tr>
+                <td>Total Welfare</td>
+                <td>Maximized</td>
+                <td>Reduced by DWL</td>
+                <td>Decreases</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>X-Inefficiency</h3>
+    <p>Beyond allocative inefficiency, monopolies may suffer from <strong>X-inefficiency</strong> - productive inefficiency due to lack of competitive pressure:</p>
+    <ul>
+        <li>Higher costs than necessary</li>
+        <li>Reduced innovation incentives</li>
+        <li>Organizational slack</li>
+        <li>Less pressure to minimize costs</li>
+    </ul>
+
+    <h2 id="types">6. Types of Monopolies</h2>
+
+    <h3>Natural Monopoly</h3>
+    <p>Occurs when it's most efficient for one firm to serve the entire market due to economies of scale.</p>
+
+    <h4>Characteristics:</h4>
+    <ul>
+        <li>High fixed costs, low marginal costs</li>
+        <li>Average cost decreases with output</li>
+        <li>Subadditive cost function</li>
+        <li>Multiple firms would be wasteful</li>
+    </ul>
+
+    <div class="example-box">
+        <h4>Examples of Natural Monopolies</h4>
+        <ul>
+            <li><strong>Utilities:</strong> Electricity transmission, water distribution</li>
+            <li><strong>Transportation:</strong> Railways, airports in small cities</li>
+            <li><strong>Communications:</strong> Local telephone networks (historically)</li>
+        </ul>
+    </div>
+
+    <h3>Legal Monopoly</h3>
+    <p>Created by government through legal protections and exclusive rights.</p>
+
+    <h4>Types of Legal Protection:</h4>
+    <ul>
+        <li><strong>Patents:</strong> Exclusive rights to inventions (typically 20 years)</li>
+        <li><strong>Copyrights:</strong> Protection for creative works</li>
+        <li><strong>Trademarks:</strong> Exclusive use of brand names and logos</li>
+        <li><strong>Licenses:</strong> Government-granted exclusive operating rights</li>
+    </ul>
+
+    <h3>Resource Monopoly</h3>
+    <p>Arises from control over a critical input or resource.</p>
+
+    <div class="example-box">
+        <h4>Historical Example: De Beers Diamond Monopoly</h4>
+        <p>De Beers controlled most of the world's diamond mines and supply chain, allowing them to maintain high prices by restricting output and controlling distribution channels.</p>
+    </div>
+
+    <h3>Technological Monopoly</h3>
+    <p>Results from superior technology or innovation that competitors cannot easily replicate.</p>
+
+    <h4>Characteristics:</h4>
+    <ul>
+        <li>First-mover advantages</li>
+        <li>Network effects</li>
+        <li>Learning curve advantages</li>
+        <li>R&D investments creating barriers</li>
+    </ul>
+
+    <h2 id="barriers">7. Barriers to Entry</h2>
+
+    <h3>Economic Barriers</h3>
+
+    <h4>Economies of Scale</h4>
+    <ul>
+        <li>Large-scale production advantages</li>
+        <li>High minimum efficient scale</li>
+        <li>Cost disadvantages for small entrants</li>
+        <li>Capital requirements for efficient operation</li>
+    </ul>
+
+    <h4>Sunk Costs</h4>
+    <ul>
+        <li>Non-recoverable investments</li>
+        <li>Specialized equipment and facilities</li>
+        <li>R&D expenditures</li>
+        <li>Brand building and marketing</li>
+    </ul>
+
+    <h3>Strategic Barriers</h3>
+
+    <h4>Predatory Pricing</h4>
+    <ul>
+        <li>Pricing below cost to eliminate rivals</li>
+        <li>Deep pockets advantage</li>
+        <li>Credible threat to potential entrants</li>
+        <li>Often illegal under antitrust laws</li>
+    </ul>
+
+    <h4>Exclusive Dealing</h4>
+    <ul>
+        <li>Contracts preventing rivals from accessing suppliers/distributors</li>
+        <li>Vertical integration to control supply chain</li>
+        <li>Long-term contracts with key partners</li>
+    </ul>
+
+    <h3>Government-Created Barriers</h3>
+    <ul>
+        <li><strong>Licensing requirements:</strong> Professional and business licenses</li>
+        <li><strong>Regulations:</strong> Safety, environmental, quality standards</li>
+        <li><strong>Tariffs and quotas:</strong> Protection from foreign competition</li>
+        <li><strong>Franchises:</strong> Exclusive territorial rights</li>
+    </ul>
+
+    <h2 id="pricing-strategies">8. Pricing Strategies</h2>
+
+    <h3>Uniform Pricing</h3>
+    <p>Charging the same price to all customers - the standard monopoly model.</p>
+
+    <div class="formula-box">
+        <strong>Uniform Pricing:</strong><br>
+        Single price P* where MR = MC<br>
+        All customers pay the same price
+    </div>
+
+    <h3>Price Discrimination</h3>
+    <p>Charging different prices to different customers for the same product.</p>
+
+    <h4>First-Degree Price Discrimination (Perfect)</h4>
+    <ul>
+        <li>Charge each customer their maximum willingness to pay</li>
+        <li>Captures all consumer surplus</li>
+        <li>Eliminates deadweight loss</li>
+        <li>Difficult to implement in practice</li>
+    </ul>
+
+    <h4>Second-Degree Price Discrimination</h4>
+    <ul>
+        <li>Different prices for different quantities</li>
+        <li>Block pricing or quantity discounts</li>
+        <li>Two-part tariffs (fixed fee + per-unit price)</li>
+        <li>Self-selection by customers</li>
+    </ul>
+
+    <div class="example-box">
+        <h4>Example: Electricity Pricing</h4>
+        <p>Utility companies often use tiered pricing:</p>
+        <ul>
+            <li>First 500 kWh: $0.12 per kWh</li>
+            <li>Next 500 kWh: $0.15 per kWh</li>
+            <li>Above 1000 kWh: $0.18 per kWh</li>
+        </ul>
+    </div>
+
+    <h4>Third-Degree Price Discrimination</h4>
+    <ul>
+        <li>Different prices for different customer groups</li>
+        <li>Based on observable characteristics</li>
+        <li>Must prevent resale between groups</li>
+        <li>Different elasticities of demand</li>
+    </ul>
+
+    <div class="example-box">
+        <h4>Example: Movie Theater Pricing</h4>
+        <ul>
+            <li>Adult tickets: $12</li>
+            <li>Student tickets: $8</li>
+            <li>Senior tickets: $6</li>
+        </ul>
+        <p>Students and seniors typically have more elastic demand (more price-sensitive) than adults.</p>
+    </div>
+
+    <h3>Strategic Pricing</h3>
+
+    <h4>Limit Pricing</h4>
+    <ul>
+        <li>Set price low enough to deter entry</li>
+        <li>Sacrifice short-term profits for long-term market protection</li>
+        <li>Signal to potential entrants that market isn't profitable</li>
+        <li>Credible threat depends on cost structure</li>
+    </ul>
+
+    <h4>Predatory Pricing</h4>
+    <ul>
+        <li>Price below marginal cost temporarily</li>
+        <li>Drive existing competitors out of market</li>
+        <li>Raise prices once competition eliminated</li>
+        <li>Often illegal under antitrust laws</li>
+        <li>Requires deep pockets and credible commitment</li>
+    </ul>
+
+    <h4>Penetration Pricing</h4>
+    <ul>
+        <li>Low initial prices to gain market share</li>
+        <li>Build customer base quickly</li>
+        <li>Network effects and learning curve benefits</li>
+        <li>Raise prices once market position established</li>
+    </ul>
+
+    <h2 id="regulation">9. Regulation and Antitrust</h2>
+
+    <h3>Market Failure Rationale</h3>
+    <p>Government intervention in monopoly markets is justified by several economic rationales:</p>
+    <ul>
+        <li><strong>Allocative inefficiency:</strong> P > MC leads to underproduction</li>
+        <li><strong>Excessive profits:</strong> Transfer from consumers to producers</li>
+        <li><strong>Innovation concerns:</strong> Reduced competitive pressure</li>
+        <li><strong>Income distribution:</strong> Concentration of economic power</li>
+    </ul>
+
+    <h3>Regulatory Approaches</h3>
+
+    <h4>Price Regulation</h4>
+    <div class="formula-box">
+        <strong>Marginal Cost Pricing:</strong> P = MC<br>
+        • Achieves allocative efficiency<br>
+        • May require subsidies if AC > MC<br>
+        • Difficult to implement in practice<br><br>
+        
+        <strong>Average Cost Pricing:</strong> P = AC<br>
+        • Allows normal profit<br>
+        • No subsidies required<br>
+        • Some deadweight loss remains<br><br>
+        
+        <strong>Price Cap Regulation:</strong> P ≤ P_max<br>
+        • Sets maximum allowable price<br>
+        • Provides efficiency incentives<br>
+        • May lead to quality degradation
+    </div>
+
+    <h4>Rate of Return Regulation</h4>
+    <ul>
+        <li>Limits profit rate on invested capital</li>
+        <li>Allows cost recovery plus reasonable return</li>
+        <li>Can lead to gold-plating (excessive capital investment)</li>
+        <li>Reduces efficiency incentives</li>
+    </ul>
+
+    <h4>Incentive Regulation</h4>
+    <ul>
+        <li><strong>Price caps with inflation adjustment:</strong> CPI - X formula</li>
+        <li><strong>Yardstick competition:</strong> Compare performance across regions</li>
+        <li><strong>Sliding scale regulation:</strong> Share savings with customers</li>
+        <li><strong>Performance-based rates:</strong> Tie prices to service quality</li>
+    </ul>
+
+    <h3>Antitrust Policy</h3>
+
+    <h4>Major Antitrust Laws (US)</h4>
+    <ul>
+        <li><strong>Sherman Act (1890):</strong> Prohibits monopolization and restraints on trade</li>
+        <li><strong>Clayton Act (1914):</strong> Specific prohibitions on anti-competitive practices</li>
+        <li><strong>FTC Act (1914):</strong> Created Federal Trade Commission</li>
+        <li><strong>Hart-Scott-Rodino Act (1976):</strong> Pre-merger notification requirements</li>
+    </ul>
+
+    <h4>Enforcement Tools</h4>
+    <ul>
+        <li><strong>Structural remedies:</strong> Breaking up monopolies (divestiture)</li>
+        <li><strong>Behavioral remedies:</strong> Restrictions on business practices</li>
+        <li><strong>Merger review:</strong> Preventing concentration increases</li>
+        <li><strong>Civil and criminal penalties:</strong> Fines and imprisonment</li>
+    </ul>
+
+    <h3>International Perspectives</h3>
+    <ul>
+        <li><strong>European Union:</strong> Article 102 TFEU prohibits abuse of dominant position</li>
+        <li><strong>Competition authorities:</strong> Most countries have antitrust agencies</li>
+        <li><strong>Cross-border coordination:</strong> International cooperation on cases</li>
+        <li><strong>Different approaches:</strong> Varying emphasis on efficiency vs. competition</li>
+    </ul>
+
+    <h2 id="applications">10. Real-World Applications</h2>
+
+    <h3>Historical Monopolies</h3>
+
+    <h4>Standard Oil (1870-1911)</h4>
+    <ul>
+        <li>Controlled 90% of US oil refining</li>
+        <li>Vertical integration from production to retail</li>
+        <li>Predatory pricing and exclusive dealing</li>
+        <li>Broken up by Supreme Court in 1911</li>
+    </ul>
+
+    <h4>AT&T Telephone Monopoly (1907-1984)</h4>
+    <ul>
+        <li>Natural monopoly in telecommunications</li>
+        <li>Regulated utility with guaranteed returns</li>
+        <li>Innovation vs. efficiency trade-offs</li>
+        <li>Divestiture created regional Bell companies</li>
+    </ul>
+
+    <h3>Modern Monopolies and Market Power</h3>
+
+    <h4>Technology Platforms</h4>
+    <ul>
+        <li><strong>Google:</strong> Search engine market dominance</li>
+        <li><strong>Facebook/Meta:</strong> Social media network effects</li>
+        <li><strong>Amazon:</strong> E-commerce and cloud computing</li>
+        <li><strong>Apple:</strong> App Store ecosystem control</li>
+    </ul>
+
+    <h4>Pharmaceutical Industry</h4>
+    <ul>
+        <li><strong>Patent protection:</strong> Temporary monopolies for new drugs</li>
+        <li><strong>R&D incentives:</strong> High development costs justify monopoly profits</li>
+        <li><strong>Generic competition:</strong> Entry after patent expiration</li>
+        <li><strong>Regulatory approval:</strong> FDA creates additional barriers</li>
+    </ul>
+
+    <h3>Natural Monopolies Today</h3>
+
+    <h4>Utilities</h4>
+    <ul>
+        <li><strong>Electricity transmission:</strong> Grid infrastructure</li>
+        <li><strong>Water systems:</strong> Distribution networks</li>
+        <li><strong>Natural gas pipelines:</strong> Transportation infrastructure</li>
+        <li><strong>Waste management:</strong> Collection and treatment facilities</li>
+    </ul>
+
+    <h4>Transportation Infrastructure</h4>
+    <ul>
+        <li><strong>Airports:</strong> Limited capacity and geographic constraints</li>
+        <li><strong>Railroads:</strong> Track infrastructure in some regions</li>
+        <li><strong>Bridges and tunnels:</strong> Geographic monopolies</li>
+        <li><strong>Ports:</strong> Natural harbors and facilities</li>
+    </ul>
+
+    <h3>Monopoly Innovation Debate</h3>
+
+    <h4>Schumpeterian View</h4>
+    <ul>
+        <li>Monopoly profits fund innovation</li>
+        <li>Creative destruction replaces old monopolies</li>
+        <li>Dynamic efficiency vs. static efficiency</li>
+        <li>Temporary monopolies encourage R&D</li>
+    </ul>
+
+    <h4>Arrow's Replacement Effect</h4>
+    <ul>
+        <li>Monopolists have less incentive to innovate</li>
+        <li>Innovation cannibalizes existing profits</li>
+        <li>Competitive firms have stronger innovation incentives</li>
+        <li>Market structure affects innovation patterns</li>
+    </ul>
+
+    <h2 id="simulator">11. How the Simulator Works</h2>
+
+    <h3>Model Structure</h3>
+
+    <h4>Demand Function</h4>
+    <div class="formula-box">
+        P = Demand Intercept - Demand Slope × Q<br><br>
+        Where:<br>
+        • Demand Intercept = Market demand strength (50-200)<br>
+        • Demand Slope = Price sensitivity (0.5-3.0)<br>
+        • Q = Quantity produced
+    </div>
+
+    <h4>Revenue Calculations</h4>
+    <div class="formula-box">
+        Total Revenue = P × Q<br>
+        Marginal Revenue = Demand Intercept - 2 × Demand Slope × Q<br><br>
+        Note: MR curve has twice the slope of demand curve
+    </div>
+
+    <h4>Cost Structure</h4>
+    <div class="formula-box">
+        Fixed Cost = User-defined parameter ($100-$1,000)<br>
+        Marginal Cost = Base MC + (Q × 0.1)<br>
+        Total Cost = Fixed Cost + ∫MC dQ<br>
+        Average Total Cost = Total Cost / Q
+    </div>
+
+    <h3>Equilibrium Calculations</h3>
+
+    <h4>Profit Maximization</h4>
+    <p>The simulator finds the quantity where MR = MC:</p>
+    <div class="formula-box">
+        MR = MC<br>
+        Demand Intercept - 2 × Demand Slope × Q = Marginal Cost + (Q × 0.1)<br><br>
+        Solving for Q gives the profit-maximizing quantity
+    </div>
+
+    <h4>Price Determination</h4>
+    <p>Once optimal quantity is found, price comes from the demand curve:</p>
+    <div class="formula-box">
+        P* = Demand Intercept - Demand Slope × Q*
+    </div>
+
+    <h3>Pricing Strategy Modifications</h3>
+
+    <h4>Profit Maximization (Default)</h4>
+    <ul>
+        <li>Standard MR = MC rule</li>
+        <li>Maximizes short-term profits</li>
+        <li>No strategic considerations</li>
+    </ul>
+
+    <h4>Limit Pricing</h4>
+    <ul>
+        <li>Price reduced to 85% of profit-maximizing level</li>
+        <li>Simulates deterring entry</li>
+        <li>Lower profits but maintains market position</li>
+    </ul>
+
+    <h4>Penetration Pricing</h4>
+    <ul>
+        <li>Price reduced to 70% of profit-maximizing level</li>
+        <li>Rapid market share growth</li>
+        <li>Network effects and learning curve benefits</li>
+    </ul>
+
+    <h4>Predatory Pricing</h4>
+    <ul>
+        <li>Price set below marginal cost (80% of MC)</li>
+        <li>Unsustainable in long run</li>
+        <li>Eliminates competition temporarily</li>
+    </ul>
+
+    <h3>Welfare Calculations</h3>
+
+    <h4>Consumer Surplus</h4>
+    <div class="formula-box">
+        CS = 0.5 × (Demand Intercept - P*) × Q*<br><br>
+        Area of triangle under demand curve above price
+    </div>
+
+    <h4>Producer Surplus</h4>
+    <div class="formula-box">
+        PS = (P* - MC) × Q*<br><br>
+        Rectangle between price and marginal cost
+    </div>
+
+    <h4>Deadweight Loss</h4>
+    <div class="formula-box">
+        DWL = 0.5 × (P_monopoly - P_competitive) × (Q_competitive - Q_monopoly)<br><br>
+        Where competitive equilibrium: P = MC
+    </div>
+
+    <h3>Interactive Features</h3>
+
+    <h4>Market Condition Controls</h4>
+    <ul>
+        <li><strong>Demand Strength:</strong> Shifts demand curve up/down</li>
+        <li><strong>Price Sensitivity:</strong> Changes demand curve slope</li>
+        <li><strong>Barrier Strength:</strong> Affects monopoly sustainability</li>
+    </ul>
+
+    <h4>Cost Structure Controls</h4>
+    <ul>
+        <li><strong>Fixed Cost:</strong> Determines break-even point</li>
+        <li><strong>Marginal Cost:</strong> Base level of variable costs</li>
+    </ul>
+
+    <h4>Scenario Analysis</h4>
+    <ul>
+        <li><strong>Regulation:</strong> Increases price sensitivity, reduces barriers</li>
+        <li><strong>Competition:</strong> Reduces demand, lowers barriers</li>
+        <li><strong>Innovation:</strong> Reduces costs, increases demand</li>
+        <li><strong>Demand Shift:</strong> Increases demand, reduces sensitivity</li>
+    </ul>
+
+    <h3>Visual Elements</h3>
+
+    <h4>Chart Display</h4>
+    <ul>
+        <li><strong>Demand curve:</strong> Downward-sloping market demand</li>
+        <li><strong>Marginal revenue:</strong> Steeper than demand curve</li>
+        <li><strong>Marginal cost:</strong> Upward-sloping cost curve</li>
+        <li><strong>Average total cost:</strong> U-shaped cost curve</li>
+        <li><strong>Equilibrium points:</strong> Monopoly and competitive outcomes</li>
+        <li><strong>Deadweight loss:</strong> Shaded triangle showing welfare loss</li>
+    </ul>
+
+    <h4>Performance Metrics</h4>
+    <ul>
+        <li><strong>Market Power Index:</strong> (P - MC) / P (Lerner Index)</li>
+        <li><strong>Price Markup:</strong> Percentage above competitive price</li>
+        <li><strong>Output Loss:</strong> Reduction from competitive level</li>
+        <li><strong>Welfare Effects:</strong> Consumer surplus, producer surplus, DWL</li>
+    </ul>
+
+    <h3>Learning Objectives</h3>
+    <ol>
+        <li><strong>Understand monopoly pricing:</strong> How MR = MC differs from perfect competition</li>
+        <li><strong>Analyze market power:</strong> Relationship between barriers and pricing ability</li>
+        <li><strong>Explore welfare effects:</strong> Deadweight loss and efficiency implications</li>
+        <li><strong>Compare strategies:</strong> Different pricing approaches and outcomes</li>
+        <li><strong>Evaluate regulation:</strong> Trade-offs in monopoly control policies</li>
+    </ol>
+
+    <hr>
+
+    <h2>Key Takeaways</h2>
+
+    <h3>For Students</h3>
+    <ol>
+        <li><strong>Master the fundamentals:</strong> MR = MC rule and P > MC outcome</li>
+        <li><strong>Understand efficiency loss:</strong> Deadweight loss and welfare implications</li>
+        <li><strong>Recognize market power:</strong> Sources and measurement of monopoly power</li>
+        <li><strong>Analyze policy trade-offs:</strong> Regulation, innovation, and efficiency</li>
+    </ol>
+
+    <h3>For Business Applications</h3>
+    <ol>
+        <li><strong>Strategic pricing:</strong> Understanding price-setting power and constraints</li>
+        <li><strong>Barrier assessment:</strong> Identifying and maintaining competitive advantages</li>
+        <li><strong>Regulatory compliance:</strong> Navigating antitrust and competition laws</li>
+        <li><strong>Innovation strategy:</strong> Balancing market power with innovation incentives</li>
+    </ol>
+
+    <h3>For Policy Analysis</h3>
+    <ol>
+        <li><strong>Market structure evaluation:</strong> When and how to intervene</li>
+        <li><strong>Regulatory design:</strong> Choosing appropriate policy tools</li>
+        <li><strong>Innovation policy:</strong> Balancing competition with R&D incentives</li>
+        <li><strong>Welfare assessment:</strong> Measuring costs and benefits of monopoly power</li>
+    </ol>
+
+    <h3>Advanced Concepts to Explore</h3>
+    <ul>
+        <li><strong>Contestable markets:</strong> Potential competition effects</li>
+        <li><strong>Multi-product monopoly:</strong> Bundling and cross-subsidization</li>
+        <li><strong>Dynamic models:</strong> Innovation and creative destruction</li>
+        <li><strong>Network economics:</strong> Platform monopolies and network effects</li>
+        <li><strong>Behavioral economics:</strong> Consumer biases and monopoly pricing</li>
+    </ul>
+
+    <div class="highlight-box">
+        <p><em>Monopoly theory provides essential insights into market power, pricing strategies, and the tension between static efficiency and dynamic innovation. Understanding these concepts is crucial for analyzing modern markets, from traditional utilities to digital platforms, and for designing effective competition policy.</em></p>
+    </div>
+
+</body>
+</html>

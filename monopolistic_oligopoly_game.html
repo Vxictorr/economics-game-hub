@@ -1,0 +1,1987 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monopolistic Competition / Oligopoly Game Theory Simulator</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #fafafa;
+            color: #1a1a1a;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .header h1 {
+            font-size: 2.2rem;
+            font-weight: 300;
+            color: #1a1a1a;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .header p {
+            font-size: 1rem;
+            color: #666;
+            font-weight: 400;
+        }
+
+        .game-area {
+            display: grid;
+            grid-template-columns: 280px 1fr 280px;
+            gap: 40px;
+            align-items: start;
+        }
+
+        .panel {
+            background: #fff;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            padding: 24px;
+        }
+
+        .panel h3 {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #1a1a1a;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .control-group {
+            margin-bottom: 24px;
+        }
+
+        .control-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .control-group label {
+            display: block;
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 8px;
+            font-weight: 400;
+        }
+
+        .market-type-selector {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .market-btn {
+            background: #f8f9fa;
+            border: 1px solid #e5e5e5;
+            padding: 10px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+
+        .market-btn.active {
+            background: #1a4fa0;
+            color: #fff;
+            border-color: #1a4fa0;
+        }
+
+        .market-btn:hover:not(.active) {
+            background: #e9ecef;
+        }
+
+        .strategy-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin: 12px 0;
+        }
+
+        .strategy-btn {
+            background: #f8f9fa;
+            border: 1px solid #e5e5e5;
+            padding: 8px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+
+        .strategy-btn.selected {
+            background: #28a745;
+            color: #fff;
+            border-color: #28a745;
+        }
+
+        .strategy-btn:hover:not(.selected) {
+            background: #e9ecef;
+        }
+
+        .slider-container {
+            position: relative;
+            margin-bottom: 8px;
+        }
+
+        .slider {
+            width: 100%;
+            height: 2px;
+            border-radius: 1px;
+            background: #e5e5e5;
+            outline: none;
+            -webkit-appearance: none;
+            cursor: pointer;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #1a4fa0;
+            cursor: pointer;
+        }
+
+        .slider::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #1a4fa0;
+            cursor: pointer;
+            border: none;
+        }
+
+        .slider-value {
+            text-align: center;
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 4px;
+        }
+
+        .chart-container {
+            background: #fff;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            padding: 24px;
+            height: 500px;
+            position: relative;
+        }
+
+        .info-card {
+            background: #fff;
+            border: 1px solid #e5e5e5;
+            border-radius: 6px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .info-card h4 {
+            font-size: 0.8rem;
+            color: #666;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 500;
+        }
+
+        .metric-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .metric {
+            text-align: center;
+        }
+
+        .metric-label {
+            font-size: 0.7rem;
+            color: #999;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .metric-value {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #1a1a1a;
+        }
+
+        .payoff-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 8px 0;
+        }
+
+        .payoff-table th,
+        .payoff-table td {
+            border: 1px solid #e5e5e5;
+            padding: 6px;
+            text-align: center;
+            font-size: 0.7rem;
+        }
+
+        .payoff-table th {
+            background: #f8f9fa;
+            font-weight: 500;
+        }
+
+        .equilibrium-cell {
+            background: #d4edda !important;
+            font-weight: 500;
+        }
+
+        .firm-card {
+            background: #f8f9fa;
+            border: 1px solid #e5e5e5;
+            border-radius: 4px;
+            padding: 12px;
+            margin-bottom: 8px;
+            font-size: 0.8rem;
+        }
+
+        .firm-card.player {
+            background: #e3f2fd;
+            border-color: #1976d2;
+        }
+
+        .firm-name {
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .firm-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            font-size: 0.7rem;
+            color: #666;
+        }
+
+        .button {
+            background: #1a1a1a;
+            color: #fff;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 400;
+            transition: all 0.2s ease;
+            width: 100%;
+            margin-bottom: 8px;
+        }
+
+        .button:hover {
+            background: #333;
+        }
+
+        .button-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .button-small {
+            padding: 6px 12px;
+            font-size: 0.8rem;
+        }
+
+        .equilibrium-indicator {
+            text-align: center;
+            margin: 16px 0;
+            padding: 12px;
+            border-radius: 4px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: #fff;
+        }
+
+        .nash-equilibrium {
+            background: #28a745;
+        }
+
+        .no-equilibrium {
+            background: #dc3545;
+        }
+
+        .quiz-section {
+            background: #fff;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            padding: 24px;
+            margin-top: 40px;
+            display: none;
+        }
+
+        .quiz-question {
+            font-size: 1rem;
+            margin-bottom: 16px;
+            color: #1a1a1a;
+            font-weight: 400;
+        }
+
+        .quiz-options {
+            display: grid;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .quiz-option {
+            background: #f8f9fa;
+            border: 1px solid #e5e5e5;
+            padding: 12px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+        }
+
+        .quiz-option:hover {
+            background: #e9ecef;
+            border-color: #adb5bd;
+        }
+
+        .quiz-option.correct {
+            background: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+
+        .quiz-option.incorrect {
+            background: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+
+        .quiz-feedback {
+            background: #f8f9fa;
+            border: 1px solid #e5e5e5;
+            border-radius: 4px;
+            padding: 12px;
+            margin-top: 12px;
+            font-size: 0.85rem;
+            color: #666;
+            display: none;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .game-area {
+                grid-template-columns: 260px 1fr 260px;
+                gap: 30px;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .game-area {
+                grid-template-columns: 1fr 1fr;
+                gap: 30px;
+            }
+            
+            .chart-container {
+                grid-column: 1 / -1;
+                order: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .game-area {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Monopolistic Competition / Oligopoly Game Theory Simulator</h1>
+            <p>Interactive strategic decision-making and Nash equilibrium analysis tool</p>
+        </div>
+
+        <div class="game-area">
+            <!-- Left Panel: Controls -->
+            <div class="panel">
+                <h3>Market Structure</h3>
+                
+                <div class="control-group">
+                    <label>Market Type</label>
+                    <div class="market-type-selector">
+                        <div class="market-btn active" onclick="selectMarketType('monopolistic', this)">
+                            Monopolistic Competition
+                        </div>
+                        <div class="market-btn" onclick="selectMarketType('oligopoly', this)">
+                            Oligopoly
+                        </div>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label>Number of Firms</label>
+                    <div class="slider-container">
+                        <input type="range" id="firmCount" class="slider" min="2" max="8" value="4" step="1">
+                    </div>
+                    <div class="slider-value" id="firmCountValue">4 firms</div>
+                </div>
+
+                <div class="control-group">
+                    <label>Product Differentiation</label>
+                    <div class="slider-container">
+                        <input type="range" id="differentiation" class="slider" min="10" max="90" value="50" step="10">
+                    </div>
+                    <div class="slider-value" id="differentiationValue">Medium (50%)</div>
+                </div>
+
+                <div class="control-group">
+                    <label>Your Strategy</label>
+                    <div class="strategy-grid">
+                        <div class="strategy-btn selected" onclick="selectStrategy('low-price', this)">
+                            Low Price
+                        </div>
+                        <div class="strategy-btn" onclick="selectStrategy('high-price', this)">
+                            High Price
+                        </div>
+                        <div class="strategy-btn" onclick="selectStrategy('advertise', this)">
+                            Advertise
+                        </div>
+                        <div class="strategy-btn" onclick="selectStrategy('innovate', this)">
+                            Innovate
+                        </div>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button class="button button-small" onclick="runSimulation()">Run Simulation</button>
+                    <button class="button button-small" onclick="resetGame()">Reset Game</button>
+                </div>
+
+                <button class="button" onclick="toggleQuiz()">Start Quiz</button>
+                <button class="button" onclick="downloadTheoryGuide()">Download Theory Guide</button>
+            </div>
+
+            <!-- Center Panel: Game Matrix -->
+            <div class="chart-container">
+                <canvas id="gameChart"></canvas>
+            </div>
+
+            <!-- Right Panel: Information -->
+            <div>
+                <!-- Game Analysis -->
+                <div class="info-card">
+                    <h4>Game Analysis</h4>
+                    
+                    <div class="equilibrium-indicator nash-equilibrium" id="equilibriumType">
+                        Nash Equilibrium Found
+                    </div>
+
+                    <div class="metric-grid">
+                        <div class="metric">
+                            <div class="metric-label">Your Profit</div>
+                            <div class="metric-value" id="playerProfit">$150M</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">Market Share</div>
+                            <div class="metric-value" id="marketShare">25%</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">Price Level</div>
+                            <div class="metric-value" id="priceLevel">$45</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">Efficiency</div>
+                            <div class="metric-value" id="efficiency">72%</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payoff Matrix -->
+                <div class="info-card">
+                    <h4>Payoff Matrix (You vs Competitor)</h4>
+                    <table class="payoff-table">
+                        <tr>
+                            <th></th>
+                            <th>Competitor: Low Price</th>
+                            <th>Competitor: High Price</th>
+                        </tr>
+                        <tr>
+                            <th>You: Low Price</th>
+                            <td id="cell-ll" class="equilibrium-cell">100, 100</td>
+                            <td id="cell-lh">150, 50</td>
+                        </tr>
+                        <tr>
+                            <th>You: High Price</th>
+                            <td id="cell-hl">50, 150</td>
+                            <td id="cell-hh">120, 120</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- Market Participants -->
+                <div class="info-card">
+                    <h4>Market Participants</h4>
+                    <div id="firmsList">
+                        <div class="firm-card player">
+                            <div class="firm-name">You (Firm A)</div>
+                            <div class="firm-stats">
+                                <div>Strategy: Low Price</div>
+                                <div>Profit: $150M</div>
+                            </div>
+                        </div>
+                        <div class="firm-card">
+                            <div class="firm-name">Firm B</div>
+                            <div class="firm-stats">
+                                <div>Strategy: Low Price</div>
+                                <div>Profit: $100M</div>
+                            </div>
+                        </div>
+                        <div class="firm-card">
+                            <div class="firm-name">Firm C</div>
+                            <div class="firm-stats">
+                                <div>Strategy: High Price</div>
+                                <div>Profit: $80M</div>
+                            </div>
+                        </div>
+                        <div class="firm-card">
+                            <div class="firm-name">Firm D</div>
+                            <div class="firm-stats">
+                                <div>Strategy: Advertise</div>
+                                <div>Profit: $110M</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Strategic Insights -->
+                <div class="info-card">
+                    <h4>Strategic Insights</h4>
+                    <div style="font-size: 0.8rem; color: #666; line-height: 1.4;">
+                        <strong>Nash Equilibrium:</strong> Strategy combination where no player benefits from unilateral change<br>
+                        <strong>Dominant Strategy:</strong> Best choice regardless of others' actions<br>
+                        <strong>Prisoner's Dilemma:</strong> Individual rationality leads to collective irrationality
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quiz Section -->
+        <div class="quiz-section" id="quizSection">
+            <h3>Game Theory & Market Structure Quiz</h3>
+            
+            <div class="quiz-question" id="quizQuestion">
+                What is a Nash equilibrium?
+            </div>
+            
+            <div class="quiz-options" id="quizOptions">
+                <div class="quiz-option" onclick="selectQuizOption(this, false)">A strategy that maximizes total market profit</div>
+                <div class="quiz-option" onclick="selectQuizOption(this, true)">A strategy combination where no player wants to unilaterally change</div>
+                <div class="quiz-option" onclick="selectQuizOption(this, false)">The strategy that leads to the highest individual profit</div>
+                <div class="quiz-option" onclick="selectQuizOption(this, false)">A cooperative solution between all players</div>
+            </div>
+            
+            <div class="quiz-feedback" id="quizFeedback">
+                Correct! A Nash equilibrium is a strategy combination where no player has an incentive to unilaterally change their strategy.
+            </div>
+
+            <button class="button" onclick="nextQuestion()" style="margin-top: 16px; display: none;" id="nextBtn">Next Question</button>
+            <button class="button" onclick="toggleQuiz()" style="margin-top: 16px;">Close Quiz</button>
+        </div>
+    </div>
+
+    <script>
+        // Game state
+        let currentMarketType = 'monopolistic';
+        let currentStrategy = 'low-price';
+        let chart;
+        let quizActive = false;
+        let currentQuestionIndex = 0;
+
+        // Game parameters
+        const gameParams = {
+            firmCount: 4,
+            differentiation: 50,
+            strategy: 'low-price'
+        };
+
+        // Strategy definitions
+        const strategies = {
+            'low-price': { name: 'Low Price', color: '#dc3545' },
+            'high-price': { name: 'High Price', color: '#28a745' },
+            'advertise': { name: 'Advertise', color: '#1a4fa0' },
+            'innovate': { name: 'Innovate', color: '#ffc107' }
+        };
+
+        // Payoff matrices for different scenarios
+        const payoffMatrices = {
+            monopolistic: {
+                'low-price': { 'll': [100, 100], 'lh': [150, 50], 'hl': [50, 150], 'hh': [120, 120] },
+                'high-price': { 'll': [80, 80], 'lh': [120, 60], 'hl': [60, 120], 'hh': [140, 140] },
+                'advertise': { 'll': [90, 90], 'lh': [160, 40], 'hl': [40, 160], 'hh': [130, 130] },
+                'innovate': { 'll': [110, 110], 'lh': [180, 70], 'hl': [70, 180], 'hh': [150, 150] }
+            },
+            oligopoly: {
+                'low-price': { 'll': [80, 80], 'lh': [120, 30], 'hl': [30, 120], 'hh': [100, 100] },
+                'high-price': { 'll': [60, 60], 'lh': [90, 40], 'hl': [40, 90], 'hh': [110, 110] },
+                'advertise': { 'll': [70, 70], 'lh': [130, 20], 'hl': [20, 130], 'hh': [100, 100] },
+                'innovate': { 'll': [95, 95], 'lh': [170, 50], 'hl': [50, 170], 'hh': [140, 140] }
+            }
+        };
+
+        // Quiz questions (20 questions total)
+        const quizQuestions = [
+            {
+                question: "What is a Nash equilibrium?",
+                options: [
+                    "A strategy that maximizes total market profit",
+                    "A strategy combination where no player wants to unilaterally change",
+                    "The strategy that leads to the highest individual profit",
+                    "A cooperative solution between all players"
+                ],
+                correct: 1,
+                explanation: "Correct! A Nash equilibrium is a strategy combination where no player has an incentive to unilaterally change their strategy."
+            },
+            {
+                question: "In monopolistic competition, firms compete primarily through:",
+                options: [
+                    "Price only",
+                    "Product differentiation and branding",
+                    "Controlling supply",
+                    "Government lobbying"
+                ],
+                correct: 1,
+                explanation: "Correct! Monopolistic competition involves many firms competing through product differentiation, branding, and quality differences."
+            },
+            {
+                question: "What characterizes an oligopoly market structure?",
+                options: [
+                    "Many small firms with identical products",
+                    "One firm controls the entire market",
+                    "Few large firms with significant market power",
+                    "Perfect information and no barriers to entry"
+                ],
+                correct: 2,
+                explanation: "Correct! Oligopoly is characterized by a few large firms that have significant market power and strategic interdependence."
+            },
+            {
+                question: "What is a dominant strategy in game theory?",
+                options: [
+                    "The strategy that leads to Nash equilibrium",
+                    "The best strategy regardless of what opponents do",
+                    "The strategy chosen by the market leader",
+                    "A strategy that involves cooperation"
+                ],
+                correct: 1,
+                explanation: "Correct! A dominant strategy is the best choice for a player regardless of what strategies the other players choose."
+            },
+            {
+                question: "In the Prisoner's Dilemma, what typically happens?",
+                options: [
+                    "Both players cooperate for mutual benefit",
+                    "Players achieve the best possible outcome",
+                    "Individual rationality leads to a suboptimal outcome",
+                    "Players always choose randomly"
+                ],
+                correct: 2,
+                explanation: "Correct! The Prisoner's Dilemma shows how individual rational decisions can lead to outcomes that are worse for everyone involved."
+            },
+            {
+                question: "What is the main difference between monopolistic competition and perfect competition?",
+                options: [
+                    "Number of firms in the market",
+                    "Barriers to entry",
+                    "Product differentiation",
+                    "Government regulation"
+                ],
+                correct: 2,
+                explanation: "Correct! The key difference is product differentiation - monopolistic competition involves differentiated products while perfect competition has homogeneous products."
+            },
+            {
+                question: "In oligopoly, firms are most concerned about:",
+                options: [
+                    "Government regulation",
+                    "Consumer preferences only",
+                    "Competitors' reactions to their decisions",
+                    "Production costs only"
+                ],
+                correct: 2,
+                explanation: "Correct! Oligopolistic firms must consider how competitors will react to their strategic decisions due to mutual interdependence."
+            },
+            {
+                question: "What is tacit collusion in oligopoly?",
+                options: [
+                    "Formal agreements between firms",
+                    "Unspoken coordination without explicit agreement",
+                    "Government-imposed cooperation",
+                    "Random pricing strategies"
+                ],
+                correct: 1,
+                explanation: "Correct! Tacit collusion involves implicit coordination between firms without explicit agreements, often through price leadership or parallel behavior."
+            },
+            {
+                question: "In monopolistic competition, firms can earn economic profits:",
+                options: [
+                    "Only in the short run",
+                    "Only in the long run",
+                    "In both short and long run",
+                    "Never"
+                ],
+                correct: 0,
+                explanation: "Correct! In monopolistic competition, firms can earn economic profits in the short run, but entry of new firms eliminates these profits in the long run."
+            },
+            {
+                question: "What is price leadership in oligopoly?",
+                options: [
+                    "Government setting maximum prices",
+                    "Consumers determining prices through demand",
+                    "One firm sets prices and others follow",
+                    "All firms setting identical prices simultaneously"
+                ],
+                correct: 2,
+                explanation: "Correct! Price leadership occurs when one dominant firm (the leader) sets the price and other firms (followers) accept and match that price."
+            },
+            {
+                question: "What is the kinked demand curve model used to explain?",
+                options: [
+                    "Perfect competition pricing",
+                    "Monopoly pricing strategies",
+                    "Price rigidity in oligopoly",
+                    "Consumer surplus maximization"
+                ],
+                correct: 2,
+                explanation: "Correct! The kinked demand curve model explains why prices tend to be sticky (rigid) in oligopolistic markets."
+            },
+            {
+                question: "In a repeated game, what strategy often emerges?",
+                options: [
+                    "Always defect",
+                    "Always cooperate",
+                    "Tit-for-tat (conditional cooperation)",
+                    "Random strategies"
+                ],
+                correct: 2,
+                explanation: "Correct! In repeated games, tit-for-tat strategies often emerge where players cooperate initially and then mirror their opponent's previous action."
+            },
+            {
+                question: "What is product differentiation's effect on demand elasticity?",
+                options: [
+                    "Makes demand more elastic",
+                    "Makes demand less elastic",
+                    "Has no effect on elasticity",
+                    "Makes elasticity unpredictable"
+                ],
+                correct: 1,
+                explanation: "Correct! Product differentiation makes demand less elastic because consumers view products as less substitutable, giving firms more pricing power."
+            },
+            {
+                question: "What is the Cournot model's key assumption?",
+                options: [
+                    "Firms compete on price",
+                    "Firms compete on quantity",
+                    "Firms compete on advertising",
+                    "Firms cooperate fully"
+                ],
+                correct: 1,
+                explanation: "Correct! The Cournot model assumes firms compete by choosing quantities, with prices determined by total market supply."
+            },
+            {
+                question: "What is the Bertrand model's key assumption?",
+                options: [
+                    "Firms compete on quantity",
+                    "Firms compete on price",
+                    "Firms compete on quality",
+                    "Firms avoid competition"
+                ],
+                correct: 1,
+                explanation: "Correct! The Bertrand model assumes firms compete by setting prices, with quantities determined by demand at those prices."
+            },
+            {
+                question: "What happens to long-run economic profits in monopolistic competition?",
+                options: [
+                    "They remain positive",
+                    "They become negative",
+                    "They approach zero",
+                    "They become unpredictable"
+                ],
+                correct: 2,
+                explanation: "Correct! In monopolistic competition, long-run economic profits approach zero due to free entry and exit of firms."
+            },
+            {
+                question: "What is a key characteristic of strategic interdependence?",
+                options: [
+                    "Firms ignore competitors' actions",
+                    "Firms' decisions depend on competitors' expected reactions",
+                    "All firms make identical decisions",
+                    "Government controls all strategic decisions"
+                ],
+                correct: 1,
+                explanation: "Correct! Strategic interdependence means that each firm's optimal decision depends on what it expects its competitors to do."
+            },
+            {
+                question: "What is the main goal of game theory in economics?",
+                options: [
+                    "To predict exact market outcomes",
+                    "To analyze strategic decision-making",
+                    "To maximize government revenue",
+                    "To eliminate market competition"
+                ],
+                correct: 1,
+                explanation: "Correct! Game theory analyzes strategic decision-making situations where the outcome for each participant depends on the actions of all participants."
+            },
+            {
+                question: "In oligopoly, what is likely to happen if one firm cuts prices significantly?",
+                options: [
+                    "Other firms will ignore the price cut",
+                    "Other firms will likely match or undercut the price",
+                    "The government will intervene immediately",
+                    "Market demand will decrease"
+                ],
+                correct: 1,
+                explanation: "Correct! In oligopoly, firms typically respond quickly to competitors' price cuts to avoid losing market share, often leading to price wars."
+            },
+            {
+                question: "What distinguishes monopolistic competition from oligopoly?",
+                options: [
+                    "Product differentiation exists only in monopolistic competition",
+                    "Monopolistic competition has many firms, oligopoly has few",
+                    "Only oligopolies can earn profits",
+                    "Government regulation differs between them"
+                ],
+                correct: 1,
+                explanation: "Correct! The key distinction is the number of firms: monopolistic competition involves many firms while oligopoly involves only a few firms."
+            }
+        ];
+
+        // Initialize the game
+        function initGame() {
+            updateSliderDisplays();
+            updateChart();
+            updateGameAnalysis();
+            updatePayoffMatrix();
+            updateFirmsList();
+        }
+
+        // Market type selection
+        function selectMarketType(type, element) {
+            currentMarketType = type;
+            
+            // Update button states
+            document.querySelectorAll('.market-btn').forEach(btn => btn.classList.remove('active'));
+            element.classList.add('active');
+            
+            // Update firm count limits based on market type
+            const firmSlider = document.getElementById('firmCount');
+            if (type === 'monopolistic') {
+                firmSlider.min = 3;
+                firmSlider.max = 12;
+                if (firmSlider.value < 3) firmSlider.value = 4;
+            } else {
+                firmSlider.min = 2;
+                firmSlider.max = 6;
+                if (firmSlider.value > 6) firmSlider.value = 4;
+            }
+            
+            updateSliderDisplays();
+            updateChart();
+            updateGameAnalysis();
+            updatePayoffMatrix();
+            updateFirmsList();
+        }
+
+        // Strategy selection
+        function selectStrategy(strategy, element) {
+            currentStrategy = strategy;
+            
+            // Update button states
+            document.querySelectorAll('.strategy-btn').forEach(btn => btn.classList.remove('selected'));
+            element.classList.add('selected');
+            
+            updateGameAnalysis();
+            updatePayoffMatrix();
+            updateFirmsList();
+        }
+
+        // Update slider displays
+        function updateSliderDisplays() {
+            const firmCount = document.getElementById('firmCount').value;
+            const differentiation = document.getElementById('differentiation').value;
+            
+            document.getElementById('firmCountValue').textContent = `${firmCount} firms`;
+            
+            let diffLevel = 'Low';
+            if (differentiation >= 70) diffLevel = 'High';
+            else if (differentiation >= 40) diffLevel = 'Medium';
+            document.getElementById('differentiationValue').textContent = `${diffLevel} (${differentiation}%)`;
+            
+            gameParams.firmCount = parseInt(firmCount);
+            gameParams.differentiation = parseInt(differentiation);
+        }
+
+        // Update chart
+        function updateChart() {
+            const ctx = document.getElementById('gameChart').getContext('2d');
+            
+            if (chart) {
+                chart.destroy();
+            }
+
+            // Generate market share data based on strategies
+            const firms = generateFirms();
+            const profits = firms.map(f => f.profit);
+            const colors = firms.map(f => strategies[f.strategy]?.color || '#666');
+
+            chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: firms.map(f => f.name),
+                    datasets: [{
+                        label: 'Profit ($ Millions)',
+                        data: profits,
+                        backgroundColor: colors,
+                        borderColor: colors.map(c => c + '80'),
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        title: {
+                            display: true,
+                            text: `${currentMarketType === 'monopolistic' ? 'Monopolistic Competition' : 'Oligopoly'} Profit Analysis`,
+                            color: '#1a1a1a',
+                            font: { size: 14, weight: 'normal' }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Profit ($ Millions)',
+                                color: '#666',
+                                font: { size: 11 }
+                            },
+                            ticks: {
+                                color: '#999',
+                                font: { size: 10 }
+                            },
+                            grid: {
+                                color: '#f0f0f0'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Market Participants',
+                                color: '#666',
+                                font: { size: 11 }
+                            },
+                            ticks: {
+                                color: '#999',
+                                font: { size: 10 }
+                            },
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Generate firms based on current parameters
+        function generateFirms() {
+            const firms = [];
+            const strategyOptions = ['low-price', 'high-price', 'advertise', 'innovate'];
+            
+            // Player firm
+            firms.push({
+                name: 'You (Firm A)',
+                strategy: currentStrategy,
+                profit: calculateProfit(currentStrategy, 0),
+                isPlayer: true
+            });
+            
+            // AI firms
+            for (let i = 1; i < gameParams.firmCount; i++) {
+                const strategy = strategyOptions[Math.floor(Math.random() * strategyOptions.length)];
+                firms.push({
+                    name: `Firm ${String.fromCharCode(66 + i - 1)}`,
+                    strategy: strategy,
+                    profit: calculateProfit(strategy, i),
+                    isPlayer: false
+                });
+            }
+            
+            return firms;
+        }
+
+        // Calculate profit based on strategy and market conditions
+        function calculateProfit(strategy, firmIndex) {
+            const baseProfit = currentMarketType === 'monopolistic' ? 120 : 100;
+            const differentiationBonus = gameParams.differentiation * 0.5;
+            const competitionPenalty = (gameParams.firmCount - 2) * 10;
+            
+            let strategyMultiplier = 1;
+            switch (strategy) {
+                case 'low-price': strategyMultiplier = 0.8 + (gameParams.firmCount * 0.05); break;
+                case 'high-price': strategyMultiplier = 1.2 - (gameParams.firmCount * 0.08); break;
+                case 'advertise': strategyMultiplier = 1.1 + (gameParams.differentiation * 0.003); break;
+                case 'innovate': strategyMultiplier = 1.3 - (competitionPenalty * 0.01); break;
+            }
+            
+            const randomFactor = 0.8 + (Math.random() * 0.4); // ±20% random variation
+            
+            return Math.round((baseProfit + differentiationBonus - competitionPenalty) * strategyMultiplier * randomFactor);
+        }
+
+        // Update game analysis
+        function updateGameAnalysis() {
+            const matrix = payoffMatrices[currentMarketType][currentStrategy];
+            const playerProfit = matrix.ll[0]; // Assuming competitors also choose similar strategy
+            
+            // Calculate market share (simplified)
+            const marketShare = Math.round(100 / gameParams.firmCount);
+            
+            // Calculate price level based on strategy
+            let priceLevel = 40;
+            switch (currentStrategy) {
+                case 'low-price': priceLevel = 35; break;
+                case 'high-price': priceLevel = 55; break;
+                case 'advertise': priceLevel = 48; break;
+                case 'innovate': priceLevel = 52; break;
+            }
+            
+            // Calculate efficiency (simplified)
+            const efficiency = currentMarketType === 'monopolistic' ? 
+                Math.max(60, 85 - gameParams.firmCount * 2) : 
+                Math.max(50, 75 - gameParams.firmCount * 3);
+            
+            document.getElementById('playerProfit').textContent = `${playerProfit}M`;
+            document.getElementById('marketShare').textContent = `${marketShare}%`;
+            document.getElementById('priceLevel').textContent = `${priceLevel}`;
+            document.getElementById('efficiency').textContent = `${efficiency}%`;
+            
+            // Update equilibrium indicator
+            const equilibriumEl = document.getElementById('equilibriumType');
+            if (findNashEquilibrium(matrix)) {
+                equilibriumEl.className = 'equilibrium-indicator nash-equilibrium';
+                equilibriumEl.textContent = 'Nash Equilibrium Found';
+            } else {
+                equilibriumEl.className = 'equilibrium-indicator no-equilibrium';
+                equilibriumEl.textContent = 'No Pure Nash Equilibrium';
+            }
+        }
+
+        // Update payoff matrix display
+        function updatePayoffMatrix() {
+            const matrix = payoffMatrices[currentMarketType][currentStrategy];
+            
+            document.getElementById('cell-ll').textContent = `${matrix.ll[0]}, ${matrix.ll[1]}`;
+            document.getElementById('cell-lh').textContent = `${matrix.lh[0]}, ${matrix.lh[1]}`;
+            document.getElementById('cell-hl').textContent = `${matrix.hl[0]}, ${matrix.hl[1]}`;
+            document.getElementById('cell-hh').textContent = `${matrix.hh[0]}, ${matrix.hh[1]}`;
+            
+            // Highlight Nash equilibrium
+            document.querySelectorAll('.payoff-table td').forEach(cell => {
+                cell.classList.remove('equilibrium-cell');
+            });
+            
+            const nashEq = findNashEquilibrium(matrix);
+            if (nashEq) {
+                document.getElementById(`cell-${nashEq}`).classList.add('equilibrium-cell');
+            }
+        }
+
+        // Find Nash equilibrium
+        function findNashEquilibrium(matrix) {
+            // Check each cell for Nash equilibrium
+            const cells = ['ll', 'lh', 'hl', 'hh'];
+            
+            for (const cell of cells) {
+                if (isNashEquilibrium(matrix, cell)) {
+                    return cell;
+                }
+            }
+            return null;
+        }
+
+        // Check if a cell represents Nash equilibrium
+        function isNashEquilibrium(matrix, cell) {
+            const [row, col] = cell.split('');
+            const payoffs = matrix[cell];
+            
+            // Check if player 1 has incentive to deviate
+            const altRow = row === 'l' ? 'h' : 'l';
+            const altCell1 = altRow + col;
+            if (matrix[altCell1][0] > payoffs[0]) return false;
+            
+            // Check if player 2 has incentive to deviate
+            const altCol = col === 'l' ? 'h' : 'l';
+            const altCell2 = row + altCol;
+            if (matrix[altCell2][1] > payoffs[1]) return false;
+            
+            return true;
+        }
+
+        // Update firms list
+        function updateFirmsList() {
+            const firms = generateFirms();
+            const firmsListEl = document.getElementById('firmsList');
+            
+            firmsListEl.innerHTML = '';
+            
+            firms.forEach(firm => {
+                const firmCard = document.createElement('div');
+                firmCard.className = `firm-card ${firm.isPlayer ? 'player' : ''}`;
+                
+                firmCard.innerHTML = `
+                    <div class="firm-name">${firm.name}</div>
+                    <div class="firm-stats">
+                        <div>Strategy: ${strategies[firm.strategy].name}</div>
+                        <div>Profit: ${firm.profit}M</div>
+                    </div>
+                `;
+                
+                firmsListEl.appendChild(firmCard);
+            });
+        }
+
+        // Run simulation
+        function runSimulation() {
+            // Add some animation and update all displays
+            updateChart();
+            updateGameAnalysis();
+            updatePayoffMatrix();
+            updateFirmsList();
+            
+            // Simple animation effect
+            const chartContainer = document.querySelector('.chart-container');
+            chartContainer.style.opacity = '0.5';
+            setTimeout(() => {
+                chartContainer.style.opacity = '1';
+            }, 300);
+        }
+
+        // Reset game
+        function resetGame() {
+            document.getElementById('firmCount').value = 4;
+            document.getElementById('differentiation').value = 50;
+            currentStrategy = 'low-price';
+            
+            // Reset strategy buttons
+            document.querySelectorAll('.strategy-btn').forEach(btn => btn.classList.remove('selected'));
+            document.querySelector('[onclick*="low-price"]').classList.add('selected');
+            
+            updateSliderDisplays();
+            runSimulation();
+        }
+
+        // Quiz functionality
+        function toggleQuiz() {
+            const quizSection = document.getElementById('quizSection');
+            quizActive = !quizActive;
+            
+            if (quizActive) {
+                quizSection.style.display = 'block';
+                currentQuestionIndex = 0;
+                showQuestion();
+            } else {
+                quizSection.style.display = 'none';
+            }
+        }
+
+        function showQuestion() {
+            const question = quizQuestions[currentQuestionIndex];
+            document.getElementById('quizQuestion').textContent = question.question;
+            
+            const optionsContainer = document.getElementById('quizOptions');
+            optionsContainer.innerHTML = '';
+            
+            question.options.forEach((option, index) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'quiz-option';
+                optionDiv.textContent = option;
+                optionDiv.onclick = () => selectQuizOption(optionDiv, index === question.correct);
+                optionsContainer.appendChild(optionDiv);
+            });
+            
+            document.getElementById('quizFeedback').style.display = 'none';
+            document.getElementById('nextBtn').style.display = 'none';
+        }
+
+        function selectQuizOption(element, isCorrect) {
+            const question = quizQuestions[currentQuestionIndex];
+            const options = document.querySelectorAll('.quiz-option');
+            
+            options.forEach((option, index) => {
+                option.onclick = null;
+                if (index === question.correct) {
+                    option.classList.add('correct');
+                } else if (option === element && !isCorrect) {
+                    option.classList.add('incorrect');
+                }
+            });
+            
+            const feedback = document.getElementById('quizFeedback');
+            feedback.textContent = question.explanation;
+            feedback.style.display = 'block';
+            
+            if (currentQuestionIndex < quizQuestions.length - 1) {
+                document.getElementById('nextBtn').style.display = 'block';
+            }
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < quizQuestions.length) {
+                showQuestion();
+            } else {
+                document.getElementById('quizQuestion').textContent = 'Quiz completed! You have mastered game theory and market structures.';
+                document.getElementById('quizOptions').innerHTML = '';
+                document.getElementById('quizFeedback').style.display = 'none';
+                document.getElementById('nextBtn').style.display = 'none';
+            }
+        }
+
+        // Download comprehensive theory guide
+        function downloadTheoryGuide() {
+            const theoryContent = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monopolistic Competition & Oligopoly Game Theory Guide</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background: #fff;
+        }
+        
+        h1 {
+            color: #1a1a1a;
+            border-bottom: 3px solid #1a4fa0;
+            padding-bottom: 10px;
+            font-size: 2.2em;
+            margin-bottom: 30px;
+        }
+        
+        h2 {
+            color: #1a4fa0;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            border-left: 4px solid #1a4fa0;
+            padding-left: 15px;
+        }
+        
+        h3 {
+            color: #333;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+        
+        h4 {
+            color: #666;
+            margin-top: 25px;
+            margin-bottom: 10px;
+            font-size: 1em;
+            font-weight: 600;
+        }
+        
+        p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+        
+        ul, ol {
+            margin-bottom: 15px;
+            padding-left: 25px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        .toc {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+            margin: 30px 0;
+        }
+        
+        .toc h3 {
+            margin-top: 0;
+            color: #1a4fa0;
+        }
+        
+        .toc ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        
+        .highlight-box {
+            background: #e8f4f8;
+            border: 1px solid #bee5eb;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .formula-box {
+            background: #f0f8f0;
+            border: 1px solid #90c695;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .example-box {
+            background: #fff7e6;
+            border: 1px solid #ffb366;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .warning-box {
+            background: #ffeaa7;
+            border: 1px solid #fdcb6e;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.9em;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        th {
+            background: #f5f5f5;
+            font-weight: 600;
+        }
+        
+        .matrix-table {
+            font-family: 'Courier New', monospace;
+            margin: 20px auto;
+            max-width: 500px;
+        }
+        
+        .matrix-table th, .matrix-table td {
+            text-align: center;
+            padding: 8px 12px;
+        }
+        
+        .equilibrium-cell {
+            background-color: #d4edda !important;
+            font-weight: bold;
+        }
+        
+        .comparison-table {
+            font-size: 0.85em;
+        }
+        
+        .comparison-table th {
+            background: #1a4fa0;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>Monopolistic Competition & Oligopoly Game Theory Guide</h1>
+    <p><em>Comprehensive Analysis of Strategic Decision-Making in Imperfect Competition Markets</em></p>
+    
+    <div class="toc">
+        <h3>Table of Contents</h3>
+        <ul>
+            <li>1. Market Structure Framework</li>
+            <li>2. Monopolistic Competition Deep Dive</li>
+            <li>3. Oligopoly Market Dynamics</li>
+            <li>4. Game Theory Foundations</li>
+            <li>5. Nash Equilibrium & Strategic Solutions</li>
+            <li>6. Classical Strategic Models</li>
+            <li>7. Advanced Game Theory Concepts</li>
+            <li>8. Market Power & Welfare Analysis</li>
+            <li>9. Strategic Behavior & Collusion</li>
+            <li>10. Product Differentiation Strategies</li>
+            <li>11. Dynamic Competition & Innovation</li>
+            <li>12. Regulatory Implications</li>
+            <li>13. Real-World Case Studies</li>
+            <li>14. Mathematical Foundations</li>
+            <li>15. Simulator Methodology</li>
+        </ul>
+    </div>
+
+    <h2>1. Market Structure Framework</h2>
+
+    <h3>The Competitive Spectrum</h3>
+    <p>Market structures exist on a continuum from perfect competition to monopoly. <strong>Monopolistic competition</strong> and <strong>oligopoly</strong> represent intermediate forms where strategic interaction becomes crucial. These markets are characterized by imperfect competition, where firms have some degree of market power but face competitive pressures.</p>
+
+    <table class="comparison-table">
+        <tr>
+            <th>Market Structure</th>
+            <th>Number of Firms</th>
+            <th>Product Differentiation</th>
+            <th>Barriers to Entry</th>
+            <th>Price Setting Power</th>
+        </tr>
+        <tr>
+            <td>Perfect Competition</td>
+            <td>Many</td>
+            <td>Homogeneous</td>
+            <td>None</td>
+            <td>None (Price Taker)</td>
+        </tr>
+        <tr>
+            <td>Monopolistic Competition</td>
+            <td>Many</td>
+            <td>Differentiated</td>
+            <td>Low</td>
+            <td>Limited</td>
+        </tr>
+        <tr>
+            <td>Oligopoly</td>
+            <td>Few</td>
+            <td>May be differentiated</td>
+            <td>High</td>
+            <td>Significant</td>
+        </tr>
+        <tr>
+            <td>Monopoly</td>
+            <td>One</td>
+            <td>Unique</td>
+            <td>Very High</td>
+            <td>Maximum</td>
+        </tr>
+    </table>
+
+    <div class="highlight-box">
+        <p><strong>Key Insight:</strong> The transition from many to few firms fundamentally changes competitive dynamics. Strategic interdependence emerges when firms are large enough that their actions materially affect competitors' profits.</p>
+    </div>
+
+    <h2>2. Monopolistic Competition Deep Dive</h2>
+
+    <h3>Structural Characteristics</h3>
+    <ul>
+        <li><strong>Large Number of Firms:</strong> Typically dozens to hundreds of competitors</li>
+        <li><strong>Product Differentiation:</strong> Real or perceived differences in products/services</li>
+        <li><strong>Free Entry and Exit:</strong> Low barriers allow market entry and exit</li>
+        <li><strong>Independent Decision Making:</strong> Firms largely ignore competitors' reactions</li>
+        <li><strong>Local Market Power:</strong> Limited pricing power due to brand loyalty or location</li>
+    </ul>
+
+    <h3>Economic Behavior</h3>
+    <p>In monopolistic competition, firms face <strong>downward-sloping demand curves</strong> due to product differentiation, giving them some pricing power. However, this power is constrained by:</p>
+    <ul>
+        <li>Availability of close substitutes</li>
+        <li>Easy entry of new competitors</li>
+        <li>Consumer price sensitivity</li>
+        <li>Limited brand loyalty</li>
+    </ul>
+
+    <h3>Short-Run vs. Long-Run Equilibrium</h3>
+    <p><strong>Short Run:</strong> Firms can earn positive economic profits if they successfully differentiate their products and create customer loyalty.</p>
+    
+    <p><strong>Long Run:</strong> Economic profits attract new entrants, increasing competition and reducing individual firm market shares. The process continues until economic profits are eliminated.</p>
+
+    <div class="formula-box">
+        <strong>Long-Run Equilibrium Condition:</strong><br>
+        P = ATC (Economic profits = 0)<br>
+        P > MC (Monopolistic element persists)<br>
+        Excess capacity exists (firms operate left of minimum ATC)
+    </div>
+
+    <h3>Examples of Monopolistic Competition</h3>
+    <ul>
+        <li><strong>Restaurants:</strong> Cuisine types, ambiance, location differentiation</li>
+        <li><strong>Retail Clothing:</strong> Style, brand image, quality differences</li>
+        <li><strong>Hair Salons:</strong> Service quality, convenience, stylist expertise</li>
+        <li><strong>Coffee Shops:</strong> Atmosphere, location, specialty drinks</li>
+        <li><strong>Local Services:</strong> Plumbers, electricians, mechanics</li>
+    </ul>
+
+    <h2>3. Oligopoly Market Dynamics</h2>
+
+    <h3>Defining Features</h3>
+    <ul>
+        <li><strong>Few Dominant Firms:</strong> Typically 2-10 major players</li>
+        <li><strong>High Market Concentration:</strong> Top firms control large market shares</li>
+        <li><strong>Significant Barriers to Entry:</strong> 
+            <ul>
+                <li>High capital requirements</li>
+                <li>Economies of scale</li>
+                <li>Government regulations</li>
+                <li>Patent protection</li>
+                <li>Network effects</li>
+            </ul>
+        </li>
+        <li><strong>Strategic Interdependence:</strong> Each firm's decisions significantly impact competitors</li>
+        <li><strong>Price Leadership:</strong> Often one firm sets prices, others follow</li>
+    </ul>
+
+    <h3>Types of Oligopoly</h3>
+    <h4>Homogeneous Oligopoly</h4>
+    <p>Firms produce identical or nearly identical products (e.g., steel, cement, gasoline).</p>
+    
+    <h4>Differentiated Oligopoly</h4>
+    <p>Firms produce differentiated products (e.g., automobiles, smartphones, airlines).</p>
+
+    <h3>Strategic Considerations</h3>
+    <p>Oligopolistic firms must consider:</p>
+    <ul>
+        <li><strong>Competitor Reactions:</strong> How will rivals respond to price changes?</li>
+        <li><strong>Capacity Decisions:</strong> Investment timing and scale effects</li>
+        <li><strong>Product Innovation:</strong> R&D competition and first-mover advantages</li>
+        <li><strong>Market Entry:</strong> Deterrence strategies and competitive responses</li>
+        <li><strong>Cooperative Behavior:</strong> Implicit coordination vs. explicit collusion</li>
+    </ul>
+
+    <h2>4. Game Theory Foundations</h2>
+
+    <h3>What is Game Theory?</h3>
+    <p><strong>Game theory</strong> is the mathematical study of strategic decision-making among rational agents. Developed by John von Neumann and Oskar Morgenstern, it provides a framework for analyzing situations where:</p>
+    <ul>
+        <li>Multiple decision-makers interact</li>
+        <li>Each player's payoff depends on all players' choices</li>
+        <li>Players must anticipate others' actions when making decisions</li>
+        <li>Outcomes are determined by the combination of all choices</li>
+    </ul>
+
+    <h3>Core Elements of a Game</h3>
+    <h4>Players</h4>
+    <p>The decision-makers in the game. In industrial organization:</p>
+    <ul>
+        <li>Firms competing for market share</li>
+        <li>Governments setting policies</li>
+        <li>Consumers making purchase decisions</li>
+    </ul>
+
+    <h4>Strategies</h4>
+    <p>Complete action plans specifying what a player will do in every possible situation. Examples:</p>
+    <ul>
+        <li><strong>Pure Strategies:</strong> Specific actions (set price at $10)</li>
+        <li><strong>Mixed Strategies:</strong> Probability distributions over actions (price high 70% of time)</li>
+    </ul>
+
+    <h4>Payoffs</h4>
+    <p>The outcomes players receive for each combination of strategies, typically measured as:</p>
+    <ul>
+        <li>Profits for firms</li>
+        <li>Utility for consumers</li>
+        <li>Welfare for society</li>
+    </ul>
+
+    <h2>5. Nash Equilibrium & Strategic Solutions</h2>
+
+    <h3>Nash Equilibrium Definition</h3>
+    <p>A <strong>Nash equilibrium</strong> is a strategy profile where each player's strategy is a best response to all other players' strategies. Formally:</p>
+
+    <div class="formula-box">
+        <strong>Nash Equilibrium Condition:</strong><br>
+        For each player i and strategy profile s* = (s₁*, s₂*, ..., sₙ*):<br>
+        uᵢ(sᵢ*, s₋ᵢ*) ≥ uᵢ(sᵢ, s₋ᵢ*) for all sᵢ ∈ Sᵢ<br><br>
+        Where:<br>
+        uᵢ = player i's payoff function<br>
+        sᵢ* = player i's equilibrium strategy<br>
+        s₋ᵢ* = other players' equilibrium strategies
+    </div>
+
+    <h3>The Prisoner's Dilemma</h3>
+    <p>The most famous game in game theory, illustrating how individual rationality can lead to collectively suboptimal outcomes.</p>
+
+    <table class="matrix-table">
+        <tr>
+            <th></th>
+            <th>Cooperate</th>
+            <th>Defect</th>
+        </tr>
+        <tr>
+            <th>Cooperate</th>
+            <td>3, 3</td>
+            <td>0, 5</td>
+        </tr>
+        <tr>
+            <th>Defect</th>
+            <td>5, 0</td>
+            <td class="equilibrium-cell">1, 1</td>
+        </tr>
+    </table>
+
+    <p>The dilemma: Mutual defection (1,1) is the Nash equilibrium, but mutual cooperation (3,3) would be better for both players.</p>
+
+    <h2>6. Classical Strategic Models</h2>
+
+    <h3>Cournot Competition Model</h3>
+    <p>Developed by Antoine Augustin Cournot (1838), this model analyzes oligopoly where firms compete by choosing quantities simultaneously.</p>
+
+    <h4>Key Assumptions</h4>
+    <ul>
+        <li>Firms choose quantities (not prices)</li>
+        <li>Homogeneous product</li>
+        <li>Market price determined by total supply</li>
+        <li>Firms have identical cost structures</li>
+        <li>Simultaneous decision-making</li>
+    </ul>
+
+    <div class="formula-box">
+        <strong>Cournot Equilibrium (Duopoly):</strong><br>
+        Market demand: P = a - b(q₁ + q₂)<br>
+        Firm costs: C(qᵢ) = cqᵢ<br>
+        Equilibrium quantities: q₁* = q₂* = (a-c)/(3b)<br>
+        Equilibrium price: P* = (a+2c)/3<br>
+        Firm profits: π* = [(a-c)/(3b)]² × b
+    </div>
+
+    <h3>Bertrand Competition Model</h3>
+    <p>Named after Joseph Bertrand (1883), this model studies price competition between firms.</p>
+
+    <h4>Bertrand Paradox</h4>
+    <p>With homogeneous products and identical costs, price competition drives prices to marginal cost, eliminating economic profits even with only two firms.</p>
+
+    <div class="formula-box">
+        <strong>Bertrand Equilibrium:</strong><br>
+        With identical marginal costs c:<br>
+        P₁* = P₂* = c (marginal cost pricing)<br>
+        π₁* = π₂* = 0 (zero economic profits)
+    </div>
+
+    <h2>7. Advanced Game Theory Concepts</h2>
+
+    <h3>Dominant Strategies</h3>
+    <h4>Strictly Dominant Strategy</h4>
+    <p>A strategy that yields higher payoffs than any other strategy, regardless of opponents' choices.</p>
+
+    <h4>Dominated Strategy Elimination</h4>
+    <p>Rational players never choose dominated strategies. Iteratively eliminating dominated strategies can simplify games and predict outcomes.</p>
+
+    <h3>Repeated Games</h3>
+    <p>When games are played repeatedly, cooperation becomes more sustainable through:</p>
+    <ul>
+        <li><strong>Trigger Strategies:</strong> Cooperate until someone defects, then punish</li>
+        <li><strong>Tit-for-Tat:</strong> Copy opponent's previous action</li>
+        <li><strong>Reputation Effects:</strong> Long-term gains from trustworthy behavior</li>
+    </ul>
+
+    <h2>8. Market Power & Welfare Analysis</h2>
+
+    <h3>Sources of Market Power</h3>
+    <h4>In Monopolistic Competition</h4>
+    <ul>
+        <li>Product differentiation and brand loyalty</li>
+        <li>Location advantages</li>
+        <li>Customer switching costs</li>
+        <li>Information asymmetries</li>
+    </ul>
+
+    <h4>In Oligopoly</h4>
+    <ul>
+        <li>Economies of scale and scope</li>
+        <li>High capital requirements</li>
+        <li>Network effects</li>
+        <li>Patent protection</li>
+        <li>Government licensing</li>
+        <li>Strategic deterrence</li>
+    </ul>
+
+    <div class="formula-box">
+        <strong>Welfare Measures:</strong><br>
+        Consumer Surplus = ∫[from 0 to Q] P(q)dq - P×Q<br>
+        Producer Surplus = P×Q - ∫[from 0 to Q] MC(q)dq<br>
+        Deadweight Loss = CS(competitive) + PS(competitive) - CS(actual) - PS(actual)
+    </div>
+
+    <h2>9. Strategic Behavior & Collusion</h2>
+
+    <h3>Types of Collusion</h3>
+    <h4>Explicit Collusion</h4>
+    <p>Direct communication and agreement between firms:</p>
+    <ul>
+        <li>Formal cartels (often illegal)</li>
+        <li>Price-fixing agreements</li>
+        <li>Market division schemes</li>
+        <li>Output restrictions</li>
+    </ul>
+
+    <h4>Tacit Collusion</h4>
+    <p>Coordination without explicit communication:</p>
+    <ul>
+        <li><strong>Price Leadership:</strong> One firm sets prices, others follow</li>
+        <li><strong>Parallel Behavior:</strong> Similar responses to market conditions</li>
+        <li><strong>Focal Points:</strong> Natural coordination points (round numbers, industry standards)</li>
+    </ul>
+
+    <div class="formula-box">
+        <strong>Collusion Sustainability Condition:</strong><br>
+        Present value of collusion ≥ Deviation profit + Present value of punishment<br>
+        π(collude)/(1-δ) ≥ π(deviate) + δ×π(punishment)/(1-δ)<br>
+        Where δ = discount factor
+    </div>
+
+    <h2>10. Product Differentiation Strategies</h2>
+
+    <h3>Types of Differentiation</h3>
+    <h4>Horizontal Differentiation</h4>
+    <p>Products differ in characteristics valued differently by consumers:</p>
+    <ul>
+        <li>Location (closer/farther)</li>
+        <li>Flavor/style preferences</li>
+        <li>Feature combinations</li>
+        <li>Brand personality</li>
+    </ul>
+
+    <h4>Vertical Differentiation</h4>
+    <p>Products differ in quality levels:</p>
+    <ul>
+        <li>High-end vs. budget versions</li>
+        <li>Premium materials/components</li>
+        <li>Service quality levels</li>
+        <li>Reliability differences</li>
+    </ul>
+
+    <h2>11. Dynamic Competition & Innovation</h2>
+
+    <h3>Innovation Competition</h3>
+    <p>In knowledge-intensive industries, firms compete through:</p>
+    <ul>
+        <li>Research and development investment</li>
+        <li>Patent races</li>
+        <li>Technology adoption timing</li>
+        <li>Platform development</li>
+    </ul>
+
+    <h3>Network Effects and Standards</h3>
+    <p>Markets with network externalities exhibit special characteristics:</p>
+    <ul>
+        <li><strong>Winner-Take-All Dynamics:</strong> Strong first-mover advantages</li>
+        <li><strong>Standard Wars:</strong> Competition for market standard</li>
+        <li><strong>Switching Costs:</strong> Lock-in effects and market tipping</li>
+        <li><strong>Platform Competition:</strong> Ecosystem vs. ecosystem rivalry</li>
+    </ul>
+
+    <h2>12. Regulatory Implications</h2>
+
+    <h3>Antitrust Policy</h3>
+    <h4>Merger Policy</h4>
+    <p>Evaluating horizontal mergers:</p>
+    <ul>
+        <li>Market concentration measures (HHI)</li>
+        <li>Efficiency benefits vs. market power costs</li>
+        <li>Entry barriers and potential competition</li>
+        <li>Innovation effects</li>
+    </ul>
+
+    <div class="formula-box">
+        <strong>Herfindahl-Hirschman Index (HHI):</strong><br>
+        HHI = Σᵢ sᵢ² × 10,000<br>
+        Where sᵢ = market share of firm i<br><br>
+        HHI < 1,500: Unconcentrated<br>
+        1,500 ≤ HHI < 2,500: Moderately concentrated<br>
+        HHI ≥ 2,500: Highly concentrated
+    </div>
+
+    <h2>13. Real-World Case Studies</h2>
+
+    <h3>Technology Sector Examples</h3>
+    <h4>Smartphone Industry (Oligopoly)</h4>
+    <ul>
+        <li><strong>Players:</strong> Apple, Samsung, Google, Huawei</li>
+        <li><strong>Strategies:</strong> Ecosystem development, innovation cycles, premium positioning</li>
+        <li><strong>Game Theory:</strong> Platform competition, standard setting, patent warfare</li>
+    </ul>
+
+    <h4>App Stores (Platform Monopolies)</h4>
+    <ul>
+        <li><strong>Structure:</strong> Two-sided markets with network effects</li>
+        <li><strong>Strategies:</strong> Developer recruitment, user acquisition, commission structures</li>
+        <li><strong>Regulation:</strong> Antitrust concerns over market power and fees</li>
+    </ul>
+
+    <h3>Traditional Industries</h3>
+    <h4>Airlines (Oligopoly)</h4>
+    <ul>
+        <li><strong>Structure:</strong> Hub-and-spoke networks, route competition</li>
+        <li><strong>Strategies:</strong> Capacity decisions, price matching, loyalty programs</li>
+        <li><strong>Regulation:</strong> Slot allocation, merger review, consumer protection</li>
+    </ul>
+
+    <h4>Coffee Shops (Monopolistic Competition)</h4>
+    <ul>
+        <li><strong>Players:</strong> Starbucks, local independents, regional chains</li>
+        <li><strong>Differentiation:</strong> Atmosphere, location, specialty drinks, brand image</li>
+        <li><strong>Competition:</strong> Quality, convenience, price, customer experience</li>
+    </ul>
+
+    <h2>14. Mathematical Foundations</h2>
+
+    <h3>Reaction Functions</h3>
+    <p>In Cournot competition, firm i's reaction function shows optimal quantity given competitors' quantities:</p>
+
+    <div class="formula-box">
+        <strong>Cournot Reaction Function:</strong><br>
+        Maximize: πᵢ = [P(Q) - cᵢ] × qᵢ<br>
+        Where: Q = Σⱼ qⱼ (total quantity)<br>
+        First-order condition: ∂πᵢ/∂qᵢ = 0<br>
+        Reaction function: qᵢ = Rᵢ(q₋ᵢ)
+    </div>
+
+    <h3>Mixed Strategy Equilibrium</h3>
+    <p>When no pure strategy Nash equilibrium exists, players randomize:</p>
+
+    <div class="formula-box">
+        <strong>Mixed Strategy Condition:</strong><br>
+        Player must be indifferent between strategies in support<br>
+        E[uᵢ(s₁, σ₋ᵢ)] = E[uᵢ(s₂, σ₋ᵢ)]<br>
+        Where σ₋ᵢ = opponents' mixed strategies
+    </div>
+
+    <h2>15. Simulator Methodology</h2>
+
+    <h3>Model Structure</h3>
+    <p>The simulator implements a simplified strategic interaction model:</p>
+    <ul>
+        <li><strong>Player Strategies:</strong> Price level, advertising, innovation</li>
+        <li><strong>Payoff Calculation:</strong> Based on market share and profit margins</li>
+        <li><strong>Market Response:</strong> Consumer choice depends on price, quality, differentiation</li>
+        <li><strong>Equilibrium Finding:</strong> Iterative best response convergence</li>
+    </ul>
+
+    <h3>Learning Objectives</h3>
+    <ol>
+        <li><strong>Strategic Thinking:</strong> Understanding interdependent decision-making</li>
+        <li><strong>Equilibrium Analysis:</strong> Predicting stable outcomes in competitive markets</li>
+        <li><strong>Market Structure Impact:</strong> How firm numbers affect competition intensity</li>
+        <li><strong>Differentiation Strategy:</strong> Using product positioning to reduce price competition</li>
+        <li><strong>Policy Implications:</strong> Welfare effects of different market structures</li>
+    </ol>
+
+    <h2>Key Formulas Summary</h2>
+
+    <div class="formula-box">
+        <strong>Essential Equations:</strong><br><br>
+        <strong>Nash Equilibrium:</strong><br>
+        uᵢ(sᵢ*, s₋ᵢ*) ≥ uᵢ(sᵢ, s₋ᵢ*) ∀sᵢ ∈ Sᵢ<br><br>
+        
+        <strong>Cournot Equilibrium (n firms):</strong><br>
+        qᵢ* = (a - c)/((n+1)b)<br>
+        P* = (a + nc)/(n+1)<br><br>
+        
+        <strong>Bertrand Competition:</strong><br>
+        P* = MC (with homogeneous products)<br><br>
+        
+        <strong>Lerner Index (Market Power):</strong><br>
+        L = (P - MC)/P<br><br>
+        
+        <strong>HHI Concentration:</strong><br>
+        HHI = Σᵢ sᵢ² × 10,000<br><br>
+        
+        <strong>Collusion Sustainability:</strong><br>
+        π(coop)/(1-δ) ≥ π(deviate) + δπ(punish)/(1-δ)
+    </div>
+
+    <h2>Conclusion</h2>
+
+    <p>Understanding monopolistic competition and oligopoly through the lens of game theory provides powerful insights into modern market dynamics. These market structures represent the reality of most industries, where firms must balance competitive pressures with strategic considerations.</p>
+
+    <div class="highlight-box">
+        <p><strong>Key Takeaways:</strong></p>
+        <ul>
+            <li>Strategic interdependence fundamentally changes competitive behavior</li>
+            <li>Nash equilibrium provides a powerful predictive tool for market outcomes</li>
+            <li>Product differentiation and market concentration affect welfare and efficiency</li>
+            <li>Game theory helps explain pricing, innovation, and competitive strategies</li>
+            <li>Policy intervention requires careful analysis of market structure and strategic behavior</li>
+        </ul>
+    </div>
+
+    <div class="warning-box">
+        <p><em><strong>Important Note:</strong> While game theory provides valuable insights, real markets involve complexity, uncertainty, and behavioral factors that may deviate from theoretical predictions. This simulator offers a simplified educational model to illustrate core concepts.</em></p>
+    </div>
+
+    <hr>
+    
+    <p style="text-align: center; color: #666; font-size: 0.9em; margin-top: 40px;">
+        <em>This comprehensive guide covers the theoretical foundations and practical applications of game theory in monopolistic competition and oligopoly markets. For the most current research and policy developments, consult academic journals and regulatory publications.</em>
+    </p>
+
+</body>
+</html>`;
+
+            const blob = new Blob([theoryContent], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'monopolistic_oligopoly_comprehensive_theory_guide.html';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Event listeners
+        document.getElementById('firmCount').addEventListener('input', () => {
+            updateSliderDisplays();
+            runSimulation();
+        });
+
+        document.getElementById('differentiation').addEventListener('input', () => {
+            updateSliderDisplays();
+            runSimulation();
+        });
+
+        // Initialize the game when page loads
+        window.addEventListener('load', initGame);
+    </script>
+</body>
+</html>

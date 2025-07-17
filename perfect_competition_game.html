@@ -1,0 +1,2033 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfect Competition Simulator</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #fafafa;
+            color: #1a1a1a;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .header h1 {
+            font-size: 2.2rem;
+            font-weight: 300;
+            color: #1a1a1a;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .header p {
+            font-size: 1rem;
+            color: #666;
+            font-weight: 400;
+        }
+
+        .game-area {
+            display: grid;
+            grid-template-columns: 280px 1fr 280px;
+            gap: 40px;
+            align-items: start;
+        }
+
+        .panel {
+            background: #fff;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            padding: 24px;
+        }
+
+        .panel h3 {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #1a1a1a;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .control-group {
+            margin-bottom: 24px;
+        }
+
+        .control-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .control-group label {
+            display: block;
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 8px;
+            font-weight: 400;
+        }
+
+        .slider-container {
+            position: relative;
+            margin-bottom: 8px;
+        }
+
+        .slider {
+            width: 100%;
+            height: 2px;
+            border-radius: 1px;
+            background: #e5e5e5;
+            outline: none;
+            -webkit-appearance: none;
+            cursor: pointer;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #1a1a1a;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .slider::-webkit-slider-thumb:hover {
+            background: #333;
+            transform: scale(1.2);
+        }
+
+        .slider::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #1a1a1a;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s ease;
+        }
+
+        .slider-value {
+            font-size: 0.8rem;
+            color: #999;
+            text-align: right;
+        }
+
+        .chart-container {
+            background: #fff;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            padding: 32px;
+            min-height: 500px;
+        }
+
+        .info-card {
+            background: #fff;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .info-card h4 {
+            font-size: 0.8rem;
+            color: #666;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 500;
+        }
+
+        .metric-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .metric {
+            text-align: center;
+        }
+
+        .metric-label {
+            font-size: 0.75rem;
+            color: #999;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .metric-value {
+            font-size: 1.4rem;
+            font-weight: 300;
+            color: #1a1a1a;
+        }
+
+        .button {
+            background: #1a1a1a;
+            color: #fff;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 400;
+            transition: all 0.2s ease;
+            width: 100%;
+            margin-bottom: 8px;
+        }
+
+        .button:hover {
+            background: #333;
+        }
+
+        .button.active {
+            background: #0066cc;
+        }
+
+        .button.active:hover {
+            background: #0052a3;
+        }
+
+        .button-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .button-small {
+            padding: 6px 12px;
+            font-size: 0.8rem;
+        }
+
+        .section-divider {
+            height: 1px;
+            background: #e5e5e5;
+            margin: 24px 0;
+        }
+
+        .market-indicator {
+            text-align: center;
+            margin: 16px 0;
+            padding: 12px;
+            border-radius: 4px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: #fff;
+            background: #28a745;
+        }
+
+        .profit { background: #28a745; }
+        .loss { background: #dc3545; }
+        .breakeven { background: #ffc107; color: #1a1a1a; }
+
+        .description {
+            font-size: 0.8rem;
+            color: #999;
+            margin-top: 8px;
+            font-style: italic;
+        }
+
+        .quiz-section {
+            background: #fff;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            padding: 24px;
+            margin-top: 40px;
+            display: none;
+        }
+
+        .quiz-question {
+            font-size: 1rem;
+            margin-bottom: 16px;
+            color: #1a1a1a;
+            font-weight: 400;
+        }
+
+        .quiz-options {
+            display: grid;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .quiz-option {
+            background: #f8f9fa;
+            border: 1px solid #e5e5e5;
+            padding: 12px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+        }
+
+        .quiz-option:hover {
+            background: #e9ecef;
+            border-color: #adb5bd;
+        }
+
+        .quiz-option.correct {
+            background: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+
+        .quiz-option.incorrect {
+            background: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+
+        .quiz-feedback {
+            background: #f8f9fa;
+            border: 1px solid #e5e5e5;
+            border-radius: 4px;
+            padding: 12px;
+            margin-top: 12px;
+            font-size: 0.85rem;
+            color: #666;
+            display: none;
+        }
+
+        .quiz-progress {
+            background: #e9ecef;
+            border-radius: 10px;
+            height: 8px;
+            margin: 16px 0;
+            overflow: hidden;
+        }
+
+        .quiz-progress-bar {
+            background: #28a745;
+            height: 100%;
+            transition: width 0.3s ease;
+            border-radius: 10px;
+        }
+
+        .firms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: 8px;
+            margin: 12px 0;
+        }
+
+        .firm-card {
+            background: #f8f9fa;
+            border: 1px solid #e5e5e5;
+            border-radius: 4px;
+            padding: 8px;
+            text-align: center;
+            font-size: 0.8rem;
+            transition: all 0.2s ease;
+        }
+
+        .firm-card.profitable {
+            background: #d4edda;
+            border-color: #c3e6cb;
+        }
+
+        .firm-card.loss {
+            background: #f8d7da;
+            border-color: #f5c6cb;
+        }
+
+        .market-stats {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 12px;
+        }
+
+        .market-stats .stat-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 4px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .game-area {
+                grid-template-columns: 260px 1fr 260px;
+                gap: 30px;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .game-area {
+                grid-template-columns: 1fr 1fr;
+                gap: 30px;
+            }
+            
+            .chart-container {
+                grid-column: 1 / -1;
+                order: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .game-area {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Perfect Competition Simulator</h1>
+            <p>Interactive perfect competition market analysis and firm behavior tool</p>
+        </div>
+
+        <div class="game-area">
+            <!-- Left Panel: Controls -->
+            <div class="panel">
+                <h3>Market Conditions</h3>
+                
+                <div class="control-group">
+                    <label for="marketPrice">Market Price ($)</label>
+                    <div class="slider-container">
+                        <input type="range" id="marketPrice" class="slider" min="5" max="25" value="15" step="0.5">
+                    </div>
+                    <div class="slider-value" id="marketPriceValue">$15.00</div>
+                </div>
+
+                <div class="control-group">
+                    <label for="demandStrength">Market Demand</label>
+                    <div class="slider-container">
+                        <input type="range" id="demandStrength" class="slider" min="50" max="200" value="100" step="10">
+                    </div>
+                    <div class="slider-value" id="demandStrengthValue">100%</div>
+                </div>
+
+                <div class="control-group">
+                    <label for="numberOfFirms">Number of Firms</label>
+                    <div class="slider-container">
+                        <input type="range" id="numberOfFirms" class="slider" min="5" max="50" value="20" step="1">
+                    </div>
+                    <div class="slider-value" id="numberOfFirmsValue">20 firms</div>
+                </div>
+
+                <div class="section-divider"></div>
+
+                <h3>Firm Costs</h3>
+
+                <div class="control-group">
+                    <label for="fixedCost">Fixed Cost ($)</label>
+                    <div class="slider-container">
+                        <input type="range" id="fixedCost" class="slider" min="20" max="100" value="50" step="5">
+                    </div>
+                    <div class="slider-value" id="fixedCostValue">$50</div>
+                </div>
+
+                <div class="control-group">
+                    <label for="variableCost">Variable Cost ($/unit)</label>
+                    <div class="slider-container">
+                        <input type="range" id="variableCost" class="slider" min="2" max="15" value="5" step="0.5">
+                    </div>
+                    <div class="slider-value" id="variableCostValue">$5.00</div>
+                </div>
+
+                <div class="section-divider"></div>
+
+                <h3>Market Scenarios</h3>
+                <div class="button-group">
+                    <button class="button button-small" onclick="runScenario('demand-increase')">Demand ↑</button>
+                    <button class="button button-small" onclick="runScenario('demand-decrease')">Demand ↓</button>
+                </div>
+                <div class="button-group">
+                    <button class="button button-small" onclick="runScenario('entry')">New Entry</button>
+                    <button class="button button-small" onclick="runScenario('exit')">Firms Exit</button>
+                </div>
+                <div class="button-group">
+                    <button class="button button-small" onclick="runScenario('cost-increase')">Costs ↑</button>
+                    <button class="button button-small" onclick="runScenario('tech-improvement')">Tech ↑</button>
+                </div>
+
+                <button class="button" onclick="resetMarket()">Reset Market</button>
+                <button class="button" onclick="toggleQuiz()">Start Quiz</button>
+            </div>
+
+            <!-- Center Panel: Chart -->
+            <div class="chart-container">
+                <canvas id="competitionChart"></canvas>
+            </div>
+
+            <!-- Right Panel: Information -->
+            <div>
+                <!-- Market Analysis -->
+                <div class="info-card">
+                    <h4>Market Analysis</h4>
+                    
+                    <div class="market-indicator profit" id="marketCondition">
+                        Economic Profit
+                    </div>
+
+                    <div class="metric-grid">
+                        <div class="metric">
+                            <div class="metric-label">Market Price</div>
+                            <div class="metric-value" id="currentPrice">$15.00</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">Equilibrium Q</div>
+                            <div class="metric-value" id="equilibriumQuantity">10.0</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">Profit/Loss</div>
+                            <div class="metric-value" id="firmProfit">$50.00</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">Total Firms</div>
+                            <div class="metric-value" id="totalFirms">20</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Firm Analysis -->
+                <div class="info-card">
+                    <h4>Individual Firm</h4>
+                    <div class="metric-grid">
+                        <div class="metric">
+                            <div class="metric-label">Output</div>
+                            <div class="metric-value" id="firmOutput">10.0</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">Revenue</div>
+                            <div class="metric-value" id="firmRevenue">$150</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">Total Cost</div>
+                            <div class="metric-value" id="firmTotalCost">$100</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">Margin</div>
+                            <div class="metric-value" id="profitMargin">33%</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Market Structure -->
+                <div class="info-card">
+                    <h4>Market Structure</h4>
+                    <div class="firms-grid" id="firmsGrid">
+                        <!-- Firm cards will be generated here -->
+                    </div>
+                    <div class="market-stats">
+                        <div class="stat-row">
+                            <span>Profitable Firms:</span>
+                            <span id="profitableFirms">15/20</span>
+                        </div>
+                        <div class="stat-row">
+                            <span>Market Share/Firm:</span>
+                            <span id="marketShare">5.0%</span>
+                        </div>
+                        <div class="stat-row">
+                            <span>HHI Index:</span>
+                            <span id="hhiIndex">500</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Perfect Competition Characteristics -->
+                <div class="info-card">
+                    <h4>PC Characteristics</h4>
+                    <div style="font-size: 0.8rem; color: #666; line-height: 1.4;">
+                        <strong>✓ Many firms:</strong> Price takers<br>
+                        <strong>✓ Identical products:</strong> Perfect substitutes<br>
+                        <strong>✓ Free entry/exit:</strong> No barriers<br>
+                        <strong>✓ Perfect information:</strong> All know prices
+                    </div>
+                </div>
+
+                <!-- Download Button -->
+                <button class="button" onclick="downloadTheoryGuide()">Download Theory Guide</button>
+            </div>
+        </div>
+
+        <!-- Quiz Section -->
+        <div class="quiz-section" id="quizSection">
+            <h3>Perfect Competition Quiz</h3>
+            
+            <div class="quiz-progress">
+                <div class="quiz-progress-bar" id="progressBar"></div>
+            </div>
+            
+            <div class="quiz-question" id="quizQuestion">
+                In perfect competition, firms are price takers. What does this mean?
+            </div>
+            
+            <div class="quiz-options" id="quizOptions">
+                <div class="quiz-option" onclick="selectQuizOption(this, false)">Firms can set any price they want</div>
+                <div class="quiz-option" onclick="selectQuizOption(this, true)">Firms must accept the market price</div>
+                <div class="quiz-option" onclick="selectQuizOption(this, false)">Firms negotiate prices with customers</div>
+                <div class="quiz-option" onclick="selectQuizOption(this, false)">Firms take turns setting prices</div>
+            </div>
+            
+            <div class="quiz-feedback" id="quizFeedback">
+                Correct! In perfect competition, individual firms are too small to influence market price, so they must accept the prevailing market price.
+            </div>
+
+            <button class="button" onclick="nextQuestion()" style="margin-top: 16px; display: none;" id="nextBtn">Next Question</button>
+            <button class="button" onclick="toggleQuiz()" style="margin-top: 16px;">Close Quiz</button>
+        </div>
+    </div>
+
+    <script>
+        // Game state
+        let chart;
+        let quizActive = false;
+        let currentQuestionIndex = 0;
+        let quizScore = 0;
+
+        let marketState = {
+            marketPrice: 15,
+            demandStrength: 100,
+            numberOfFirms: 20,
+            fixedCost: 50,
+            variableCost: 5
+        };
+
+        // Quiz questions
+        const quizQuestions = [
+            {
+                question: "In perfect competition, firms are price takers. What does this mean?",
+                options: ["Firms can set any price they want", "Firms must accept the market price", "Firms negotiate prices with customers", "Firms take turns setting prices"],
+                correct: 1,
+                explanation: "Correct! In perfect competition, individual firms are too small to influence market price, so they must accept the prevailing market price."
+            },
+            {
+                question: "Which of these is NOT a characteristic of perfect competition?",
+                options: ["Many buyers and sellers", "Identical products", "Product differentiation", "Free entry and exit"],
+                correct: 2,
+                explanation: "Correct! Product differentiation is NOT a characteristic of perfect competition. Products must be identical (homogeneous)."
+            },
+            {
+                question: "In perfect competition, where does a firm maximize profit?",
+                options: ["Where P = ATC", "Where P = MC", "Where P = AVC", "Where P = AFC"],
+                correct: 1,
+                explanation: "Correct! Firms maximize profit where price equals marginal cost (P = MC), as long as price covers average variable cost."
+            },
+            {
+                question: "What happens to economic profits in perfect competition in the long run?",
+                options: ["They increase indefinitely", "They become zero", "They become negative", "They remain constant"],
+                correct: 1,
+                explanation: "Correct! In long-run equilibrium, economic profits are zero due to free entry and exit of firms."
+            },
+            {
+                question: "When should a firm shut down in the short run?",
+                options: ["When P < ATC", "When P < MC", "When P < AVC", "When P < AFC"],
+                correct: 2,
+                explanation: "Correct! A firm should shut down when price is below average variable cost (P < AVC) because it cannot cover variable costs."
+            },
+            {
+                question: "What is the shape of the demand curve facing an individual firm in perfect competition?",
+                options: ["Downward sloping", "Perfectly horizontal", "Upward sloping", "U-shaped"],
+                correct: 1,
+                explanation: "Correct! The demand curve is perfectly horizontal (elastic) because the firm can sell any quantity at the market price."
+            },
+            {
+                question: "If firms are making economic profits, what happens in the long run?",
+                options: ["Nothing changes", "New firms enter the market", "Existing firms exit", "Prices increase"],
+                correct: 1,
+                explanation: "Correct! Economic profits attract new firms to enter the market, increasing supply and driving down prices until profits are zero."
+            },
+            {
+                question: "What is the supply curve for a perfectly competitive firm?",
+                options: ["The ATC curve", "The AVC curve", "The MC curve above AVC", "The AFC curve"],
+                correct: 2,
+                explanation: "Correct! The firm's supply curve is its marginal cost curve above the average variable cost curve."
+            },
+            {
+                question: "In perfect competition, what equals marginal revenue?",
+                options: ["Average cost", "Total cost", "Price", "Quantity"],
+                correct: 2,
+                explanation: "Correct! In perfect competition, marginal revenue equals price because firms are price takers."
+            },
+            {
+                question: "What barrier to entry exists in perfect competition?",
+                options: ["High startup costs", "Government regulations", "Patent protection", "No barriers exist"],
+                correct: 3,
+                explanation: "Correct! Perfect competition assumes no barriers to entry or exit, allowing free movement of firms."
+            },
+            {
+                question: "When are firms in long-run equilibrium?",
+                options: ["When P = MC only", "When P = ATC = MC", "When P = AVC only", "When P > ATC"],
+                correct: 1,
+                explanation: "Correct! Long-run equilibrium occurs when P = ATC = MC, ensuring zero economic profit and optimal efficiency."
+            },
+            {
+                question: "What happens to the market supply curve when new firms enter?",
+                options: ["It shifts left", "It shifts right", "It becomes steeper", "It doesn't change"],
+                correct: 1,
+                explanation: "Correct! When new firms enter, market supply increases, shifting the supply curve to the right."
+            },
+            {
+                question: "If a firm is covering its variable costs but not fixed costs, it should:",
+                options: ["Shut down immediately", "Continue operating in short run", "Increase prices", "Reduce output to zero"],
+                correct: 1,
+                explanation: "Correct! If covering variable costs, the firm should continue operating in the short run to minimize losses."
+            },
+            {
+                question: "What is producer surplus for a firm in perfect competition?",
+                options: ["The area above supply and below price", "Total revenue minus total cost", "Price minus marginal cost", "Zero in long run"],
+                correct: 0,
+                explanation: "Correct! Producer surplus is the area above the supply curve and below the market price."
+            },
+            {
+                question: "In perfect competition, what determines the market price?",
+                options: ["The largest firm", "Government regulation", "Market supply and demand", "Average of all firm prices"],
+                correct: 2,
+                explanation: "Correct! Market price is determined by the intersection of market supply and demand curves."
+            },
+            {
+                question: "What is allocative efficiency in perfect competition?",
+                options: ["P = MC", "P = ATC", "P = AVC", "MC = ATC"],
+                correct: 0,
+                explanation: "Correct! Allocative efficiency occurs when P = MC, meaning the value to consumers equals the cost of production."
+            },
+            {
+                question: "What is productive efficiency in perfect competition?",
+                options: ["P = MC", "P = ATC at minimum", "P = AVC", "MC = AVC"],
+                correct: 1,
+                explanation: "Correct! Productive efficiency occurs when firms produce at minimum average total cost (P = ATC at its minimum)."
+            },
+            {
+                question: "If market demand increases, what happens to individual firm demand?",
+                options: ["It shifts up", "It shifts down", "It becomes more elastic", "It doesn't change"],
+                correct: 0,
+                explanation: "Correct! When market demand increases, market price rises, shifting each firm's horizontal demand curve upward."
+            },
+            {
+                question: "What is the break-even point for a firm?",
+                options: ["Where P = MC", "Where P = ATC", "Where P = AVC", "Where MC = AVC"],
+                correct: 1,
+                explanation: "Correct! The break-even point is where price equals average total cost (P = ATC), resulting in zero economic profit."
+            },
+            {
+                question: "In the long run, what happens to firms with higher costs than others?",
+                options: ["They earn higher profits", "They exit the market", "They lower their prices", "Nothing different"],
+                correct: 1,
+                explanation: "Correct! Firms with higher costs cannot compete at the market price and will eventually exit the market."
+            }
+        ];
+
+        // Initialize the chart
+        function initChart() {
+            const ctx = document.getElementById('competitionChart').getContext('2d');
+            
+            Chart.defaults.font.family = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+            Chart.defaults.color = '#666';
+            
+            chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    datasets: [
+                        {
+                            label: 'Marginal Cost (MC)',
+                            data: [],
+                            borderColor: '#dc3545',
+                            backgroundColor: 'rgba(220, 53, 69, 0.1)',
+                            borderWidth: 2,
+                            fill: false,
+                            tension: 0.1,
+                            pointRadius: 2,
+                            pointHoverRadius: 4
+                        },
+                        {
+                            label: 'Average Total Cost (ATC)',
+                            data: [],
+                            borderColor: '#ffc107',
+                            backgroundColor: 'rgba(255, 193, 7, 0.1)',
+                            borderWidth: 2,
+                            fill: false,
+                            tension: 0.1,
+                            pointRadius: 2,
+                            pointHoverRadius: 4
+                        },
+                        {
+                            label: 'Average Variable Cost (AVC)',
+                            data: [],
+                            borderColor: '#17a2b8',
+                            backgroundColor: 'rgba(23, 162, 184, 0.1)',
+                            borderWidth: 2,
+                            fill: false,
+                            tension: 0.1,
+                            pointRadius: 2,
+                            pointHoverRadius: 4
+                        },
+                        {
+                            label: 'Market Price (P = MR)',
+                            data: [],
+                            borderColor: '#28a745',
+                            backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                            borderWidth: 3,
+                            fill: false,
+                            tension: 0,
+                            pointRadius: 0,
+                            pointHoverRadius: 4
+                        },
+                        {
+                            label: 'Profit Area',
+                            data: [],
+                            borderColor: 'rgba(0, 122, 204, 0)',
+                            backgroundColor: 'rgba(0, 122, 204, 0.2)',
+                            fill: true,
+                            pointRadius: 0,
+                            showLine: false
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                font: { size: 12, weight: '400' },
+                                usePointStyle: true,
+                                boxWidth: 12,
+                                padding: 20,
+                                filter: function(item) {
+                                    return !item.text.includes('Profit Area');
+                                }
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: '#1a1a1a',
+                            titleColor: '#fff',
+                            bodyColor: '#fff',
+                            borderColor: '#333',
+                            borderWidth: 1,
+                            cornerRadius: 4,
+                            displayColors: true
+                        }
+                    },
+                    scales: {
+                        x: {
+                            type: 'linear',
+                            position: 'bottom',
+                            title: {
+                                display: true,
+                                text: 'Quantity (units)',
+                                font: { size: 12, weight: '400' },
+                                color: '#666'
+                            },
+                            min: 0,
+                            max: 25,
+                            grid: { 
+                                color: '#f0f0f0',
+                                lineWidth: 1
+                            },
+                            ticks: {
+                                color: '#999',
+                                font: { size: 11 }
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Price / Cost ($)',
+                                font: { size: 12, weight: '400' },
+                                color: '#666'
+                            },
+                            min: 0,
+                            max: 30,
+                            grid: { 
+                                color: '#f0f0f0',
+                                lineWidth: 1
+                            },
+                            ticks: {
+                                color: '#999',
+                                font: { size: 11 }
+                            }
+                        }
+                    }
+                }
+            });
+
+            updateChart();
+        }
+
+        // Calculate cost curves and profit-maximizing output
+        function calculateFirmData() {
+            const { marketPrice, fixedCost, variableCost } = marketState;
+            
+            const mcData = [];
+            const atcData = [];
+            const avcData = [];
+            const priceData = [];
+            const profitAreaData = [];
+            
+            let optimalQuantity = 0;
+            let maxProfit = -Infinity;
+            
+            // Generate cost curves
+            for (let q = 0; q <= 25; q += 0.5) {
+                if (q === 0) {
+                    mcData.push({ x: q, y: variableCost });
+                    atcData.push({ x: q, y: null });
+                    avcData.push({ x: q, y: null });
+                } else {
+                    // Marginal cost (increasing with diminishing returns)
+                    const mc = variableCost + (q * 0.3);
+                    
+                    // Total cost = Fixed cost + Variable cost
+                    const totalCost = fixedCost + (variableCost * q) + (0.15 * q * q);
+                    
+                    // Average costs
+                    const atc = totalCost / q;
+                    const avc = (totalCost - fixedCost) / q;
+                    
+                    mcData.push({ x: q, y: mc });
+                    atcData.push({ x: q, y: atc });
+                    avcData.push({ x: q, y: avc });
+                    
+                    // Calculate profit for this quantity
+                    const revenue = marketPrice * q;
+                    const profit = revenue - totalCost;
+                    
+                    // Find optimal quantity (where MC = P)
+                    if (Math.abs(mc - marketPrice) < 0.2 && profit > maxProfit) {
+                        maxProfit = profit;
+                        optimalQuantity = q;
+                    }
+                }
+                
+                // Market price line (horizontal)
+                priceData.push({ x: q, y: marketPrice });
+            }
+            
+            // Create profit area (if profitable)
+            if (maxProfit > 0 && optimalQuantity > 0) {
+                const optimalATC = (fixedCost + (variableCost * optimalQuantity) + (0.15 * optimalQuantity * optimalQuantity)) / optimalQuantity;
+                
+                // Profit rectangle
+                profitAreaData.push({ x: 0, y: optimalATC });
+                profitAreaData.push({ x: optimalQuantity, y: optimalATC });
+                profitAreaData.push({ x: optimalQuantity, y: marketPrice });
+                profitAreaData.push({ x: 0, y: marketPrice });
+            }
+            
+            return {
+                mcData,
+                atcData,
+                avcData,
+                priceData,
+                profitAreaData,
+                optimalQuantity,
+                maxProfit
+            };
+        }
+
+        // Calculate market metrics
+        function calculateMarketMetrics() {
+            const firmData = calculateFirmData();
+            const { marketPrice, fixedCost, variableCost, numberOfFirms } = marketState;
+            
+            const optimalQuantity = firmData.optimalQuantity;
+            const totalCost = fixedCost + (variableCost * optimalQuantity) + (0.15 * optimalQuantity * optimalQuantity);
+            const revenue = marketPrice * optimalQuantity;
+            const profit = revenue - totalCost;
+            
+            // Market totals
+            const marketQuantity = optimalQuantity * numberOfFirms;
+            const marketRevenue = revenue * numberOfFirms;
+            
+            // Determine market condition
+            let condition = 'breakeven';
+            if (profit > 1) condition = 'profit';
+            else if (profit < -1) condition = 'loss';
+            
+            // Calculate firms status
+            const profitableFirms = profit > 0 ? numberOfFirms : 0;
+            const marketShare = (1 / numberOfFirms) * 100;
+            const hhiIndex = numberOfFirms * Math.pow(marketShare, 2);
+            
+            return {
+                optimalQuantity,
+                totalCost,
+                revenue,
+                profit,
+                marketQuantity,
+                marketRevenue,
+                condition,
+                profitableFirms,
+                marketShare,
+                hhiIndex
+            };
+        }
+
+        // Update chart and displays
+        function updateChart() {
+            const firmData = calculateFirmData();
+            const metrics = calculateMarketMetrics();
+            
+            // Update chart data
+            chart.data.datasets[0].data = firmData.mcData;
+            chart.data.datasets[1].data = firmData.atcData;
+            chart.data.datasets[2].data = firmData.avcData;
+            chart.data.datasets[3].data = firmData.priceData;
+            chart.data.datasets[4].data = firmData.profitAreaData;
+            
+            chart.update('none');
+            
+            // Update displays
+            updateDisplays(metrics);
+        }
+
+        // Update all displays
+        function updateDisplays(metrics) {
+            // Market Analysis
+            document.getElementById('currentPrice').textContent = `${marketState.marketPrice.toFixed(2)}`;
+            document.getElementById('equilibriumQuantity').textContent = metrics.optimalQuantity.toFixed(1);
+            document.getElementById('firmProfit').textContent = `${metrics.profit.toFixed(2)}`;
+            document.getElementById('totalFirms').textContent = marketState.numberOfFirms;
+            
+            // Firm Analysis
+            document.getElementById('firmOutput').textContent = metrics.optimalQuantity.toFixed(1);
+            document.getElementById('firmRevenue').textContent = `${metrics.revenue.toFixed(0)}`;
+            document.getElementById('firmTotalCost').textContent = `${metrics.totalCost.toFixed(0)}`;
+            document.getElementById('profitMargin').textContent = `${((metrics.profit / metrics.revenue) * 100).toFixed(1)}%`;
+            
+            // Market Structure
+            document.getElementById('profitableFirms').textContent = `${metrics.profitableFirms}/${marketState.numberOfFirms}`;
+            document.getElementById('marketShare').textContent = `${metrics.marketShare.toFixed(1)}%`;
+            document.getElementById('hhiIndex').textContent = Math.round(metrics.hhiIndex);
+            
+            // Update market condition
+            updateMarketCondition(metrics.condition, metrics.profit);
+            
+            // Update firms grid
+            updateFirmsGrid(metrics.condition);
+        }
+
+        // Update market condition indicator
+        function updateMarketCondition(condition, profit) {
+            const indicator = document.getElementById('marketCondition');
+            
+            if (condition === 'profit') {
+                indicator.className = 'market-indicator profit';
+                indicator.textContent = 'Economic Profit';
+            } else if (condition === 'loss') {
+                indicator.className = 'market-indicator loss';
+                indicator.textContent = 'Economic Loss';
+            } else {
+                indicator.className = 'market-indicator breakeven';
+                indicator.textContent = 'Break Even';
+            }
+        }
+
+        // Update firms grid
+        function updateFirmsGrid(condition) {
+            const grid = document.getElementById('firmsGrid');
+            grid.innerHTML = '';
+            
+            for (let i = 1; i <= marketState.numberOfFirms; i++) {
+                const firmCard = document.createElement('div');
+                firmCard.className = `firm-card ${condition}`;
+                firmCard.textContent = `F${i}`;
+                
+                // Add some variation for realism
+                if (Math.random() > 0.8) {
+                    firmCard.className = condition === 'profit' ? 'firm-card breakeven' : 
+                                       condition === 'loss' ? 'firm-card loss' : 'firm-card profitable';
+                }
+                
+                grid.appendChild(firmCard);
+            }
+        }
+
+        // Run market scenarios
+        function runScenario(scenarioType) {
+            switch (scenarioType) {
+                case 'demand-increase':
+                    marketState.marketPrice = Math.min(25, marketState.marketPrice + 3);
+                    marketState.demandStrength = Math.min(200, marketState.demandStrength + 30);
+                    break;
+                case 'demand-decrease':
+                    marketState.marketPrice = Math.max(5, marketState.marketPrice - 3);
+                    marketState.demandStrength = Math.max(50, marketState.demandStrength - 30);
+                    break;
+                case 'entry':
+                    marketState.numberOfFirms = Math.min(50, marketState.numberOfFirms + 10);
+                    marketState.marketPrice = Math.max(5, marketState.marketPrice - 1);
+                    break;
+                case 'exit':
+                    marketState.numberOfFirms = Math.max(5, marketState.numberOfFirms - 5);
+                    marketState.marketPrice = Math.min(25, marketState.marketPrice + 1);
+                    break;
+                case 'cost-increase':
+                    marketState.fixedCost = Math.min(100, marketState.fixedCost + 15);
+                    marketState.variableCost = Math.min(15, marketState.variableCost + 2);
+                    break;
+                case 'tech-improvement':
+                    marketState.fixedCost = Math.max(20, marketState.fixedCost - 10);
+                    marketState.variableCost = Math.max(2, marketState.variableCost - 1);
+                    break;
+            }
+            
+            updateSliderDisplays();
+            updateChart();
+        }
+
+        // Reset market to default values
+        function resetMarket() {
+            marketState = {
+                marketPrice: 15,
+                demandStrength: 100,
+                numberOfFirms: 20,
+                fixedCost: 50,
+                variableCost: 5
+            };
+            
+            updateSliderDisplays();
+            updateChart();
+        }
+
+        // Update slider displays
+        function updateSliderDisplays() {
+            Object.keys(marketState).forEach(key => {
+                const slider = document.getElementById(key);
+                const display = document.getElementById(key + 'Value');
+                
+                if (slider && display) {
+                    slider.value = marketState[key];
+                    
+                    if (key === 'marketPrice' || key === 'fixedCost') {
+                        display.textContent = `${marketState[key].toFixed(2)}`;
+                    } else if (key === 'variableCost') {
+                        display.textContent = `${marketState[key].toFixed(2)}`;
+                    } else if (key === 'demandStrength') {
+                        display.textContent = `${marketState[key]}%`;
+                    } else if (key === 'numberOfFirms') {
+                        display.textContent = `${marketState[key]} firms`;
+                    }
+                }
+            });
+        }
+
+        // Toggle quiz
+        function toggleQuiz() {
+            const quizSection = document.getElementById('quizSection');
+            quizActive = !quizActive;
+            
+            if (quizActive) {
+                quizSection.style.display = 'block';
+                currentQuestionIndex = 0;
+                quizScore = 0;
+                showQuestion();
+            } else {
+                quizSection.style.display = 'none';
+            }
+        }
+
+        // Show current question
+        function showQuestion() {
+            if (currentQuestionIndex >= quizQuestions.length) {
+                showQuizResults();
+                return;
+            }
+            
+            const question = quizQuestions[currentQuestionIndex];
+            document.getElementById('quizQuestion').textContent = question.question;
+            
+            const optionsContainer = document.getElementById('quizOptions');
+            optionsContainer.innerHTML = '';
+            
+            question.options.forEach((option, index) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'quiz-option';
+                optionDiv.textContent = option;
+                optionDiv.onclick = () => selectQuizOption(optionDiv, index === question.correct);
+                optionsContainer.appendChild(optionDiv);
+            });
+            
+            document.getElementById('quizFeedback').style.display = 'none';
+            document.getElementById('nextBtn').style.display = 'none';
+            
+            // Update progress bar
+            const progress = (currentQuestionIndex / quizQuestions.length) * 100;
+            document.getElementById('progressBar').style.width = `${progress}%`;
+        }
+
+        // Select quiz option
+        function selectQuizOption(element, isCorrect) {
+            const question = quizQuestions[currentQuestionIndex];
+            const options = document.querySelectorAll('.quiz-option');
+            
+            if (isCorrect) {
+                quizScore++;
+            }
+            
+            // Disable all options and show correct/incorrect
+            options.forEach((option, index) => {
+                option.onclick = null;
+                if (index === question.correct) {
+                    option.classList.add('correct');
+                } else if (option === element && !isCorrect) {
+                    option.classList.add('incorrect');
+                }
+            });
+            
+            // Show feedback
+            const feedback = document.getElementById('quizFeedback');
+            feedback.textContent = question.explanation;
+            feedback.style.display = 'block';
+            
+            // Show next button
+            document.getElementById('nextBtn').style.display = 'block';
+        }
+
+        // Next question
+        function nextQuestion() {
+            currentQuestionIndex++;
+            showQuestion();
+        }
+
+        // Show quiz results
+        function showQuizResults() {
+            const percentage = Math.round((quizScore / quizQuestions.length) * 100);
+            
+            document.getElementById('quizQuestion').textContent = 
+                `Quiz completed! You scored ${quizScore}/${quizQuestions.length} (${percentage}%)`;
+            
+            document.getElementById('quizOptions').innerHTML = '';
+            document.getElementById('quizFeedback').style.display = 'none';
+            document.getElementById('nextBtn').style.display = 'none';
+            
+            // Complete progress bar
+            document.getElementById('progressBar').style.width = '100%';
+        }
+
+        // Download theory guide
+        function downloadTheoryGuide() {
+            const guideContent = createPerfectCompetitionTheoryGuide();
+            
+            const blob = new Blob([guideContent], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'perfect_competition_theory_guide.html';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Create theory guide content
+        function createPerfectCompetitionTheoryGuide() {
+            return `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfect Competition Theory Guide</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            color: #333;
+            background: white;
+        }
+        
+        h1 {
+            color: #1a1a1a;
+            border-bottom: 3px solid #1a4fa0;
+            padding-bottom: 10px;
+            font-size: 2.2em;
+            margin-bottom: 30px;
+        }
+        
+        h2 {
+            color: #1a4fa0;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            border-left: 4px solid #1a4fa0;
+            padding-left: 15px;
+        }
+        
+        h3 {
+            color: #333;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+        
+        h4 {
+            color: #666;
+            margin-top: 25px;
+            margin-bottom: 10px;
+            font-size: 1em;
+            font-weight: 600;
+        }
+        
+        p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+        
+        ul, ol {
+            margin-bottom: 15px;
+            padding-left: 25px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        code {
+            background: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        
+        .toc {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+            margin: 30px 0;
+        }
+        
+        .toc h3 {
+            margin-top: 0;
+            color: #1a4fa0;
+        }
+        
+        .toc ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        
+        .toc a {
+            color: #1a4fa0;
+            text-decoration: none;
+        }
+        
+        .toc a:hover {
+            text-decoration: underline;
+        }
+        
+        .highlight-box {
+            background: #e7f3ff;
+            border-left: 4px solid #1a4fa0;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        
+        .formula-box {
+            background: #f0f8f0;
+            border: 1px solid #90c695;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .example-box {
+            background: #fff7e6;
+            border: 1px solid #ffb366;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.9em;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        th {
+            background: #f5f5f5;
+            font-weight: 600;
+        }
+        
+        hr {
+            border: none;
+            height: 2px;
+            background: #e0e0e0;
+            margin: 40px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Perfect Competition Theory Guide</h1>
+    <p><em>Understanding Perfect Competition Market Structure and Firm Behavior</em></p>
+    
+    <div class="toc">
+        <h3>Table of Contents</h3>
+        <ul>
+            <li><a href="#introduction">1. Introduction to Perfect Competition</a></li>
+            <li><a href="#characteristics">2. Characteristics of Perfect Competition</a></li>
+            <li><a href="#firm-behavior">3. Firm Behavior in Perfect Competition</a></li>
+            <li><a href="#short-run">4. Short-Run Equilibrium</a></li>
+            <li><a href="#long-run">5. Long-Run Equilibrium</a></li>
+            <li><a href="#efficiency">6. Efficiency in Perfect Competition</a></li>
+            <li><a href="#welfare">7. Consumer and Producer Welfare</a></li>
+            <li><a href="#applications">8. Real-World Applications</a></li>
+            <li><a href="#simulator">9. How the Simulator Works</a></li>
+        </ul>
+    </div>
+
+    <h2 id="introduction">1. Introduction to Perfect Competition</h2>
+
+    <h3>What is Perfect Competition?</h3>
+    <p><strong>Perfect competition</strong> is a theoretical market structure that serves as a benchmark for analyzing other market types. It represents an idealized market where competition is at its maximum intensity and economic efficiency is achieved.</p>
+
+    <div class="highlight-box">
+        <p><strong>Key Insight:</strong> Perfect competition provides the foundation for understanding how markets work in their most efficient form. While rarely found in pure form in reality, it serves as an important theoretical baseline for economic analysis.</p>
+    </div>
+
+    <h3>Why Study Perfect Competition?</h3>
+    <ul>
+        <li><strong>Theoretical benchmark:</strong> Standard for comparing other market structures</li>
+        <li><strong>Efficiency analysis:</strong> Shows optimal resource allocation</li>
+        <li><strong>Policy evaluation:</strong> Guides antitrust and regulation policies</li>
+        <li><strong>Business strategy:</strong> Helps understand competitive dynamics</li>
+    </ul>
+
+    <h2 id="characteristics">2. Characteristics of Perfect Competition</h2>
+
+    <h3>The Four Key Assumptions</h3>
+
+    <h4>1. Many Buyers and Sellers</h4>
+    <ul>
+        <li>Large number of participants on both sides of the market</li>
+        <li>No single buyer or seller can influence market price</li>
+        <li>Each firm is a "price taker"</li>
+        <li>Market share of individual firms is negligible</li>
+    </ul>
+
+    <h4>2. Homogeneous Products</h4>
+    <ul>
+        <li>Products are identical across all firms</li>
+        <li>Perfect substitutes from consumer perspective</li>
+        <li>No brand differentiation or unique features</li>
+        <li>Competition is purely on price</li>
+    </ul>
+
+    <h4>3. Free Entry and Exit</h4>
+    <ul>
+        <li>No barriers to entering or leaving the market</li>
+        <li>No startup costs, licenses, or regulatory hurdles</li>
+        <li>Firms can respond quickly to profit opportunities</li>
+        <li>Resources are mobile between industries</li>
+    </ul>
+
+    <h4>4. Perfect Information</h4>
+    <ul>
+        <li>All participants have complete knowledge of prices</li>
+        <li>No search costs or information asymmetries</li>
+        <li>Instantaneous price discovery</li>
+        <li>Full awareness of profit opportunities</li>
+    </ul>
+
+    <h3>Implications of These Assumptions</h3>
+    <ul>
+        <li><strong>Price taking behavior:</strong> Firms accept market price as given</li>
+        <li><strong>Horizontal demand curve:</strong> Perfectly elastic demand for individual firms</li>
+        <li><strong>Zero economic profits:</strong> In long-run equilibrium</li>
+        <li><strong>Allocative efficiency:</strong> P = MC at equilibrium</li>
+        <li><strong>Productive efficiency:</strong> Production at minimum average cost</li>
+    </ul>
+
+    <h2 id="firm-behavior">3. Firm Behavior in Perfect Competition</h2>
+
+    <h3>Revenue Concepts</h3>
+
+    <h4>Total Revenue (TR)</h4>
+    <div class="formula-box">
+        TR = P × Q<br><br>
+        Where P = market price, Q = quantity sold
+    </div>
+
+    <h4>Average Revenue (AR)</h4>
+    <div class="formula-box">
+        AR = TR / Q = P<br><br>
+        Average revenue equals price in perfect competition
+    </div>
+
+    <h4>Marginal Revenue (MR)</h4>
+    <div class="formula-box">
+        MR = ΔTR / ΔQ = P<br><br>
+        Marginal revenue equals price (constant)
+    </div>
+
+    <h3>The Firm's Demand Curve</h3>
+    <p>In perfect competition, the individual firm faces a perfectly horizontal (elastic) demand curve at the market price.</p>
+
+    <ul>
+        <li><strong>Shape:</strong> Perfectly horizontal line</li>
+        <li><strong>Elasticity:</strong> Infinitely elastic</li>
+        <li><strong>Interpretation:</strong> Firm can sell any quantity at market price</li>
+        <li><strong>Price taking:</strong> Cannot influence price through quantity decisions</li>
+    </ul>
+
+    <h3>Profit Maximization</h3>
+    <p>Firms maximize profit where marginal revenue equals marginal cost:</p>
+
+    <div class="formula-box">
+        <strong>Profit Maximization Rule:</strong> MR = MC<br><br>
+        Since MR = P in perfect competition:<br>
+        <strong>P = MC</strong>
+    </div>
+
+    <h4>Short-Run Decision Making</h4>
+    <ol>
+        <li><strong>If P > ATC:</strong> Firm makes economic profit</li>
+        <li><strong>If P = ATC:</strong> Firm breaks even (normal profit)</li>
+        <li><strong>If AVC < P < ATC:</strong> Firm operates at a loss but continues</li>
+        <li><strong>If P < AVC:</strong> Firm shuts down</li>
+    </ol>
+
+    <h3>The Supply Curve</h3>
+    <p>The firm's supply curve is its marginal cost curve above the average variable cost curve.</p>
+
+    <div class="example-box">
+        <h4>Example: Wheat Farmer</h4>
+        <p>Consider a wheat farmer in a perfectly competitive market:</p>
+        <ul>
+            <li><strong>Market price:</strong> $5 per bushel (determined by market)</li>
+            <li><strong>Farmer's decision:</strong> How many bushels to produce</li>
+            <li><strong>Rule:</strong> Produce where MC = $5</li>
+            <li><strong>If MC < $5:</strong> Increase production</li>
+            <li><strong>If MC > $5:</strong> Decrease production</li>
+        </ul>
+    </div>
+
+    <h2 id="short-run">4. Short-Run Equilibrium</h2>
+
+    <h3>Market Equilibrium</h3>
+    <p>Short-run market equilibrium occurs where market supply equals market demand:</p>
+
+    <div class="formula-box">
+        Market Supply = Σ Individual Firm Supplies<br>
+        Equilibrium: Q_s = Q_d
+    </div>
+
+    <h3>Possible Short-Run Outcomes</h3>
+
+    <h4>Economic Profits (P > ATC)</h4>
+    <ul>
+        <li>Firms earn above-normal returns</li>
+        <li>Price exceeds average total cost</li>
+        <li>Attracts new firms to enter market</li>
+        <li>Temporary situation in perfect competition</li>
+    </ul>
+
+    <h4>Normal Profits (P = ATC)</h4>
+    <ul>
+        <li>Firms earn exactly normal return</li>
+        <li>No incentive for entry or exit</li>
+        <li>Long-run equilibrium condition</li>
+        <li>Economically efficient outcome</li>
+    </ul>
+
+    <h4>Economic Losses (P < ATC)</h4>
+    <ul>
+        <li>Firms earn below-normal returns</li>
+        <li>Some firms will exit market</li>
+        <li>Continue operating if P > AVC</li>
+        <li>Shut down if P < AVC</li>
+    </ul>
+
+    <h3>Shutdown Decision</h3>
+    <p>The shutdown point occurs where price equals average variable cost:</p>
+
+    <div class="formula-box">
+        <strong>Shutdown Rule:</strong><br>
+        • Continue operating if P ≥ AVC<br>
+        • Shut down if P < AVC<br><br>
+        At shutdown point: P = AVC
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Price Condition</th>
+                <th>Firm Decision</th>
+                <th>Economic Outcome</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>P > ATC</td>
+                <td>Produce at P = MC</td>
+                <td>Economic profit</td>
+            </tr>
+            <tr>
+                <td>AVC < P < ATC</td>
+                <td>Produce at P = MC</td>
+                <td>Economic loss, continue operating</td>
+            </tr>
+            <tr>
+                <td>P = AVC</td>
+                <td>Indifferent</td>
+                <td>Shutdown point</td>
+            </tr>
+            <tr>
+                <td>P < AVC</td>
+                <td>Shut down</td>
+                <td>Loss equals fixed costs</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2 id="long-run">5. Long-Run Equilibrium</h2>
+
+    <h3>Entry and Exit Dynamics</h3>
+
+    <h4>When Economic Profits Exist</h4>
+    <ol>
+        <li><strong>New firms enter:</strong> Attracted by profits</li>
+        <li><strong>Market supply increases:</strong> Supply curve shifts right</li>
+        <li><strong>Price falls:</strong> Increased competition</li>
+        <li><strong>Profits decrease:</strong> Until they reach zero</li>
+    </ol>
+
+    <h4>When Economic Losses Occur</h4>
+    <ol>
+        <li><strong>Firms exit:</strong> Cannot cover costs</li>
+        <li><strong>Market supply decreases:</strong> Supply curve shifts left</li>
+        <li><strong>Price rises:</strong> Reduced competition</li>
+        <li><strong>Losses decrease:</strong> Until they reach zero</li>
+    </ol>
+
+    <h3>Long-Run Equilibrium Conditions</h3>
+    <p>In long-run equilibrium, three conditions must be satisfied simultaneously:</p>
+
+    <div class="formula-box">
+        <strong>Long-Run Equilibrium:</strong><br>
+        1. P = MC (profit maximization)<br>
+        2. P = ATC (zero economic profit)<br>
+        3. P = minimum ATC (productive efficiency)<br><br>
+        Therefore: <strong>P = MC = ATC = minimum ATC</strong>
+    </div>
+
+    <h4>Characteristics of Long-Run Equilibrium</h4>
+    <ul>
+        <li><strong>Zero economic profits:</strong> Firms earn normal returns</li>
+        <li><strong>No entry or exit:</strong> Market is stable</li>
+        <li><strong>Allocative efficiency:</strong> P = MC</li>
+        <li><strong>Productive efficiency:</strong> Production at minimum ATC</li>
+        <li><strong>Maximum social welfare:</strong> Consumer + producer surplus maximized</li>
+    </ul>
+
+    <h3>The Long-Run Supply Curve</h3>
+
+    <h4>Constant Cost Industry</h4>
+    <ul>
+        <li>Input prices remain constant as industry expands</li>
+        <li>Long-run supply curve is horizontal</li>
+        <li>Price returns to original level after demand changes</li>
+    </ul>
+
+    <h4>Increasing Cost Industry</h4>
+    <ul>
+        <li>Input prices rise as industry expands</li>
+        <li>Long-run supply curve slopes upward</li>
+        <li>Higher long-run equilibrium prices</li>
+    </ul>
+
+    <h4>Decreasing Cost Industry</h4>
+    <ul>
+        <li>Input prices fall as industry expands</li>
+        <li>Long-run supply curve slopes downward</li>
+        <li>Lower long-run equilibrium prices</li>
+    </ul>
+
+    <h2 id="efficiency">6. Efficiency in Perfect Competition</h2>
+
+    <h3>Types of Economic Efficiency</h3>
+
+    <h4>Allocative Efficiency</h4>
+    <p>Resources are allocated to their most valued uses.</p>
+    <div class="formula-box">
+        <strong>Condition:</strong> P = MC<br><br>
+        Marginal benefit to consumers equals marginal cost of production
+    </div>
+
+    <ul>
+        <li><strong>Meaning:</strong> Society values the last unit produced exactly what it costs to produce</li>
+        <li><strong>Result:</strong> No deadweight loss</li>
+        <li><strong>Implication:</strong> Impossible to reallocate resources to make someone better off without making someone worse off</li>
+    </ul>
+
+    <h4>Productive Efficiency</h4>
+    <p>Goods are produced at the lowest possible cost.</p>
+    <div class="formula-box">
+        <strong>Condition:</strong> P = minimum ATC<br><br>
+        Production occurs at the lowest point on the average cost curve
+    </div>
+
+    <ul>
+        <li><strong>Meaning:</strong> No waste in production process</li>
+        <li><strong>Result:</strong> Maximum output from given inputs</li>
+        <li><strong>Implication:</strong> Society gets the most goods possible from its resources</li>
+    </ul>
+
+    <h4>Dynamic Efficiency</h4>
+    <ul>
+        <li><strong>Innovation incentives:</strong> Competition drives technological progress</li>
+        <li><strong>Adaptation:</strong> Quick response to changing conditions</li>
+        <li><strong>Resource mobility:</strong> Efficient reallocation over time</li>
+    </ul>
+
+    <h3>Pareto Efficiency</h3>
+    <p>Perfect competition achieves Pareto efficiency - a state where it's impossible to make one person better off without making another person worse off.</p>
+
+    <div class="example-box">
+        <h4>Example: Agricultural Markets</h4>
+        <p>Consider the market for corn:</p>
+        <ul>
+            <li><strong>Many farmers:</strong> No single farmer affects price</li>
+            <li><strong>Homogeneous product:</strong> Corn is corn</li>
+            <li><strong>Low barriers:</strong> Easy to start farming</li>
+            <li><strong>Price information:</strong> Commodity exchanges provide transparency</li>
+            <li><strong>Result:</strong> Efficient allocation of farmland to corn production</li>
+        </ul>
+    </div>
+
+    <h2 id="welfare">7. Consumer and Producer Welfare</h2>
+
+    <h3>Consumer Surplus</h3>
+    <p>The difference between what consumers are willing to pay and what they actually pay.</p>
+
+    <div class="formula-box">
+        Consumer Surplus = Area under demand curve above price
+    </div>
+
+    <h4>Maximization in Perfect Competition</h4>
+    <ul>
+        <li><strong>Low prices:</strong> Competition drives prices to minimum cost</li>
+        <li><strong>High quantities:</strong> Efficient production levels</li>
+        <li><strong>Product variety:</strong> Within constraints of homogeneity</li>
+    </ul>
+
+    <h3>Producer Surplus</h3>
+    <p>The difference between what producers receive and their minimum acceptable price.</p>
+
+    <div class="formula-box">
+        Producer Surplus = Area above supply curve below price
+    </div>
+
+    <h4>In Long-Run Equilibrium</h4>
+    <ul>
+        <li><strong>Zero economic profits:</strong> Producer surplus equals normal returns</li>
+        <li><strong>Efficient production:</strong> Maximum surplus given cost structure</li>
+        <li><strong>No deadweight loss:</strong> All potential gains from trade realized</li>
+    </ul>
+
+    <h3>Total Social Welfare</h3>
+    <div class="formula-box">
+        Total Welfare = Consumer Surplus + Producer Surplus
+    </div>
+
+    <p>Perfect competition maximizes total social welfare by:</p>
+    <ul>
+        <li>Eliminating deadweight losses</li>
+        <li>Ensuring efficient resource allocation</li>
+        <li>Providing optimal prices and quantities</li>
+        <li>Promoting innovation and efficiency</li>
+    </ul>
+
+    <h2 id="applications">8. Real-World Applications</h2>
+
+    <h3>Markets Approaching Perfect Competition</h3>
+
+    <h4>Agricultural Commodities</h4>
+    <ul>
+        <li><strong>Examples:</strong> Wheat, corn, soybeans</li>
+        <li><strong>Characteristics:</strong> Many producers, standardized products</li>
+        <li><strong>Information:</strong> Commodity exchanges provide price transparency</li>
+        <li><strong>Entry:</strong> Relatively easy to start farming</li>
+    </ul>
+
+    <h4>Financial Markets</h4>
+    <ul>
+        <li><strong>Examples:</strong> Foreign exchange, stock markets</li>
+        <li><strong>Characteristics:</strong> Many traders, standardized securities</li>
+        <li><strong>Information:</strong> Real-time price data</li>
+        <li><strong>Entry:</strong> Low barriers for market participants</li>
+    </ul>
+
+    <h4>Online Marketplaces</h4>
+    <ul>
+        <li><strong>Examples:</strong> Amazon marketplace, eBay</li>
+        <li><strong>Characteristics:</strong> Many sellers, comparable products</li>
+        <li><strong>Information:</strong> Easy price comparison</li>
+        <li><strong>Entry:</strong> Low startup costs</li>
+    </ul>
+
+    <h3>Deviations from Perfect Competition</h3>
+
+    <h4>Why Perfect Competition is Rare</h4>
+    <ul>
+        <li><strong>Product differentiation:</strong> Firms create unique features</li>
+        <li><strong>Economies of scale:</strong> Large firms have cost advantages</li>
+        <li><strong>Barriers to entry:</strong> Capital requirements, regulations</li>
+        <li><strong>Information asymmetries:</strong> Unequal knowledge</li>
+        <li><strong>Transaction costs:</strong> Costs of market participation</li>
+    </ul>
+
+    <h4>Market Power</h4>
+    <ul>
+        <li><strong>Brand loyalty:</strong> Reduces price sensitivity</li>
+        <li><strong>Network effects:</strong> Value increases with users</li>
+        <li><strong>Switching costs:</strong> Difficulty changing suppliers</li>
+        <li><strong>Geographic advantages:</strong> Location-based monopolies</li>
+    </ul>
+
+    <h3>Policy Implications</h3>
+
+    <h4>Antitrust Policy</h4>
+    <ul>
+        <li><strong>Goal:</strong> Maintain competitive markets</li>
+        <li><strong>Tools:</strong> Merger review, monopoly prosecution</li>
+        <li><strong>Standard:</strong> Perfect competition as benchmark</li>
+    </ul>
+
+    <h4>Deregulation</h4>
+    <ul>
+        <li><strong>Objective:</strong> Increase competition</li>
+        <li><strong>Examples:</strong> Airlines, telecommunications</li>
+        <li><strong>Results:</strong> Lower prices, innovation</li>
+    </ul>
+
+    <h4>Trade Policy</h4>
+    <ul>
+        <li><strong>Free trade:</strong> Increases competition</li>
+        <li><strong>Import competition:</strong> Disciplines domestic firms</li>
+        <li><strong>Export opportunities:</strong> Expands markets</li>
+    </ul>
+
+    <h2 id="simulator">9. How the Simulator Works</h2>
+
+    <h3>Model Structure</h3>
+
+    <h4>Cost Function</h4>
+    <p>The simulator uses a quadratic cost function:</p>
+    <div class="formula-box">
+        Total Cost = Fixed Cost + (Variable Cost × Q) + (0.15 × Q²)<br><br>
+        This creates realistic U-shaped average cost curves
+    </div>
+
+    <h4>Marginal Cost</h4>
+    <div class="formula-box">
+        MC = Variable Cost + (0.3 × Q)<br><br>
+        Increasing marginal cost reflects diminishing returns
+    </div>
+
+    <h4>Average Costs</h4>
+    <div class="formula-box">
+        ATC = Total Cost / Q<br>
+        AVC = Variable Cost / Q + (0.15 × Q)
+    </div>
+
+    <h3>Profit Maximization</h3>
+    <p>The simulator finds the quantity where MC = P (market price):</p>
+    <ul>
+        <li>Calculates costs for different output levels</li>
+        <li>Finds point where marginal cost equals market price</li>
+        <li>Determines optimal quantity and resulting profit</li>
+    </ul>
+
+    <h3>Interactive Controls</h3>
+
+    <h4>Market Conditions</h4>
+    <ul>
+        <li><strong>Market Price:</strong> Set by market forces ($5-$25)</li>
+        <li><strong>Market Demand:</strong> Overall market strength (50-200%)</li>
+        <li><strong>Number of Firms:</strong> Determines market structure (5-50)</li>
+    </ul>
+
+    <h4>Firm Costs</h4>
+    <ul>
+        <li><strong>Fixed Cost:</strong> Unavoidable costs ($20-$100)</li>
+        <li><strong>Variable Cost:</strong> Per-unit production cost ($2-$15)</li>
+    </ul>
+
+    <h3>Scenario Analysis</h3>
+
+    <h4>Demand Changes</h4>
+    <ul>
+        <li><strong>Increase:</strong> Raises price and profits</li>
+        <li><strong>Decrease:</strong> Lowers price, may cause losses</li>
+    </ul>
+
+    <h4>Entry and Exit</h4>
+    <ul>
+        <li><strong>Entry:</strong> Increases supply, reduces price</li>
+        <li><strong>Exit:</strong> Decreases supply, increases price</li>
+    </ul>
+
+    <h4>Cost Changes</h4>
+    <ul>
+        <li><strong>Cost increase:</strong> Reduces profitability</li>
+        <li><strong>Technology improvement:</strong> Reduces costs</li>
+    </ul>
+
+    <h3>Visual Features</h3>
+
+    <h4>Cost Curves</h4>
+    <ul>
+        <li><strong>MC curve:</strong> Shows marginal cost at each quantity</li>
+        <li><strong>ATC curve:</strong> Average total cost curve</li>
+        <li><strong>AVC curve:</strong> Average variable cost curve</li>
+        <li><strong>Price line:</strong> Horizontal demand curve for firm</li>
+    </ul>
+
+    <h4>Profit Visualization</h4>
+    <ul>
+        <li><strong>Profit area:</strong> Shaded region between price and ATC</li>
+        <li><strong>Break-even point:</strong> Where price equals ATC</li>
+        <li><strong>Shutdown point:</strong> Where price equals AVC</li>
+    </ul>
+
+    <h3>Market Structure Analysis</h3>
+
+    <h4>Firm Grid</h4>
+    <ul>
+        <li>Visual representation of all firms in market</li>
+        <li>Color coding shows profitability status</li>
+        <li>Demonstrates market competition intensity</li>
+    </ul>
+
+    <h4>Market Metrics</h4>
+    <ul>
+        <li><strong>Market share:</strong> 100% / number of firms</li>
+        <li><strong>HHI index:</strong> Herfindahl-Hirschman concentration measure</li>
+        <li><strong>Profitable firms:</strong> Count of firms making profits</li>
+    </ul>
+
+    <h3>Learning Objectives</h3>
+    <ol>
+        <li><strong>Understand price-taking behavior:</strong> How firms respond to market price</li>
+        <li><strong>Analyze profit maximization:</strong> Where P = MC condition</li>
+        <li><strong>Explore entry/exit dynamics:</strong> How profits attract/repel firms</li>
+        <li><strong>Examine efficiency:</strong> Allocative and productive efficiency</li>
+        <li><strong>Compare market structures:</strong> Benchmark for other market types</li>
+    </ol>
+
+    <hr>
+
+    <h2>Key Takeaways</h2>
+
+    <h3>For Students</h3>
+    <ol>
+        <li><strong>Master the fundamentals:</strong> Price-taking, profit maximization, efficiency</li>
+        <li><strong>Understand dynamics:</strong> Short-run vs. long-run adjustments</li>
+        <li><strong>Recognize efficiency:</strong> Both allocative and productive efficiency</li>
+        <li><strong>Apply to reality:</strong> Identify markets that approach perfect competition</li>
+    </ol>
+
+    <h3>For Business Applications</h3>
+    <ol>
+        <li><strong>Competitive benchmarking:</strong> Understand perfectly competitive outcomes</li>
+        <li><strong>Entry decisions:</strong> Analyze profit potential and competition</li>
+        <li><strong>Cost management:</strong> Importance of efficiency in competitive markets</li>
+        <li><strong>Strategic planning:</strong> How to compete when you can't control price</li>
+    </ol>
+
+    <h3>For Policy Analysis</h3>
+    <ol>
+        <li><strong>Market regulation:</strong> When and why to intervene</li>
+        <li><strong>Antitrust policy:</strong> Promoting competitive outcomes</li>
+        <li><strong>Trade policy:</strong> Benefits of competitive markets</li>
+        <li><strong>Welfare analysis:</strong> Measuring economic efficiency</li>
+    </ol>
+
+    <h3>Advanced Concepts to Explore</h3>
+    <ul>
+        <li><strong>Game theory:</strong> Strategic interactions between firms</li>
+        <li><strong>Information economics:</strong> Role of perfect information</li>
+        <li><strong>Dynamic competition:</strong> Innovation and technological change</li>
+        <li><strong>Network effects:</strong> When competition may not be optimal</li>
+    </ul>
+
+    <div class="highlight-box">
+        <p><em>Perfect competition represents the theoretical ideal of market efficiency. While rarely found in pure form, it provides crucial insights into how competitive forces work and serves as a benchmark for evaluating real-world markets. Understanding perfect competition is essential for analyzing all other market structures and for developing effective economic policies.</em></p>
+    </div>
+
+</body>
+</html>`;
+        }
+
+        // Event handlers for sliders
+        function setupSliders() {
+            const sliders = ['marketPrice', 'demandStrength', 'numberOfFirms', 'fixedCost', 'variableCost'];
+            
+            sliders.forEach(slider => {
+                const element = document.getElementById(slider);
+                const valueDisplay = document.getElementById(slider + 'Value');
+                
+                element.addEventListener('input', (e) => {
+                    const value = parseFloat(e.target.value);
+                    marketState[slider] = value;
+                    
+                    if (slider === 'marketPrice' || slider === 'fixedCost') {
+                        valueDisplay.textContent = `${value.toFixed(2)}`;
+                    } else if (slider === 'variableCost') {
+                        valueDisplay.textContent = `${value.toFixed(2)}`;
+                    } else if (slider === 'demandStrength') {
+                        valueDisplay.textContent = `${value}%`;
+                    } else if (slider === 'numberOfFirms') {
+                        valueDisplay.textContent = `${value} firms`;
+                    }
+                    
+                    updateChart();
+                });
+            });
+        }
+
+        // Initialize the game
+        document.addEventListener('DOMContentLoaded', () => {
+            initChart();
+            setupSliders();
+            updateSliderDisplays();
+        });
+    </script>
+</body>
+</html>

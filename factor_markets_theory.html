@@ -1,0 +1,710 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Factor Markets Theory Guide</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background: #fff;
+        }
+        h1 { color: #1a1a1a; font-size: 2.5rem; margin-bottom: 1rem; }
+        h2 { color: #1a1a1a; font-size: 1.8rem; margin: 2rem 0 1rem 0; border-bottom: 2px solid #e5e5e5; padding-bottom: 0.5rem; }
+        h3 { color: #1a1a1a; font-size: 1.3rem; margin: 1.5rem 0 0.5rem 0; }
+        h4 { color: #1a1a1a; font-size: 1.1rem; margin: 1rem 0 0.5rem 0; }
+        p { margin-bottom: 1rem; text-align: justify; }
+        ul, ol { margin-bottom: 1rem; padding-left: 2rem; }
+        li { margin-bottom: 0.5rem; }
+        .formula-box {
+            background: #f8f9fa;
+            border: 1px solid #e5e5e5;
+            border-radius: 4px;
+            padding: 1rem;
+            margin: 1rem 0;
+            font-family: 'Courier New', monospace;
+            text-align: center;
+            font-weight: bold;
+        }
+        .highlight {
+            background: #fff3cd;
+            padding: 1rem;
+            border-left: 4px solid #ffc107;
+            margin: 1rem 0;
+        }
+        .example-box {
+            background: #e7f3ff;
+            border: 1px solid #b8daff;
+            border-radius: 4px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        strong { color: #1a1a1a; }
+        .toc {
+            background: #f8f9fa;
+            border: 1px solid #e5e5e5;
+            border-radius: 4px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+        .toc ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .toc li {
+            margin-bottom: 0.5rem;
+        }
+        .toc a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .toc a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>Factor Markets Theory Guide</h1>
+    <p><em>Comprehensive guide to labor and capital markets, wage determination, and resource allocation</em></p>
+
+    <div class="toc">
+        <h3>Table of Contents</h3>
+        <ul>
+            <li><a href="#introduction">1. Introduction to Factor Markets</a></li>
+            <li><a href="#labor-markets">2. Labor Markets</a></li>
+            <li><a href="#capital-markets">3. Capital Markets</a></li>
+            <li><a href="#wage-determination">4. Wage Determination</a></li>
+            <li><a href="#mrp-mfc">5. MRP and MFC Analysis</a></li>
+            <li><a href="#market-structures">6. Factor Market Structures</a></li>
+            <li><a href="#efficiency">7. Market Efficiency and Welfare</a></li>
+            <li><a href="#real-world">8. Real-World Applications</a></li>
+            <li><a href="#simulator">9. How the Simulator Works</a></li>
+        </ul>
+    </div>
+
+    <h2 id="introduction">1. Introduction to Factor Markets</h2>
+
+    <p>Factor markets are where the factors of production—labor, capital, land, and entrepreneurship—are bought and sold. Unlike product markets where goods and services are traded, factor markets involve the exchange of productive resources that businesses need to create output.</p>
+
+    <h3>Key Characteristics of Factor Markets</h3>
+
+    <h4>Derived Demand</h4>
+    <p>Factor demand is <strong>derived demand</strong>—firms demand factors not for their own sake, but because they help produce goods and services that consumers want. This creates a direct link between product market demand and factor market demand.</p>
+
+    <div class="example-box">
+        <strong>Example:</strong> The demand for construction workers is derived from the demand for new buildings. When housing demand increases, construction labor demand increases accordingly.
+    </div>
+
+    <h4>Interdependence</h4>
+    <p>Factor markets are highly interdependent. Changes in one factor market affect others through substitution and complementarity relationships. For instance, if labor becomes more expensive, firms might substitute capital for labor.</p>
+
+    <h3>Types of Factor Markets</h3>
+
+    <h4>Labor Markets</h4>
+    <ul>
+        <li><strong>Supply side:</strong> Individuals offering work hours</li>
+        <li><strong>Demand side:</strong> Firms seeking workers</li>
+        <li><strong>Price:</strong> Wage rate or salary</li>
+        <li><strong>Quantity:</strong> Number of workers or hours worked</li>
+    </ul>
+
+    <h4>Capital Markets</h4>
+    <ul>
+        <li><strong>Supply side:</strong> Savers and investors</li>
+        <li><strong>Demand side:</strong> Firms needing investment funds</li>
+        <li><strong>Price:</strong> Interest rate or rental rate</li>
+        <li><strong>Quantity:</strong> Amount of capital or funds</li>
+    </ul>
+
+    <h4>Land Markets</h4>
+    <ul>
+        <li><strong>Supply side:</strong> Landowners</li>
+        <li><strong>Demand side:</strong> Firms needing locations</li>
+        <li><strong>Price:</strong> Rent or land price</li>
+        <li><strong>Quantity:</strong> Acres or locations</li>
+    </ul>
+
+    <h2 id="labor-markets">2. Labor Markets</h2>
+
+    <p>Labor markets are perhaps the most important factor markets for most people, as they determine employment levels and wage rates throughout the economy.</p>
+
+    <h3>Labor Supply</h3>
+
+    <p>Labor supply represents the relationship between wage rates and the quantity of labor workers are willing to provide.</p>
+
+    <h4>Individual Labor Supply</h4>
+    <p>An individual's labor supply depends on two competing effects:</p>
+
+    <ul>
+        <li><strong>Substitution Effect:</strong> Higher wages make work more attractive relative to leisure</li>
+        <li><strong>Income Effect:</strong> Higher wages increase income, making leisure more affordable</li>
+    </ul>
+
+    <div class="formula-box">
+        Labor Supply = f(Wage Rate, Non-labor Income, Preferences, Demographics)
+    </div>
+
+    <h4>Backward-Bending Labor Supply</h4>
+    <p>At very high wage levels, the income effect can dominate the substitution effect, creating a backward-bending labor supply curve where higher wages actually reduce hours worked.</p>
+
+    <h4>Market Labor Supply</h4>
+    <p>Market labor supply is the horizontal sum of individual labor supplies. It's typically upward-sloping because:</p>
+    <ul>
+        <li>Higher wages attract more people into the labor force</li>
+        <li>Workers may choose to work more hours</li>
+        <li>Workers may switch from other occupations</li>
+    </ul>
+
+    <h3>Labor Demand</h3>
+
+    <p>Labor demand represents how many workers firms want to hire at different wage rates.</p>
+
+    <h4>Marginal Productivity Theory</h4>
+    <p>Labor demand is based on the marginal productivity of workers. Firms hire workers as long as the additional revenue from their output exceeds their cost.</p>
+
+    <div class="formula-box">
+        Labor Demand based on: MRP = MPP × P<br><br>
+        Where:<br>
+        MRP = Marginal Revenue Product<br>
+        MPP = Marginal Physical Product<br>
+        P = Product Price
+    </div>
+
+    <h4>Factors Affecting Labor Demand</h4>
+    <ul>
+        <li><strong>Technology:</strong> Technological advancement can increase or decrease labor demand</li>
+        <li><strong>Product demand:</strong> Higher demand for output increases labor demand</li>
+        <li><strong>Capital availability:</strong> More capital can increase labor productivity</li>
+        <li><strong>Other input prices:</strong> Substitutes and complements affect demand</li>
+    </ul>
+
+    <h3>Labor Market Equilibrium</h3>
+
+    <p>Labor market equilibrium occurs where labor supply equals labor demand, determining both the wage rate and employment level.</p>
+
+    <div class="formula-box">
+        Equilibrium: Labor Supply = Labor Demand<br>
+        Determines: Wage Rate (W*) and Employment (L*)
+    </div>
+
+    <h2 id="capital-markets">3. Capital Markets</h2>
+
+    <p>Capital markets involve the buying and selling of financial and physical capital. These markets are crucial for economic growth and investment.</p>
+
+    <h3>Types of Capital</h3>
+
+    <h4>Physical Capital</h4>
+    <ul>
+        <li><strong>Machinery and equipment</strong></li>
+        <li><strong>Buildings and infrastructure</strong></li>
+        <li><strong>Tools and technology</strong></li>
+        <li><strong>Inventory and raw materials</strong></li>
+    </ul>
+
+    <h4>Financial Capital</h4>
+    <ul>
+        <li><strong>Bonds and loans</strong></li>
+        <li><strong>Stocks and equity</strong></li>
+        <li><strong>Bank deposits</strong></li>
+        <li><strong>Investment funds</strong></li>
+    </ul>
+
+    <h4>Human Capital</h4>
+    <ul>
+        <li><strong>Education and training</strong></li>
+        <li><strong>Skills and experience</strong></li>
+        <li><strong>Health and abilities</strong></li>
+        <li><strong>Knowledge and expertise</strong></li>
+    </ul>
+
+    <h3>Capital Supply</h3>
+
+    <p>Capital supply comes from savings and investment by individuals, businesses, and governments.</p>
+
+    <h4>Individual Savings</h4>
+    <p>Individuals supply capital by saving money instead of consuming it immediately. The saving decision depends on:</p>
+    <ul>
+        <li><strong>Interest rates:</strong> Higher rates encourage more saving</li>
+        <li><strong>Income levels:</strong> Higher income enables more saving</li>
+        <li><strong>Time preferences:</strong> Some prefer present vs. future consumption</li>
+        <li><strong>Risk tolerance:</strong> Willingness to accept investment risk</li>
+    </ul>
+
+    <h4>Business Savings</h4>
+    <p>Businesses supply capital through retained earnings and investment in productive capacity.</p>
+
+    <h3>Capital Demand</h3>
+
+    <p>Capital demand comes from businesses and governments wanting to invest in productive capacity.</p>
+
+    <h4>Investment Decision Factors</h4>
+    <ul>
+        <li><strong>Expected returns:</strong> Profitability of capital projects</li>
+        <li><strong>Interest rates:</strong> Cost of borrowing for investment</li>
+        <li><strong>Business confidence:</strong> Expectations about future conditions</li>
+        <li><strong>Technological opportunities:</strong> New investment possibilities</li>
+    </ul>
+
+    <div class="formula-box">
+        Net Present Value = Σ(Future Cash Flows / (1 + r)^t) - Initial Investment<br><br>
+        Invest if NPV > 0
+    </div>
+
+    <h2 id="wage-determination">4. Wage Determination</h2>
+
+    <p>Wage determination in factor markets involves complex interactions between supply and demand forces, modified by institutional factors.</p>
+
+    <h3>Perfect Competition</h3>
+
+    <p>In perfectly competitive labor markets:</p>
+    <ul>
+        <li>Many buyers and sellers</li>
+        <li>Homogeneous labor</li>
+        <li>Perfect information</li>
+        <li>Free entry and exit</li>
+    </ul>
+
+    <div class="formula-box">
+        Wage Rate = Marginal Revenue Product = Value of Marginal Product<br>
+        W = MRP = VMP = MPP × P
+    </div>
+
+    <h3>Wage Differentials</h3>
+
+    <p>Even in competitive markets, wages differ across workers and jobs due to:</p>
+
+    <h4>Human Capital Differences</h4>
+    <ul>
+        <li><strong>Education:</strong> More education typically leads to higher wages</li>
+        <li><strong>Experience:</strong> Work experience increases productivity</li>
+        <li><strong>Training:</strong> Specialized skills command premium wages</li>
+        <li><strong>Natural ability:</strong> Some people are more productive</li>
+    </ul>
+
+    <h4>Compensating Differentials</h4>
+    <ul>
+        <li><strong>Risk:</strong> Dangerous jobs pay more to attract workers</li>
+        <li><strong>Working conditions:</strong> Unpleasant conditions require wage premiums</li>
+        <li><strong>Location:</strong> Remote or undesirable locations pay more</li>
+        <li><strong>Hours:</strong> Night shifts or long hours get wage premiums</li>
+    </ul>
+
+    <h4>Discrimination</h4>
+    <p>Unfortunately, wage differences sometimes result from discrimination based on:</p>
+    <ul>
+        <li>Gender</li>
+        <li>Race and ethnicity</li>
+        <li>Age</li>
+        <li>Other personal characteristics unrelated to productivity</li>
+    </ul>
+
+    <h3>Institutional Factors</h3>
+
+    <h4>Minimum Wage Laws</h4>
+    <p>Government-mandated minimum wages can affect employment and wage distribution:</p>
+    <ul>
+        <li><strong>Above equilibrium:</strong> May create unemployment</li>
+        <li><strong>Below equilibrium:</strong> Has no effect</li>
+        <li><strong>Monopsony markets:</strong> May increase both wages and employment</li>
+    </ul>
+
+    <h4>Labor Unions</h4>
+    <p>Unions affect wages through:</p>
+    <ul>
+        <li><strong>Collective bargaining:</strong> Negotiating higher wages</li>
+        <li><strong>Restricting supply:</strong> Limiting membership or work hours</li>
+        <li><strong>Increasing demand:</strong> Promoting products made by union workers</li>
+    </ul>
+
+    <h2 id="mrp-mfc">5. MRP and MFC Analysis</h2>
+
+    <p>Understanding Marginal Revenue Product (MRP) and Marginal Factor Cost (MFC) is crucial for analyzing factor markets and employment decisions.</p>
+
+    <h3>Marginal Revenue Product (MRP)</h3>
+
+    <p>MRP measures the additional revenue a firm earns from hiring one more unit of a factor.</p>
+
+    <div class="formula-box">
+        MRP = Marginal Physical Product × Marginal Revenue<br>
+        MRP = MPP × MR<br><br>
+        In perfect competition: MRP = MPP × P
+    </div>
+
+    <h4>Calculating MRP</h4>
+    <div class="example-box">
+        <strong>Example:</strong><br>
+        Workers: 5 → 6<br>
+        Output: 100 → 115 units<br>
+        MPP = 15 units<br>
+        Product price = $10<br>
+        MRP = 15 × $10 = $150
+    </div>
+
+    <h4>MRP as Labor Demand Curve</h4>
+    <p>The MRP curve is the firm's demand curve for labor because it shows the maximum wage the firm is willing to pay for each quantity of labor.</p>
+
+    <h3>Marginal Factor Cost (MFC)</h3>
+
+    <p>MFC measures the additional cost of hiring one more unit of a factor.</p>
+
+    <h4>Perfect Competition</h4>
+    <p>In perfectly competitive factor markets:</p>
+    <div class="formula-box">
+        MFC = Factor Price (Wage Rate)<br>
+        MFC = W
+    </div>
+
+    <h4>Monopsony</h4>
+    <p>In monopsony (single buyer) markets:</p>
+    <div class="formula-box">
+        MFC > Wage Rate<br>
+        Because hiring more workers requires raising wages for all workers
+    </div>
+
+    <h3>Profit Maximization</h3>
+
+    <p>Firms maximize profit by hiring factors until MRP = MFC.</p>
+
+    <div class="highlight">
+        <strong>Key Rule:</strong> Hire additional units of a factor as long as MRP > MFC. Stop when MRP = MFC.
+    </div>
+
+    <h4>Graphical Analysis</h4>
+    <ul>
+        <li><strong>MRP curve:</strong> Downward sloping (diminishing marginal product)</li>
+        <li><strong>MFC curve:</strong> Horizontal in perfect competition, upward sloping in monopsony</li>
+        <li><strong>Equilibrium:</strong> Intersection of MRP and MFC curves</li>
+    </ul>
+
+    <h2 id="market-structures">6. Factor Market Structures</h2>
+
+    <p>Factor markets can have different competitive structures, affecting wages and employment outcomes.</p>
+
+    <h3>Perfect Competition</h3>
+
+    <h4>Characteristics</h4>
+    <ul>
+        <li>Many buyers and sellers</li>
+        <li>Homogeneous factors</li>
+        <li>Perfect information</li>
+        <li>Free mobility</li>
+    </ul>
+
+    <h4>Outcomes</h4>
+    <ul>
+        <li><strong>Wage = MRP:</strong> Factors paid their marginal productivity</li>
+        <li><strong>Efficiency:</strong> Optimal allocation of resources</li>
+        <li><strong>No economic rent:</strong> Normal profits only</li>
+    </ul>
+
+    <h3>Monopsony</h3>
+
+    <p>Monopsony occurs when there's only one buyer of a factor.</p>
+
+    <h4>Examples</h4>
+    <ul>
+        <li><strong>Company towns:</strong> Single major employer</li>
+        <li><strong>Specialized skills:</strong> Limited alternative employers</li>
+        <li><strong>Geographic isolation:</strong> Remote locations</li>
+        <li><strong>Professional sports:</strong> Single league for elite athletes</li>
+    </ul>
+
+    <h4>Outcomes</h4>
+    <ul>
+        <li><strong>Lower wages:</strong> W < MRP</li>
+        <li><strong>Lower employment:</strong> Reduced factor usage</li>
+        <li><strong>Deadweight loss:</strong> Inefficient allocation</li>
+        <li><strong>Monopsony profits:</strong> Economic rent to buyer</li>
+    </ul>
+
+    <div class="formula-box">
+        Monopsony Power = (MRP - W) / W<br>
+        Higher values indicate more market power
+    </div>
+
+    <h3>Monopoly in Product Markets</h3>
+
+    <p>When firms have monopoly power in product markets, they hire fewer factors than competitive firms.</p>
+
+    <h4>Effect on Factor Demand</h4>
+    <div class="formula-box">
+        MRP = MPP × MR<br>
+        Since MR < P for monopolists: MRP_monopoly < MRP_competitive
+    </div>
+
+    <h3>Bilateral Monopoly</h3>
+
+    <p>Occurs when a monopoly factor supplier (like a union) faces a monopsony buyer.</p>
+
+    <h4>Wage Determination</h4>
+    <ul>
+        <li><strong>Indeterminate:</strong> Wage depends on bargaining power</li>
+        <li><strong>Range:</strong> Between monopsony wage and monopoly wage</li>
+        <li><strong>Efficiency:</strong> May actually improve efficiency</li>
+    </ul>
+
+    <h2 id="efficiency">7. Market Efficiency and Welfare</h2>
+
+    <p>Factor market efficiency affects overall economic welfare through optimal resource allocation.</p>
+
+    <h3>Allocative Efficiency</h3>
+
+    <p>Allocative efficiency occurs when factors are used where they're most productive.</p>
+
+    <h4>Conditions for Efficiency</h4>
+    <ul>
+        <li><strong>Equal marginal productivity:</strong> MRP should be equal across all uses</li>
+        <li><strong>Perfect mobility:</strong> Factors can move freely between uses</li>
+        <li><strong>No externalities:</strong> Private and social costs/benefits align</li>
+        <li><strong>Perfect information:</strong> All participants know market conditions</li>
+    </ul>
+
+    <div class="formula-box">
+        Efficiency condition: MRP_A = MRP_B = MRP_C = ... = Factor Price
+    </div>
+
+    <h3>Economic Rent</h3>
+
+    <p>Economic rent is payment above the minimum needed to keep a factor in its current use.</p>
+
+    <h4>Types of Economic Rent</h4>
+    <ul>
+        <li><strong>Pure economic rent:</strong> Payment to factors with perfectly inelastic supply</li>
+        <li><strong>Quasi-rent:</strong> Short-run payment above variable cost</li>
+        <li><strong>Ricardian rent:</strong> Payment due to differences in factor quality</li>
+    </ul>
+
+    <div class="example-box">
+        <strong>Example:</strong> A talented athlete earns $10 million but would play for $100,000. The $9.9 million difference is economic rent.
+    </div>
+
+    <h3>Producer and Consumer Surplus</h3>
+
+    <h4>In Factor Markets</h4>
+    <ul>
+        <li><strong>Factor supplier surplus:</strong> Payment above minimum acceptable wage</li>
+        <li><strong>Factor buyer surplus:</strong> Value above what buyer pays</li>
+        <li><strong>Total surplus:</strong> Sum of both surpluses</li>
+    </ul>
+
+    <h3>Market Failures</h3>
+
+    <h4>Sources of Inefficiency</h4>
+    <ul>
+        <li><strong>Monopsony power:</strong> Reduces employment and wages</li>
+        <li><strong>Monopoly unions:</strong> May create unemployment</li>
+        <li><strong>Information asymmetries:</strong> Prevent optimal matching</li>
+        <li><strong>Externalities:</strong> Education and training spillovers</li>
+        <li><strong>Discrimination:</strong> Misallocation based on non-productive characteristics</li>
+    </ul>
+
+    <h2 id="real-world">8. Real-World Applications</h2>
+
+    <h3>Labor Market Applications</h3>
+
+    <h4>Minimum Wage Policies</h4>
+    <p>Minimum wage effects depend on market structure:</p>
+    <ul>
+        <li><strong>Competitive markets:</strong> May reduce employment</li>
+        <li><strong>Monopsony markets:</strong> Can increase both wages and employment</li>
+        <li><strong>Efficiency wages:</strong> May improve productivity</li>
+    </ul>
+
+    <div class="example-box">
+        <strong>Case Study:</strong> Seattle's $15 minimum wage showed mixed results - some job losses in restaurants but overall positive effects on worker welfare.
+    </div>
+
+    <h4>Technological Change</h4>
+    <p>Technology affects different types of workers differently:</p>
+    <ul>
+        <li><strong>Skill-biased technical change:</strong> Increases demand for skilled workers</li>
+        <li><strong>Automation:</strong> May replace routine tasks</li>
+        <li><strong>Complementary technology:</strong> Enhances worker productivity</li>
+    </ul>
+
+    <h4>Immigration</h4>
+    <p>Immigration affects labor markets through:</p>
+    <ul>
+        <li><strong>Labor supply increase:</strong> May depress wages in some sectors</li>
+        <li><strong>Complementary skills:</strong> Can increase native worker productivity</li>
+        <li><strong>Entrepreneurship:</strong> Immigrants often start businesses</li>
+        <li><strong>Consumer demand:</strong> More workers create more demand</li>
+    </ul>
+
+    <h3>Capital Market Applications</h3>
+
+    <h4>Investment and Growth</h4>
+    <p>Efficient capital markets promote economic growth by:</p>
+    <ul>
+        <li><strong>Allocating capital:</strong> To most productive uses</li>
+        <li><strong>Risk sharing:</strong> Spreading investment risks</li>
+        <li><strong>Information processing:</strong> Prices reflect available information</li>
+        <li><strong>Innovation funding:</strong> Supporting new technologies</li>
+    </ul>
+
+    <h4>Financial Crises</h4>
+    <p>Capital market disruptions can cause:</p>
+    <ul>
+        <li><strong>Credit crunches:</strong> Reduced lending to businesses</li>
+        <li><strong>Investment collapse:</strong> Lower capital formation</li>
+        <li><strong>Unemployment:</strong> Reduced labor demand</li>
+        <li><strong>Economic recession:</strong> Overall output decline</li>
+    </ul>
+
+    <h3>Human Capital Development</h3>
+
+    <h4>Education Policy</h4>
+    <p>Education investments have both private and social returns:</p>
+    <ul>
+        <li><strong>Private returns:</strong> Higher wages for educated workers</li>
+        <li><strong>Social returns:</strong> Spillover benefits to society</li>
+        <li><strong>Market failures:</strong> Under-investment without subsidies</li>
+        <li><strong>Equity concerns:</strong> Access to education opportunities</li>
+    </ul>
+
+    <h4>Training Programs</h4>
+    <p>Firm-specific vs. general training:</p>
+    <ul>
+        <li><strong>Firm-specific:</strong> Firms willing to pay for training</li>
+        <li><strong>General training:</strong> Workers typically pay (through lower wages during training)</li>
+        <li><strong>Poaching problem:</strong> Firms reluctant to train if workers leave</li>
+    </ul>
+
+    <h3>Globalization Effects</h3>
+
+    <h4>Factor Price Equalization</h4>
+    <p>International trade tends to equalize factor prices across countries:</p>
+    <ul>
+        <li><strong>Labor migration:</strong> Workers move to higher-wage countries</li>
+        <li><strong>Capital flows:</strong> Investment flows to higher-return locations</li>
+        <li><strong>Trade effects:</strong> Imports/exports affect factor demand</li>
+    </ul>
+
+    <h4>Outsourcing and Offshoring</h4>
+    <p>Global factor markets enable:</p>
+    <ul>
+        <li><strong>Cost reduction:</strong> Using cheaper foreign factors</li>
+        <li><strong>Specialization:</strong> Countries focus on comparative advantages</li>
+        <li><strong>Job displacement:</strong> Some domestic jobs lost</li>
+        <li><strong>New opportunities:</strong> Export-oriented jobs created</li>
+    </ul>
+
+    <h2 id="simulator">9. How the Simulator Works</h2>
+
+    <h3>Model Structure</h3>
+
+    <h4>Supply Curve Generation</h4>
+    <p>The simulator generates labor supply using:</p>
+    <div class="formula-box">
+        Wage = (Quantity × 0.08 × Supply_Multiplier) + (8 / Supply_Multiplier)<br><br>
+        This creates upward-sloping supply curves with adjustable elasticity
+    </div>
+
+    <h4>Demand Curve Generation</h4>
+    <p>Labor demand (MRP) is calculated as:</p>
+    <div class="formula-box">
+        Wage = (50 × Demand_Multiplier × Productivity) - (Quantity × 0.12 × Demand_Multiplier)<br><br>
+        This creates downward-sloping demand curves reflecting diminishing marginal product
+    </div>
+
+    <h3>Equilibrium Calculation</h3>
+
+    <p>The simulator finds equilibrium by:</p>
+    <ol>
+        <li>Generating supply and demand data points</li>
+        <li>Finding the point where supply and demand curves intersect</li>
+        <li>Calculating equilibrium wage and employment level</li>
+        <li>Determining market efficiency and welfare measures</li>
+    </ol>
+
+    <h3>Key Metrics Calculated</h3>
+
+    <h4>Employment Indicators</h4>
+    <ul>
+        <li><strong>Equilibrium employment:</strong> Where supply meets demand</li>
+        <li><strong>Unemployment rate:</strong> Based on labor force participation</li>
+        <li><strong>Market efficiency:</strong> Distance from equilibrium</li>
+    </ul>
+
+    <h4>Productivity Measures</h4>
+    <div class="formula-box">
+        MRP = Equilibrium_Wage × Productivity_Factor × 1.25<br>
+        MFC = Current_Wage_Rate
+    </div>
+
+    <h4>Welfare Calculations</h4>
+    <ul>
+        <li><strong>Consumer surplus:</strong> Area above wage, below demand curve</li>
+        <li><strong>Producer surplus:</strong> Area below wage, above supply curve</li>
+        <li><strong>Deadweight loss:</strong> Efficiency loss from non-equilibrium wages</li>
+    </ul>
+
+    <h3>Interactive Features</h3>
+
+    <h4>Market Type Selection</h4>
+    <ul>
+        <li><strong>Labor markets:</strong> Focus on employment and wages</li>
+        <li><strong>Capital markets:</strong> Emphasize investment and returns</li>
+    </ul>
+
+    <h4>Scenario Analysis</h4>
+    <ul>
+        <li><strong>Recession:</strong> Reduces demand, wages, and productivity</li>
+        <li><strong>Economic boom:</strong> Increases demand and wages</li>
+        <li><strong>Technology advance:</strong> Improves productivity and demand</li>
+        <li><strong>Union formation:</strong> Increases wages, may reduce supply</li>
+    </ul>
+
+    <h3>Educational Objectives</h3>
+
+    <ol>
+        <li><strong>Understand factor markets:</strong> How labor and capital markets work</li>
+        <li><strong>Analyze wage determination:</strong> Supply and demand interactions</li>
+        <li><strong>Explore market structures:</strong> Competition vs. monopsony effects</li>
+        <li><strong>Evaluate efficiency:</strong> Welfare implications of market outcomes</li>
+        <li><strong>Apply concepts:</strong> Real-world policy and business applications</li>
+    </ol>
+
+    <hr>
+
+    <h2>Key Takeaways</h2>
+
+    <h3>For Students</h3>
+    <ol>
+        <li><strong>Master MRP/MFC analysis:</strong> Essential for understanding factor demand</li>
+        <li><strong>Understand derived demand:</strong> Factor markets depend on product markets</li>
+        <li><strong>Recognize market structures:</strong> Competition vs. monopsony outcomes</li>
+        <li><strong>Analyze efficiency:</strong> When markets work well and when they fail</li>
+        <li><strong>Connect to policy:</strong> Real-world applications of factor market theory</li>
+    </ol>
+
+    <h3>For Policymakers</h3>
+    <ol>
+        <li><strong>Consider market structure:</strong> Policy effects depend on competition level</li>
+        <li><strong>Address market failures:</strong> When intervention might improve outcomes</li>
+        <li><strong>Invest in human capital:</strong> Education and training have broad benefits</li>
+        <li><strong>Promote mobility:</strong> Help factors move to best uses</li>
+        <li><strong>Monitor inequality:</strong> Factor markets affect income distribution</li>
+    </ol>
+
+    <h3>For Business Leaders</h3>
+    <ol>
+        <li><strong>Understand factor costs:</strong> Major component of business expenses</li>
+        <li><strong>Optimize factor mix:</strong> Choose best combination of inputs</li>
+        <li><strong>Invest in workers:</strong> Human capital improves productivity</li>
+        <li><strong>Consider market power:</strong> Monopsony situations require careful handling</li>
+        <li><strong>Plan for change:</strong> Technology and globalization affect factor markets</li>
+    </ol>
+
+    <hr>
+
+    <p><em>This guide provides a comprehensive overview of factor market theory and applications. Use the simulator to explore these concepts interactively and deepen your understanding of how labor and capital markets function in the real economy.</em></p>
+
+</body>
+</html>

@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Production & Cost Theory Guide</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            color: #333;
+            background: white;
+        }
+        
+        h1 {
+            color: #1a1a1a;
+            border-bottom: 3px solid #1a4fa0;
+            padding-bottom: 10px;
+            font-size: 2.2em;
+            margin-bottom: 30px;
+        }
+        
+        h2 {
+            color: #1a4fa0;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            border-left: 4px solid #1a4fa0;
+            padding-left: 15px;
+        }
+        
+        h3 {
+            color: #333;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+        
+        h4 {
+            color: #666;
+            margin-top: 25px;
+            margin-bottom: 10px;
+            font-size: 1em;
+            font-weight: 600;
+        }
+        
+        p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+        
+        ul, ol {
+            margin-bottom: 15px;
+            padding-left: 25px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        code {
+            background: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        
+        .toc {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+            margin: 30px 0;
+        }
+        
+        .toc h3 {
+            margin-top: 0;
+            color: #1a4fa0;
+        }
+        
+        .toc ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        
+        .toc a {
+            color: #1a4fa0;
+            text-decoration: none;
+        }
+        
+        .toc a:hover {
+            text-decoration: underline;
+        }
+        
+        .highlight-box {
+            background: #e7f3ff;
+            border-left: 4px solid #1a4fa0;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        
+        .formula-box {
+            background: #f0f8f0;
+            border: 1px solid #90c695;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .example-box {
+            background: #fff7e6;
+            border: 1px solid #ffb366;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.9em;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        th {
+            background: #f5f5f5;
+            font-weight: 600;
+        }
+        
+        hr {
+            border: none;
+            height: 2px;
+            background: #e0e0e0;
+            margin: 40px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Production & Cost Theory Guide</h1>
+    <p><em>Understanding Production Functions and Cost Structures</em></p>
+    
+    <div class="toc">
+        <h3>Table of Contents</h3>
+        <ul>
+            <li><a href="#production-theory">1. Production Theory Fundamentals</a></li>
+            <li><a href="#production-function">2. The Production Function</a></li>
+            <li><a href="#short-run">3. Short-Run Production</a></li>
+            <li><a href="#cost-theory">4. Cost Theory</a></li>
+            <li><a href="#short-run-costs">5. Short-Run Cost Curves</a></li>
+            <li><a href="#long-run">6. Long-Run Production and Costs</a></li>
+            <li><a href="#returns-to-scale">7. Returns to Scale</a></li>
+            <li><a href="#applications">8. Real-World Applications</a></li>
+            <li><a href="#simulator">9. How the Simulator Works</a></li>
+        </ul>
+    </div>
+
+    <h2 id="production-theory">1. Production Theory Fundamentals</h2>
+
+    <h3>What is Production?</h3>
+    <p><strong>Production</strong> is the process of transforming inputs (factors of production) into outputs (goods and services). It involves combining resources efficiently to create value.</p>
+
+    <div class="highlight-box">
+        <p><strong>Key Insight:</strong> Production theory explains how firms combine inputs to produce outputs and how costs behave as production levels change. This is fundamental to understanding firm behavior and market supply.</p>
+    </div>
+
+    <h3>Factors of Production</h3>
+    <ul>
+        <li><strong>Land:</strong> Natural resources and physical space</li>
+        <li><strong>Labor:</strong> Human effort and skills</li>
+        <li><strong>Capital:</strong> Machinery, equipment, and buildings</li>
+        <li><strong>Entrepreneurship:</strong> Organization and risk-taking</li>
+    </ul>
+
+    <h3>Types of Inputs</h3>
+    <h4>Fixed Inputs</h4>
+    <ul>
+        <li>Cannot be changed in the short run</li>
+        <li>Examples: Factory buildings, heavy machinery</li>
+        <li>Generate fixed costs</li>
+    </ul>
+
+    <h4>Variable Inputs</h4>
+    <ul>
+        <li>Can be adjusted in the short run</li>
+        <li>Examples: Labor hours, raw materials</li>
+        <li>Generate variable costs</li>
+    </ul>
+
+    <h2 id="production-function">2. The Production Function</h2>
+
+    <h3>Definition</h3>
+    <p>The <strong>production function</strong> shows the maximum output that can be produced from given combinations of inputs, assuming efficient production techniques.</p>
+
+    <div class="formula-box">
+        <strong>General Form:</strong> Q = f(L, K, ...)<br><br>
+        Where:<br>
+        • Q = Quantity of output<br>
+        • L = Labor input<br>
+        • K = Capital input<br>
+        • f = Production function
+    </div>
+
+    <h3>Common Production Functions</h3>
+
+    <h4>Linear Production Function</h4>
+    <div class="formula-box">
+        Q = aL + bK<br><br>
+        Perfect substitutes between inputs
+    </div>
+
+    <h4>Cobb-Douglas Production Function</h4>
+    <div class="formula-box">
+        Q = AL^α K^β<br><br>
+        Where:<br>
+        • A = Technology parameter<br>
+        • α, β = Output elasticities<br>
+        • α + β determines returns to scale
+    </div>
+
+    <h4>Leontief Production Function</h4>
+    <div class="formula-box">
+        Q = min(L/a, K/b)<br><br>
+        Fixed proportions (no substitution possible)
+    </div>
+
+    <h3>Properties of Production Functions</h3>
+    <ol>
+        <li><strong>Positive marginal products:</strong> More input → more output</li>
+        <li><strong>Diminishing marginal products:</strong> Each additional unit of input adds less output</li>
+        <li><strong>Efficiency:</strong> Maximum output for given inputs</li>
+    </ol>
+
+    <h2 id="short-run">3. Short-Run Production</h2>
+
+    <h3>Key Concepts</h3>
+    <p>In the short run, at least one input is fixed (typically capital), while others are variable (typically labor).</p>
+
+    <h3>Production Measures</h3>
+
+    <h4>Total Product (TP)</h4>
+    <ul>
+        <li>Total output produced by all units of variable input</li>
+        <li>Shows the production function graphically</li>
+    </ul>
+
+    <h4>Marginal Product (MP)</h4>
+    <div class="formula-box">
+        MP = ΔTP / ΔL<br><br>
+        The additional output from one more unit of labor
+    </div>
+
+    <h4>Average Product (AP)</h4>
+    <div class="formula-box">
+        AP = TP / L<br><br>
+        Output per unit of labor
+    </div>
+
+    <h3>Law of Diminishing Returns</h3>
+    <p>As more units of a variable input are added to fixed inputs, the marginal product of the variable input will eventually decrease.</p>
+
+    <div class="example-box">
+        <h4>Example: Pizza Restaurant</h4>
+        <p><strong>Fixed input:</strong> Kitchen (1 oven, limited space)</p>
+        <p><strong>Variable input:</strong> Chefs</p>
+        <ul>
+            <li><strong>1 chef:</strong> 20 pizzas/hour</li>
+            <li><strong>2 chefs:</strong> 45 pizzas/hour (MP = 25)</li>
+            <li><strong>3 chefs:</strong> 60 pizzas/hour (MP = 15)</li>
+            <li><strong>4 chefs:</strong> 70 pizzas/hour (MP = 10)</li>
+            <li><strong>5 chefs:</strong> 75 pizzas/hour (MP = 5)</li>
+        </ul>
+        <p>Notice how marginal product decreases as more chefs are added to the fixed kitchen.</p>
+    </div>
+
+    <h3>Stages of Production</h3>
+    <h4>Stage I: Increasing Returns</h4>
+    <ul>
+        <li>MP > AP and both are increasing</li>
+        <li>Fixed inputs are underutilized</li>
+        <li>Firms want to expand production</li>
+    </ul>
+
+    <h4>Stage II: Diminishing Returns</h4>
+    <ul>
+        <li>MP < AP, MP is decreasing, AP may be increasing or decreasing</li>
+        <li>Rational production range</li>
+        <li>Most efficient use of fixed inputs</li>
+    </ul>
+
+    <h4>Stage III: Negative Returns</h4>
+    <ul>
+        <li>MP < 0, total product is decreasing</li>
+        <li>Too much variable input</li>
+        <li>Firms should reduce production</li>
+    </ul>
+
+    <h2 id="cost-theory">4. Cost Theory</h2>
+
+    <h3>Types of Costs</h3>
+
+    <h4>Fixed Costs (FC)</h4>
+    <ul>
+        <li>Do not change with output level</li>
+        <li>Must be paid even if output is zero</li>
+        <li>Examples: Rent, insurance, loan payments</li>
+    </ul>
+
+    <h4>Variable Costs (VC)</h4>
+    <ul>
+        <li>Change with output level</li>
+        <li>Zero when output is zero</li>
+        <li>Examples: Raw materials, hourly wages</li>
+    </ul>
+
+    <h4>Total Cost (TC)</h4>
+    <div class="formula-box">
+        TC = FC + VC<br><br>
+        The sum of all costs of production
+    </div>
+
+    <h3>Cost Relationships</h3>
+    <p>There's an inverse relationship between productivity and costs:</p>
+    <ul>
+        <li>When marginal product increases, marginal cost decreases</li>
+        <li>When marginal product decreases, marginal cost increases</li>
+    </ul>
+
+    <h2 id="short-run-costs">5. Short-Run Cost Curves</h2>
+
+    <h3>Average Cost Measures</h3>
+
+    <h4>Average Fixed Cost (AFC)</h4>
+    <div class="formula-box">
+        AFC = FC / Q<br><br>
+        Fixed cost per unit of output
+    </div>
+    <ul>
+        <li>Always decreasing as output increases</li>
+        <li>Approaches zero but never reaches it</li>
+        <li>Hyperbolic shape</li>
+    </ul>
+
+    <h4>Average Variable Cost (AVC)</h4>
+    <div class="formula-box">
+        AVC = VC / Q<br><br>
+        Variable cost per unit of output
+    </div>
+    <ul>
+        <li>U-shaped curve</li>
+        <li>Initially decreases due to increasing returns</li>
+        <li>Eventually increases due to diminishing returns</li>
+    </ul>
+
+    <h4>Average Total Cost (ATC)</h4>
+    <div class="formula-box">
+        ATC = TC / Q = AFC + AVC<br><br>
+        Total cost per unit of output
+    </div>
+    <ul>
+        <li>U-shaped curve</li>
+        <li>Initially decreases as fixed costs are spread over more units</li>
+        <li>Eventually increases due to diminishing returns</li>
+    </ul>
+
+    <h3>Marginal Cost (MC)</h3>
+    <div class="formula-box">
+        MC = ΔTC / ΔQ<br><br>
+        The cost of producing one additional unit
+    </div>
+
+    <h4>Properties of Marginal Cost</h4>
+    <ul>
+        <li>U-shaped curve</li>
+        <li>Intersects AVC and ATC at their minimum points</li>
+        <li>When MC < ATC, ATC is decreasing</li>
+        <li>When MC > ATC, ATC is increasing</li>
+    </ul>
+
+    <h3>Relationship Between Cost Curves</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Output Level</th>
+                <th>AFC</th>
+                <th>AVC</th>
+                <th>ATC</th>
+                <th>MC</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Low</td>
+                <td>High</td>
+                <td>High</td>
+                <td>High</td>
+                <td>Decreasing</td>
+            </tr>
+            <tr>
+                <td>Medium</td>
+                <td>Medium</td>
+                <td>Minimum</td>
+                <td>Decreasing</td>
+                <td>Minimum</td>
+            </tr>
+            <tr>
+                <td>High</td>
+                <td>Low</td>
+                <td>Increasing</td>
+                <td>Minimum</td>
+                <td>Increasing</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2 id="long-run">6. Long-Run Production and Costs</h2>
+
+    <h3>Long-Run Characteristics</h3>
+    <ul>
+        <li>All inputs are variable</li>
+        <li>No fixed costs</li>
+        <li>Firms can choose optimal plant size</li>
+        <li>More flexibility in production decisions</li>
+    </ul>
+
+    <h3>Long-Run Average Cost (LRAC)</h3>
+    <p>The <strong>envelope curve</strong> that shows the minimum average cost for each level of output when all inputs can be varied.</p>
+
+    <h4>Shape of LRAC</h4>
+    <ul>
+        <li><strong>Initially decreasing:</strong> Economies of scale</li>
+        <li><strong>Flat portion:</strong> Constant returns to scale</li>
+        <li><strong>Eventually increasing:</strong> Diseconomies of scale</li>
+    </ul>
+
+    <h3>Isoquants and Isocosts</h3>
+
+    <h4>Isoquants</h4>
+    <ul>
+        <li>Show all combinations of inputs that produce the same output</li>
+        <li>Downward sloping and convex to origin</li>
+        <li>Higher isoquants represent higher output levels</li>
+    </ul>
+
+    <h4>Isocosts</h4>
+    <ul>
+        <li>Show all combinations of inputs that cost the same</li>
+        <li>Straight lines with slope = -w/r (wage rate/rental rate)</li>
+        <li>Higher isocosts represent higher total costs</li>
+    </ul>
+
+    <h4>Cost Minimization</h4>
+    <p>Optimal input combination occurs where isoquant is tangent to isocost line:</p>
+    <div class="formula-box">
+        MP_L / w = MP_K / r<br><br>
+        Marginal product per dollar must be equal across all inputs
+    </div>
+
+    <h2 id="returns-to-scale">7. Returns to Scale</h2>
+
+    <h3>Definition</h3>
+    <p>Returns to scale describe how output changes when all inputs are increased proportionally.</p>
+
+    <h3>Types of Returns to Scale</h3>
+
+    <h4>Increasing Returns to Scale (IRS)</h4>
+    <ul>
+        <li>Output increases more than proportionally to input increases</li>
+        <li>Economies of scale present</li>
+        <li>LRAC is decreasing</li>
+        <li>Common in industries with high fixed costs</li>
+    </ul>
+
+    <h4>Constant Returns to Scale (CRS)</h4>
+    <ul>
+        <li>Output increases proportionally to input increases</li>
+        <li>No economies or diseconomies of scale</li>
+        <li>LRAC is flat</li>
+        <li>Efficient scale of operation</li>
+    </ul>
+
+    <h4>Decreasing Returns to Scale (DRS)</h4>
+    <ul>
+        <li>Output increases less than proportionally to input increases</li>
+        <li>Diseconomies of scale present</li>
+        <li>LRAC is increasing</li>
+        <li>Often due to management difficulties</li>
+    </ul>
+
+    <h3>Mathematical Representation</h3>
+    <p>If all inputs are multiplied by factor λ:</p>
+    <div class="formula-box">
+        <strong>IRS:</strong> f(λL, λK) > λf(L, K)<br>
+        <strong>CRS:</strong> f(λL, λK) = λf(L, K)<br>
+        <strong>DRS:</strong> f(λL, λK) < λf(L, K)
+    </div>
+
+    <h3>Sources of Economies of Scale</h3>
+    <ul>
+        <li><strong>Technical economies:</strong> Indivisibilities, specialization</li>
+        <li><strong>Managerial economies:</strong> Specialized management functions</li>
+        <li><strong>Financial economies:</strong> Access to capital markets</li>
+        <li><strong>Marketing economies:</strong> Bulk purchasing, advertising</li>
+        <li><strong>Risk-bearing economies:</strong> Diversification</li>
+    </ul>
+
+    <h3>Sources of Diseconomies of Scale</h3>
+    <ul>
+        <li><strong>Management difficulties:</strong> Coordination problems</li>
+        <li><strong>Communication problems:</strong> Information flow issues</li>
+        <li><strong>Bureaucracy:</strong> Slower decision-making</li>
+        <li><strong>Motivation problems:</strong> Worker alienation</li>
+    </ul>
+
+    <h2 id="applications">8. Real-World Applications</h2>
+
+    <h3>Manufacturing Industries</h3>
+
+    <h4>Automobile Industry</h4>
+    <ul>
+        <li><strong>High fixed costs:</strong> Assembly plants, tooling</li>
+        <li><strong>Economies of scale:</strong> Spreading fixed costs over more units</li>
+        <li><strong>Learning by doing:</strong> Productivity improvements over time</li>
+        <li><strong>Optimal plant size:</strong> Balancing scale economies with flexibility</li>
+    </ul>
+
+    <h4>Technology Sector</h4>
+    <ul>
+        <li><strong>Software development:</strong> High initial development costs, low marginal costs</li>
+        <li><strong>Network effects:</strong> Value increases with number of users</li>
+        <li><strong>Rapid obsolescence:</strong> Need for continuous innovation</li>
+    </ul>
+
+    <h3>Service Industries</h3>
+
+    <h4>Airlines</h4>
+    <ul>
+        <li><strong>High fixed costs:</strong> Aircraft, maintenance facilities</li>
+        <li><strong>Capacity constraints:</strong> Cannot easily adjust short-run capacity</li>
+        <li><strong>Load factor optimization:</strong> Filling seats to spread fixed costs</li>
+    </ul>
+
+    <h4>Healthcare</h4>
+    <ul>
+        <li><strong>Specialized equipment:</strong> High capital requirements</li>
+        <li><strong>Skilled labor:</strong> Difficult to substitute inputs</li>
+        <li><strong>Capacity utilization:</strong> Balancing accessibility with efficiency</li>
+    </ul>
+
+    <h3>Agricultural Production</h3>
+    <ul>
+        <li><strong>Land as fixed input:</strong> Cannot be easily expanded</li>
+        <li><strong>Seasonal production:</strong> Time constraints on planting/harvesting</li>
+        <li><strong>Weather dependence:</strong> Uncertain production conditions</li>
+        <li><strong>Diminishing returns:</strong> Intensive cultivation limits</li>
+    </ul>
+
+    <h3>Business Decision Applications</h3>
+
+    <h4>Capacity Planning</h4>
+    <ul>
+        <li>Determining optimal plant size</li>
+        <li>Balancing fixed and variable costs</li>
+        <li>Considering demand forecasts</li>
+    </ul>
+
+    <h4>Make vs. Buy Decisions</h4>
+    <ul>
+        <li>Comparing internal production costs</li>
+        <li>Evaluating supplier pricing</li>
+        <li>Considering transaction costs</li>
+    </ul>
+
+    <h4>Pricing Strategies</h4>
+    <ul>
+        <li>Understanding cost structure</li>
+        <li>Setting prices above marginal cost</li>
+        <li>Covering fixed costs in the long run</li>
+    </ul>
+
+    <h2 id="simulator">9. How the Simulator Works</h2>
+
+    <h3>Production Function Model</h3>
+    <p>The simulator uses a Cobb-Douglas production function:</p>
+    <div class="formula-box">
+        Q = A × L^0.7 × K^0.3 × 10<br><br>
+        Where:<br>
+        • A = Technology factor (productivity/100)<br>
+        • L = Labor units<br>
+        • K = Capital units<br>
+        • 0.7 and 0.3 are elasticity parameters
+    </div>
+
+    <h3>Cost Calculations</h3>
+
+    <h4>Fixed Costs</h4>
+    <div class="formula-box">
+        FC = Capital Units × Capital Cost per Unit
+    </div>
+
+    <h4>Variable Costs</h4>
+    <div class="formula-box">
+        VC = Labor Units × Wage Rate
+    </div>
+
+    <h4>Total Cost</h4>
+    <div class="formula-box">
+        TC = FC + VC
+    </div>
+
+    <h4>Marginal Cost</h4>
+    <div class="formula-box">
+        MC = Wage Rate / Marginal Product of Labor
+    </div>
+
+    <h3>Key Metrics Displayed</h3>
+
+    <h4>Production Metrics</h4>
+    <ul>
+        <li><strong>Total Product:</strong> Output from current input combination</li>
+        <li><strong>Marginal Product:</strong> Additional output from one more worker</li>
+        <li><strong>Average Product:</strong> Output per worker</li>
+        <li><strong>Productivity Level:</strong> Technology effectiveness</li>
+    </ul>
+
+    <h4>Cost Metrics</h4>
+    <ul>
+        <li><strong>Total Cost:</strong> Sum of fixed and variable costs</li>
+        <li><strong>Marginal Cost:</strong> Cost of producing one more unit</li>
+        <li><strong>Average Cost:</strong> Cost per unit of output</li>
+        <li><strong>Average Variable Cost:</strong> Variable cost per unit</li>
+    </ul>
+
+    <h3>Interactive Features</h3>
+
+    <h4>Slider Controls</h4>
+    <ul>
+        <li><strong>Labor Units:</strong> Variable input (0-20 workers)</li>
+        <li><strong>Capital Units:</strong> Fixed input (1-10 machines)</li>
+        <li><strong>Wage Rate:</strong> Cost per labor unit ($10-50/hour)</li>
+        <li><strong>Capital Cost:</strong> Cost per capital unit ($50-200/unit)</li>
+        <li><strong>Technology Level:</strong> Productivity multiplier (50-200%)</li>
+    </ul>
+
+    <h4>Scenario Buttons</h4>
+    <ul>
+        <li><strong>Recession:</strong> Reduces labor, wages, and productivity</li>
+        <li><strong>Economic Boom:</strong> Increases labor, wages, and productivity</li>
+        <li><strong>Tech Advance:</strong> Improves productivity, increases capital cost</li>
+        <li><strong>Wage Increase:</strong> Raises wages, may reduce labor demand</li>
+    </ul>
+
+    <h3>Chart Visualization</h3>
+    <p>The interactive chart displays four key curves:</p>
+    <ul>
+        <li><strong>Total Product:</strong> Shows total output at different labor levels</li>
+        <li><strong>Marginal Product:</strong> Shows additional output from each worker</li>
+        <li><strong>Average Product:</strong> Shows output per worker</li>
+        <li><strong>Marginal Cost:</strong> Shows cost of additional output</li>
+    </ul>
+
+    <h3>Efficiency Analysis</h3>
+    <p>The simulator calculates efficiency based on optimal labor utilization:</p>
+    <div class="formula-box">
+        Optimal Labor = (K × 0.3 / 0.7)^(1/0.3) × (A/100)<br><br>
+        Efficiency = 1 - |Actual Labor - Optimal Labor| / Optimal Labor
+    </div>
+
+    <h3>Learning Objectives</h3>
+    <ol>
+        <li><strong>Understand production relationships:</strong> How inputs convert to outputs</li>
+        <li><strong>Observe diminishing returns:</strong> Why marginal product decreases</li>
+        <li><strong>Analyze cost behavior:</strong> How costs change with production</li>
+        <li><strong>Explore efficiency:</strong> Optimal resource utilization</li>
+        <li><strong>Apply economic concepts:</strong> Connect theory to business decisions</li>
+    </ol>
+
+    <hr>
+
+    <h2>Key Takeaways</h2>
+
+    <h3>For Students</h3>
+    <ol>
+        <li><strong>Master the relationships:</strong> Production function, cost curves, and their connections</li>
+        <li><strong>Understand diminishing returns:</strong> Why it occurs and its implications</li>
+        <li><strong>Learn cost behavior:</strong> Fixed vs. variable costs and their patterns</li>
+        <li><strong>Recognize efficiency:</strong> Optimal input combinations and scale effects</li>
+    </ol>
+
+    <h3>For Business Applications</h3>
+    <ol>
+        <li><strong>Capacity planning:</strong> Determine optimal production levels</li>
+        <li><strong>Cost management:</strong> Understand cost drivers and control points</li>
+        <li><strong>Resource allocation:</strong> Optimize input combinations</li>
+        <li><strong>Strategic decisions:</strong> Make vs. buy, expansion timing</li>
+    </ol>
+
+    <h3>Advanced Concepts to Explore</h3>
+    <ul>
+        <li><strong>Multi-output production:</strong> Joint production and cost allocation</li>
+        <li><strong>Dynamic production:</strong> Learning curves and experience effects</li>
+        <li><strong>Stochastic production:</strong> Uncertainty and risk management</li>
+        <li><strong>Environmental constraints:</strong> Sustainable production methods</li>
+    </ul>
+
+    <div class="highlight-box">
+        <p><em>Production and cost theory forms the foundation of microeconomic analysis of firms. Understanding these concepts is essential for making informed business decisions, from day-to-day operations to long-term strategic planning. The relationship between inputs, outputs, and costs drives much of economic behavior in markets.</em></p>
+    </div>
+
+</body>
+</html>
