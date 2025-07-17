@@ -904,9 +904,27 @@
     window.open('economics_quiz_bank.html', '_blank');
 }
 
-        function downloadSourceCode() {
-            alert('Source code package includes all HTML, CSS, and JavaScript files for the economics games suite.');
-        }
+       function downloadSourceCode() {
+    // Your specific GitHub details
+    const githubUser = 'Vxictorr';
+    const repoName = 'economics-games-hub';
+    const zipFileName = 'Source_Code.zip';  // Note: added .zip extension
+    
+    // Create the direct download URL
+    const zipUrl = `https://github.com/${githubUser}/${repoName}/raw/main/${zipFileName}`;
+    
+    // Create and trigger download
+    const link = document.createElement('a');
+    link.href = zipUrl;
+    link.download = 'Economics-Games-Source-Code.zip';
+    link.style.display = 'none';
+    
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    console.log('Downloading source code package...');
+}
 
         function downloadFile(content, filename) {
             const blob = new Blob([content], { type: 'text/html' });
